@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>The Supersonic Plugin For Scroll Based Animation</title>
+		
+		<meta name="title" content="The Supersonic Plugin For Scroll Based Animation" />
+		<meta
+			name="description"
+			content="Extremely customizable plugin for scroll based animation which animates 1000 elements without lags"
+		/>
+		<script type="module">var T=Object.defineProperty;var C=(s,e,t)=>e in s?T(s,e,{enumerable:!0,configurable:!0,writable:!0,value:t}):s[e]=t;var n=(s,e,t)=>(C(s,typeof e!="symbol"?e+"":e,t),t);(function(){const e=document.createElement("link").relList;if(e&&e.supports&&e.supports("modulepreload"))return;for(const r of document.querySelectorAll('link[rel="modulepreload"]'))i(r);new MutationObserver(r=>{for(const o of r)if(o.type==="childList")for(const l of o.addedNodes)l.tagName==="LINK"&&l.rel==="modulepreload"&&i(l)}).observe(document,{childList:!0,subtree:!0});function t(r){const o={};return r.integrity&&(o.integrity=r.integrity),r.referrerpolicy&&(o.referrerPolicy=r.referrerpolicy),r.crossorigin==="use-credentials"?o.credentials="include":r.crossorigin==="anonymous"?o.credentials="omit":o.credentials="same-origin",o}function i(r){if(r.ep)return;r.ep=!0;const o=t(r);fetch(r.href,o)}})();const O="modulepreload",B=function(s){return"/the-supersonic-plugin-for-scroll-based-animation/"+s},P={},M=function(e,t,i){if(!t||t.length===0)return e();const r=document.getElementsByTagName("link");return Promise.all(t.map(o=>{if(o=B(o),o in P)return;P[o]=!0;const l=o.endsWith(".css"),d=l?'[rel="stylesheet"]':"";if(!!i)for(let f=r.length-1;f>=0;f--){const x=r[f];if(x.href===o&&(!l||x.rel==="stylesheet"))return}else if(document.querySelector(`link[href="${o}"]${d}`))return;const c=document.createElement("link");if(c.rel=l?"stylesheet":O,l||(c.as="script",c.crossOrigin=""),c.href=o,document.head.appendChild(c),l)return new Promise((f,x)=>{c.addEventListener("load",f),c.addEventListener("error",()=>x(new Error(`Unable to preload CSS for ${o}`)))})})).then(()=>e())},a={scroll:0,rafActive:!0,rafId:0,renderedInitially:!1,config:{options:{observerRootMargin:"100px"},drivers:{}},reset(){a.scroll=0,a.rafActive=!0,a.rafId=0,a.renderedInitially=!1},initConfig(s){var e,t,i;a.config={options:{...a.config.options,...s.options},drivers:(e=s.drivers)!=null?e:{},hooks:(t=s.hooks)!=null?t:{},elements:(i=s.elements)!=null?i:{}}}};function A(s){throw new Error(s)}function S(s,e){return e=10**e,~~(s*e)/e}const w=class{constructor({driverId:e,cssProperty:t,start:i,end:r,unit:o,hooks:l}){n(this,"driver");n(this,"cssProperty");n(this,"id");n(this,"start");n(this,"end");n(this,"hooks");n(this,"value",-1);n(this,"data",{});n(this,"unit");n(this,"elements",new Set);this.cssProperty=t,this.start=i,this.end=r,this.unit=o!=null?o:"",this.hooks=l!=null?l:{},this.id=`${e}---${t}`,this.driver=h.instances.get(e),w.instances.set(this.id,this),this.driver.properties.add(this),this.hooks.onInit&&this.hooks.onInit(this)}render(){this.value=this.calculateValue(),this.hooks.onBeforeRender&&this.hooks.onBeforeRender(this);for(let e of this.elements)e.addProperty(this);this.hooks.onAfterRender&&this.hooks.onAfterRender(this)}calculateValue(){let e=this.start instanceof Function?this.start(this):this.start,t=this.end instanceof Function?this.end(this):this.end;const i=this.driver.progress*(t-e)+e;let r=2;return this.unit==="px"&&(r=1),S(i,r)}updateLimits(){this.hooks.onUpdateLimits&&this.hooks.onUpdateLimits(this)}static init({drivers:e}){for(let t in e)if("properties"in e[t]){if("default"in e[t].properties){const r=Object.keys(e[t].properties);let o="default";for(let l of r)l!=="default"&&matchMedia(l).matches&&(o=l);e[t].properties=e[t].properties[o]}let i=e[t].properties;for(let r in i){const o=i[r];new w({driverId:t,cssProperty:r,start:o.start,end:o.end,unit:o.unit,hooks:o.hooks})}}}static uninit(){w.instances.clear()}};let g=w;n(g,"instances",new Map);const u=class{constructor({id:e,hooks:t}){n(this,"id");n(this,"domElements");n(this,"hooks");n(this,"data",{});n(this,"properties",new Map);n(this,"translate3d",{translateX:"0",translateY:"0",translateZ:"0"});this.id=e,this.hooks=t!=null?t:{},this.initDomElements(),this.saveInitialTranslate(),u.instances.set(this.id,this),this.hooks.onInit&&this.hooks.onInit(this)}saveInitialTranslate(){const e=window.getComputedStyle(this.domElements[0]).transform;if(e.includes("matrix")){const t=e.match(/matrix.*\((.+)\)/)[1].split(", "),i=e.includes("3d")?"3d":"2d";this.translate3d={translateX:(i==="2d"?t[4]:t[12])+"px",translateY:(i==="2d"?t[5]:t[13])+"px",translateZ:(i==="2d"?"0":t[14])+"px"}}}initDomElements(){this.domElements=Array.from(document.querySelectorAll(this.id)),this.domElements.length===0&&A(`Can't find Element: "${this.id}"`),this.domElements.forEach(e=>{e.setAttribute("data-supersonic-type","element"),e.setAttribute("data-supersonic-element-id",this.id)})}render(){this.hooks.onBeforeRender&&this.hooks.onBeforeRender(this);const e=this.calculateFlatProperties();for(let t in e)this.domElements.forEach(i=>{i.style.setProperty(t,e[t])});this.hooks.onAfterRender&&this.hooks.onAfterRender(this)}addProperty(e){if(!a.renderedInitially){const t=this.properties.get(e.cssProperty);if(t){const i=e.driver.initialDistanceToScroll,r=t.driver.initialDistanceToScroll,o=i<0,l=r<0;let d=!1;if(!o&&!l?d=i>r:!o&&l&&(d=i<r),d)return}}this.properties.set(e.cssProperty,e),this.hooks.onAddProperty&&this.hooks.onAddProperty(this,e)}calculateFlatProperties(){const e={};let t=!1;for(let i of this.properties.values()){const{cssProperty:r,value:o,unit:l}=i,d=o+l;u.translate3dKeys.includes(r)?(this.translate3d[r]=d,t=!0):r==="scale"?(E(e),e.transform+=`scale3d(${d}, ${d}, ${d}) `):u.transformKeys.includes(r)?(E(e),e.transform+=`${r}(${d}) `):e[r]=d}return t&&(E(e),e.transform+=`translate3d(${this.translate3d.translateX}, ${this.translate3d.translateY}, ${this.translate3d.translateZ}) `),e}updateLimits(e){this.hooks.onUpdateLimits&&this.hooks.onUpdateLimits(this,e)}static init({drivers:e,elements:t}){for(let i in e){const r=h.instances.get(i),o=e[i].properties;for(let l in o){const d=g.instances.get(`${i}---${l}`);for(let y of o[l].elements){let c=u.instances.get(y);if(!c){let f;t&&t[y]&&t[y].hooks&&(f=t[y].hooks),c=new u({id:y,hooks:f})}r.elements.add(c),d.elements.add(c)}}}}static uninit(){u.instances.clear()}static render(){for(let e of u.activeInstances.values())e.render();u.activeInstances.clear()}};let m=u;n(m,"instances",new Map),n(m,"activeInstances",new Set),n(m,"transformKeys",["perspective","scaleX","scaleY","scale","skewX","skewY","skew","rotateX","rotateY","rotate"]),n(m,"translate3dKeys",["translateX","translateY","translateZ"]);function E(s){s.transform||(s.transform="")}const p=class{constructor({id:e,hooks:t}){n(this,"id");n(this,"progress",0);n(this,"active",!1);n(this,"initialDistanceToScroll",0);n(this,"data",{});n(this,"start");n(this,"end");n(this,"properties",new Set);n(this,"elements",new Set);n(this,"helper");n(this,"hooks");this.id=e,this.hooks=t!=null?t:{},this.initBorders(),this.helper=new k({driver:this}),p.instances.set(e,this),this.hooks.onInit&&this.hooks.onInit(this)}initBorders(){const e=`[data-supersonic-driver="${this.id}"]`,t=`${e}[data-supersonic-type="start"]`,i=`${e}[data-supersonic-type="end"]`;this.start=new R({domElement:document.querySelector(t),selector:t}),this.end=new R({domElement:document.querySelector(i),selector:i})}render(){const e=this.progress;if(this.progress=this.calculateProgress(),this.hooks.onBeforeRender&&this.hooks.onBeforeRender(this),e!==this.progress||!a.renderedInitially){for(let t of this.properties)t.render();for(let t of this.elements)m.activeInstances.add(t);this.hooks.onAfterRender&&this.hooks.onAfterRender(this)}}calculateProgress(){let e=(a.scroll-this.start.top)/(this.end.top-this.start.top);return e<0?e=0:e>1?e=1:e=S(e,4),e}updateLimits(){this.start.updateLimits(),this.end.updateLimits(),this.end.top<this.start.top&&(this.end.top+=window.innerHeight),this.helper.updateLimits();for(let e of this.properties)e.updateLimits();for(let e of this.elements)e.updateLimits(this);this.hooks.onUpdateLimits&&this.hooks.onUpdateLimits(this)}activate(){this.active=!0,p.activeInstances.add(this),this.hooks.onActivation&&this.hooks.onActivation(this)}deactivate(){this.active=!1,p.activeInstances.delete(this),this.hooks.onDeactivation&&this.hooks.onDeactivation(this)}static init({drivers:e}){for(let t in e)new p({id:t,hooks:e[t].hooks})}static uninit(){for(let e of p.instances.values())e.helper.uninit();p.instances.clear()}static render({useActiveDrivers:e}){const t=e?p.activeInstances.values():p.instances.values();for(let i of t)a.renderedInitially||(i.initialDistanceToScroll=i.end.top-a.scroll),i.render()}static updateLimits(){for(let e of p.instances.values())e.updateLimits()}};let h=p;n(h,"instances",new Map),n(h,"activeInstances",new Set);class R{constructor({domElement:e,selector:t}){n(this,"domElement");n(this,"top",0);n(this,"edge","bottom");e||A(`Can't find DOM element: ${t}"]`),e.dataset.supersonicEdge==="top"&&(this.edge="top"),this.domElement=e}updateLimits(){this.top=this.domElement.getBoundingClientRect().top+a.scroll,this.edge==="bottom"&&(this.top-=window.innerHeight)}}const L=class{constructor({driver:e}){n(this,"domElement");n(this,"driver");this.driver=e,this.domElement=document.createElement("i");for(let t in L.styles)this.domElement.style.setProperty(t,L.styles[t]);this.domElement.setAttribute("data-supersonic-driver",e.id),this.domElement.setAttribute("data-supersonic-type","helper"),this.domElement.classList.add("supersonic-helper"),document.body.appendChild(this.domElement)}updateLimits(){let e=this.driver.start.top,t=this.driver.end.top;this.driver.start.edge==="bottom"&&(e+=window.innerHeight),this.driver.end.edge==="bottom"&&(t+=window.innerHeight),this.domElement.style.setProperty("top",e+"px"),this.domElement.style.setProperty("height",t-e+"px")}uninit(){this.domElement.remove()}};let k=L;n(k,"styles",{position:"absolute",left:0,width:"1px"});class X{constructor(e){n(this,"instance");this.instance=new IntersectionObserver(t=>{t.forEach(i=>{const o=i.target.dataset.supersonicDriver,l=h.instances.get(o);if(!l){A(`Observer can't find driver "${o}"`);return}i.isIntersecting?l.activate():l.deactivate()})},{rootMargin:a.config.options.observerRootMargin}),e.forEach(t=>{this.instance.observe(t)})}uninit(){this.instance.disconnect()}}class v{constructor(e){n(this,"observer",null);n(this,"resizeWrapper",null);var t;a.initConfig(e),this.initInstances(),this.updateLimits(),this.initObserver(),this.addEventListeners(),this.render({useActiveDrivers:!1}),a.renderedInitially=!0,(t=a.config.hooks)!=null&&t.onInit&&a.config.hooks.onInit(this)}uninit(){h.uninit(),g.uninit(),m.uninit(),this.removeEventListeners(),this.observer.uninit(),this.observer=null,a.reset()}initInstances(){const e=a.config.drivers,t=a.config.elements;h.init({drivers:e}),g.init({drivers:e}),m.init({drivers:e,elements:t})}initObserver(){const e=Array.from(document.querySelectorAll('[data-supersonic-type="helper"]'));this.observer=new X(e)}render({useActiveDrivers:e}){const t=a.config.hooks;a.rafActive&&(this.updateScroll(),t.onBeforeRender&&t.onBeforeRender(),h.render({useActiveDrivers:e}),m.render(),a.rafId=requestAnimationFrame(()=>{this.render({useActiveDrivers:!0})}),t.onAfterRender&&t.onAfterRender())}updateLimits(){this.updateScroll(),h.updateLimits(),a.config.hooks.onUpdateLimits&&a.config.hooks.onUpdateLimits()}updateScroll(){a.scroll=window.pageYOffset||window.scrollY||document.documentElement.scrollTop||document.body.scrollTop}addEventListeners(){this.resizeWrapper=q(()=>{a.rafActive=!0,this.updateLimits(),this.render({useActiveDrivers:!1})}),window.addEventListener("resize",this.onResize.bind(this))}removeEventListeners(){window.removeEventListener("resize",this.onResize)}onResize(){cancelAnimationFrame(a.rafId),a.rafActive=!1,this.resizeWrapper()}}n(v,"Driver",h),n(v,"Property",g),n(v,"Element",m),n(v,"Globals",a);function q(s){let e;return()=>{clearTimeout(e),e=setTimeout(()=>{s.apply(this)},500)}}const H=document.querySelectorAll("pre");H.forEach(s=>{const e=document.createElement("div");e.classList.add("copy-clipboard"),e.innerHTML=`
+	<svg height="16" version="1.1" width="16" height="16" viewBox="0 0 16 16">
+		<path fill="currentColor" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 010 1.5h-1.5a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-1.5a.75.75 0 011.5 0v1.5A1.75 1.75 0 019.25 16h-7.5A1.75 1.75 0 010 14.25v-7.5z"></path>
+		<path fill="currentColor" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0114.25 11h-7.5A1.75 1.75 0 015 9.25v-7.5zm1.75-.25a.25.25 0 00-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-7.5a.25.25 0 00-.25-.25h-7.5z"></path>
+	</svg>
+	`,e.onpointerdown=()=>{const t=s.innerText.trim();navigator.clipboard.writeText(t).then(()=>{e.classList.add("copied")})},e.onpointerout=()=>{e.classList.remove("copied")},s.appendChild(e)});document.querySelectorAll(".example__header__source").forEach(s=>{s.onpointerdown=e=>{I({target:e.target,className:"section"}).querySelector(".code").classList.toggle("code_active"),document.body.classList.toggle("mobile-oh")}});document.querySelectorAll(".source-close").forEach(s=>{s.onpointerdown=e=>{I({target:e.target,className:"code"}).classList.remove("code_active"),document.body.classList.remove("mobile-oh")}});function I({target:s,className:e}){return s.parentNode.classList.contains(e)?s.parentNode:I({target:s.parentNode,className:e})}const b=document.querySelector("nav");document.querySelector(".mobile-menu").onpointerdown=()=>{b.classList.add("nav_active")};b.onpointerdown=()=>{setTimeout(()=>{b.classList.remove("nav_active")},100)};const D={drivers:{"example-1-driver":{properties:{translateX:{start:0,end:100,unit:"%",elements:[".example-1-element"]}}},"example-2-driver":{properties:{rotate:{start:0,end:360,unit:"deg",elements:[".example-2-element"]},scale:{start:1,end:1.5,elements:[".example-2-element"]}}},"example-3-driver":{properties:{translateX:{start:0,end:-100,unit:"%",elements:[".example-3-element-1"]},scale:{start:1,end:.5,elements:[".example-3-element-2"]},opacity:{start:1,end:0,elements:[".example-3-element-1",".example-3-element-2"]}}},"example-4-driver-1":{properties:{translateX:{start:0,end:-50,unit:"%",elements:[".example-4-element-1"]}}},"example-4-driver-2":{properties:{translateX:{start:0,end:50,unit:"%",elements:[".example-4-element-2"]},opacity:{start:1,end:0,elements:[".example-4-element-1",".example-4-element-2"]}}},"example-5-driver":{properties:{translateX:{start:0,end:100,unit:"%",elements:[".example-5-element"]}}},"example-6-driver":{properties:{default:{translateX:{start:0,end:50,unit:"%",elements:[".example-6-element"]},opacity:{start:1,end:.5,elements:[".example-6-element"]}},"(max-width: 1024px)":{translateX:{start:0,end:20,unit:"%",elements:[".example-6-element"]},opacity:{start:1,end:.5,elements:[".example-6-element"]}}}},"example-7-driver":{properties:{default:{translateX:{start:0,end:-20,unit:"%",elements:[".example-7-element"]}},"(max-width: 1024px)":{opacity:{start:1,end:0,elements:[".example-7-element"]}}}},"example-8-driver":{hooks:{onInit(s){s.data.easedProgress=0},onBeforeRender(s){let e=(s.progress-s.data.easedProgress)*.05;Math.abs(e)>1e-4&&(s.progress=s.data.easedProgress+=e)}},properties:{rotate:{start:0,end:360,unit:"deg",elements:[".example-8-element"]}}},"example-9-driver":{properties:{translateY:{start:0,end:300,unit:"px",elements:[".example-9-element-1",".example-9-element-2",".example-9-element-3"]}}},"example-11-driver":{properties:{translateY:{hooks:{onInit(s){const e=document.querySelector(".example-11-element");s.data={element:e,elementHeight:e.clientHeight,windowHeight:window.innerHeight}},onUpdateLimits(s){s.data.elementHeight=s.data.element.clientHeight,s.data.windowHeight=window.innerHeight,s.render(),v.Element.instances.get(".example-11-element").render()}},start(s){return-s.data.elementHeight-50},end(s){return s.data.windowHeight-s.data.elementHeight},unit:"px",elements:[".example-11-element"]}}}},elements:{".example-9-element-2":{hooks:{onAddProperty(s,e){const t={...e},i=t.driver.progress,r=i<.5?8*i*i*i*i:1-Math.pow(-2*i+2,4)/2;t.value*=r,s.properties.set(t.cssProperty,t)}}},".example-9-element-3":{hooks:{onAddProperty(s,e){const t={...e},i=t.driver.progress,r=i<.5?2*i*i:1-Math.pow(-2*i+2,2)/2;t.value*=r,s.properties.set(t.cssProperty,t)}}}},options:{},events:{}},$=new v(D);M(()=>import("./custom-element.724183ab.js"),void 0).then(({init:s})=>{s(v,$)});window.scroller=$;window.TheSupersonicPluginForScrollBasedAnimation=v;
+</script>
+		<style>*{box-sizing:border-box}html,body{margin:0;padding:0;font-size:16px;font-family:Arial,sans-serif;line-height:1.4}@media (max-width: 1024px){body.mobile-oh{overflow-y:hidden}}body{display:flex;overflow-x:hidden;width:100%}hr{margin:4rem 0}a{color:#000}a:hover{text-decoration:none}.content{flex:1 0 0}@media (max-width: 1024px){.content{overflow:hidden}}ul,li,pre{list-style:none;margin:0;padding:0}p{margin:0 0 1rem}pre{overflow:hidden;background:#272822;border-radius:1rem;padding:1rem;color:#fff;flex:1 0 0;margin:1rem 0 0;position:relative}pre:hover .copy-clipboard{opacity:1}code{position:absolute;left:1rem;right:1rem;top:1rem;bottom:1rem;overflow:auto}.copy-clipboard{position:absolute;right:.5rem;top:.5rem;background:#272822;width:30px;height:30px;border-radius:10px;color:#fff;cursor:pointer;transition:transform .3s,opacity .3s,color .3s;opacity:0}.copy-clipboard:hover{transform:scale(1.3)}.copy-clipboard.copied{color:#18dd64}@media (max-width: 1024px){.copy-clipboard{opacity:1}}.copy-clipboard svg{position:absolute;left:6px;top:6px}.hljs-name{color:#f92672}.hljs-attr,.hljs-function{color:#a2d729}.hljs-string{color:#e6db74}.hljs-argument{color:#f95;font-style:italic}.hljs-comment,code a{color:#75715e}.hljs-keyword,.hljs-built_in{color:#5fc1d0;font-style:italic}.hljs-number{color:#ab7baf}.section{height:100vh;position:relative}.example{width:60%;margin:0 auto;height:100%;position:relative;padding:1rem}@media (max-width: 1024px){.example{width:auto}}.code{position:absolute;right:1rem;top:0;bottom:0;left:0;flex-direction:column;padding:0 0 1rem;transform:translateY(-30px);display:none}.code_active{display:flex}@media (max-width: 1024px){.code{position:fixed;width:auto;left:0;right:0;padding:2rem 1rem 1rem;background:#fff}}.example__header{margin:0;margin:0 0 1rem;text-transform:uppercase}.example__header__source,.source-close{font-size:1rem;text-transform:none;font-weight:400;border-bottom:1px dashed;cursor:pointer;display:inline}.example__header__source:hover,.source-close:hover{border-bottom:none}.source-close{position:absolute;left:0;top:-1rem}@media (max-width: 1024px){.example__header__source,.source-close{display:inline}.source-close{position:absolute;left:1rem;top:1rem}}.driver-start,.driver-end,.animatable-element{margin:0 0 1rem}.driver-start span,.driver-end span,.animatable-element span{display:inline-block;padding:.5rem;border-radius:10px}.driver-start a,.driver-end a,.animatable-element a{color:#fff}.driver-start span{background:rgb(233,255,242)}.driver-end{margin:0 0 1rem}.driver-end span{background:rgb(255,238,238)}.animatable-element span{background:#000;color:#fff}.example-11-element{position:fixed;right:0;top:0;width:50%;z-index:100;transform:translateY(-100%)}.example-11-element span{height:100%;padding:1rem;width:100%}nav{width:15%}nav .nav-wrapper{position:sticky;height:100vh;top:0;padding:1rem;overflow-y:auto}nav .nav-link-container{margin:0 0 1rem}nav .nav-link{border-bottom:1px dashed;text-decoration:none;color:#000}nav .nav-link:hover{border:none}@media (max-width: 1024px){nav{position:fixed;left:0;top:0;bottom:0;background:#fff;z-index:200;width:50%;box-shadow:0 0 20px #666;transform:translate(-110%);transition:transform .3s}nav .nav-wrapper{position:relative;z-index:600}nav .mobile-cover{position:absolute;left:100%;top:0;width:100%;bottom:0;z-index:500;display:none}nav.nav_active{transform:translate(0)}nav.nav_active .mobile-cover{display:block}}.vh-1{height:100vh}.vh-2{height:200vh}.vh-3{height:300vh}.vh-50{height:50vh}.button{background:#fff;border:10px solid #272822;color:#272822;border-radius:1rem;padding:.5rem;text-decoration:none;transition:background .3s,color .3s}.button:hover{background:#272822;color:#fff}.mobile-menu{position:fixed;padding:1rem;background:#fff;z-index:100;display:none}@media (max-width: 1024px){.mobile-menu{display:block}}.anchor{height:1px}@media (max-width: 1024px){.anchor{transform:translateY(-3rem)}}.visible{visibility:visible!important}.absolute{position:absolute!important}.relative{position:relative!important}.bottom-0{bottom:0px!important}.left-4{left:1rem!important}.right-4{right:1rem!important}.top-1\/4{top:25%!important}.top-1\/3{top:33.333333%!important}.z-50{z-index:50!important}.my-8{margin-top:2rem!important;margin-bottom:2rem!important}.mb-8{margin-bottom:2rem!important}.mb-16{margin-bottom:4rem!important}.ml-4{margin-left:1rem!important}.mt-40{margin-top:10rem!important}.mb-0{margin-bottom:0!important}.flex{display:flex!important}.h-auto{height:auto!important}.h-full{height:100%!important}.w-full{width:100%!important}.flex-1{flex:1 1 0%!important}.flex-grow{flex-grow:1!important}.resize{resize:both!important}.items-center{align-items:center!important}.justify-center{justify-content:center!important}.p-4{padding:1rem!important}.p-10{padding:2.5rem!important}.pt-4{padding-top:1rem!important}.text-center{text-align:center!important}.uppercase{text-transform:uppercase!important}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter!important;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter!important;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter,-webkit-backdrop-filter!important;transition-timing-function:cubic-bezier(.4,0,.2,1)!important;transition-duration:.15s!important}
+</style>
+	</head>
+	<body>
+		<nav>
+			<div class="nav-wrapper">
+				<p>
+					<a href="https://github.com/the-illarionov/the-supersonic-plugin-for-scroll-based-animation"
+						>Download plugin</a
+					>
+				</p>
+				<p class="mb-8">
+					<a href="bartholomew.html">1000 Bartholomews</a>
+				</p>
+				<p>Examples:</p>
+				<div class="nav-links">
+					<div class="nav-link-container">
+						<a href="#basic" class="nav-link">1. Basic</a>
+					</div>
+
+					<div class="nav-link-container">
+						<a href="#multiple-properties" class="nav-link">2. Multiple properties</a>
+					</div>
+
+					<div class="nav-link-container">
+						<a href="#multiple-elements" class="nav-link">3. Multiple elements</a>
+					</div>
+
+					<div class="nav-link-container">
+						<a href="#multiple-drivers" class="nav-link">4. Multiple drivers</a>
+					</div>
+
+					<div class="nav-link-container">
+						<a href="#top-edge" class="nav-link">5. Top edge</a>
+					</div>
+
+					<div class="nav-link-container">
+						<a href="#self-animating" class="nav-link">6. Self-animating</a>
+					</div>
+
+					<div class="nav-link-container">
+						<a href="#media-queries" class="nav-link">7. Media queries</a>
+					</div>
+
+					<div class="nav-link-container">
+						<a href="#custom-transition" class="nav-link">8. Custom transition</a>
+					</div>
+
+					<div class="nav-link-container">
+						<a href="#custom-easing" class="nav-link">9. Custom easing</a>
+					</div>
+
+					<div class="nav-link-container">
+						<a href="#custom-element" class="nav-link">10. Custom element</a>
+					</div>
+
+					<div class="nav-link-container">
+						<a href="#custom-start-and-end" class="nav-link">11. Custom start and end</a>
+					</div>
+
+					<div class="pt-4">
+						<a href="/">Author</a>
+					</div>
+				</div>
+			</div>
+			<div class="mobile-cover"></div>
+		</nav>
+		<div class="content">
+			<div class="mobile-menu">
+				<svg viewBox="0 0 100 80" width="20" height="20">
+					<rect width="100" height="20" rx="8"></rect>
+					<rect y="30" width="100" height="20" rx="8"></rect>
+					<rect y="60" width="100" height="20" rx="8"></rect>
+				</svg>
+			</div>
+
+			<div class="section p-4 flex justify-center items-center text-center">
+				<div>
+					<h1 class="mb-16 uppercase">The Supersonic Plugin For Scroll Based Animation</h1>
+					<p>
+						<a href="https://github.com/the-illarionov/the-supersonic-plugin-for-scroll-based-animation"
+							>Download plugin</a
+						>
+						or scroll down to see examples.
+					</p>
+					<p>
+						And hey, check how 1000 pictures of my cat Bartholomew
+						<a href="bartholomew.html">are animated</a>!
+					</p>
+				</div>
+			</div>
+
+			<div class="section">
+				<div class="example">
+					<div class="anchor" id="basic"></div>
+					<h2 class="example__header">1. Basic <sup class="example__header__source">source</sup></h2>
+
+					<div class="driver-start" data-supersonic-driver="example-1-driver" data-supersonic-type="start">
+						<span>I'm a driver, I animate "translateX" at appearance.</span>
+					</div>
+
+					<div class="animatable-element example-1-element">
+						<span>I'm an animatable element, my "translateX" is animated.</span>
+					</div>
+					<div
+						class="driver-end absolute bottom-0 left-4 right-4"
+						data-supersonic-driver="example-1-driver"
+						data-supersonic-type="end"
+					>
+						<span>I'm a driver, I finish an animation at appearance.</span>
+					</div>
+				</div>
+				<div class="code">
+					<span class="source-close">Close</span>
+					<pre><code class="language-html"><span class="hljs-comment">&lt;!-- No CSS included, you can style drivers whatever you want --&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">h2</span>&gt;</span>1. Basic<span class="hljs-tag">&lt;/<span class="hljs-name">h2</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span>
+    <span class="hljs-attr">data-supersonic-driver</span>=<span class="hljs-string">"example-1-driver"</span>
+    <span class="hljs-attr">data-supersonic-type</span>=<span class="hljs-string">"start"</span>&gt;</span>
+    I'm a driver, I animate "translateX" at appearance.
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span>
+    <span class="hljs-attr">class</span>=<span class="hljs-string">"example-1-element"</span>&gt;</span>
+    I'm an animatable element, my "translateX" is animated.
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span>
+    <span class="hljs-attr">data-supersonic-driver</span>=<span class="hljs-string">"example-1-driver"</span>
+    <span class="hljs-attr">data-supersonic-type</span>=<span class="hljs-string">"end"</span>&gt;</span>
+    I'm a driver, I finish an animation at appearance.<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></code></pre>
+					<pre><code class="language-javascript"><span class="hljs-keyword">new</span> TheSupersonicPluginForScrollBasedAnimation({
+    drivers: {
+        <span class="hljs-string">"example-1-driver"</span>: { <span class="hljs-comment">// value of "[data-supersonic-driver]"</span>
+            properties: {
+                translateX: { <span class="hljs-comment">// any valid numeric CSS property</span>
+                    start: <span class="hljs-number">0</span>,
+                    end: <span class="hljs-number">100</span>,
+                    unit: <span class="hljs-string">"%"</span>,
+                    elements: [<span class="hljs-string">".example-1-element"</span>], <span class="hljs-comment">// array of any valid CSS selectors</span>
+                },
+            },
+        },
+    },
+})</code></pre>
+				</div>
+			</div>
+			<hr />
+			<div class="section">
+				<div class="example">
+					<div class="anchor" id="multiple-properties"></div>
+					<h2 class="example__header">
+						2. Multiple properties <sup class="example__header__source">source</sup>
+					</h2>
+					<div class="driver-start" data-supersonic-driver="example-2-driver" data-supersonic-type="start">
+						<span>I'm a driver, I animate "scale" and "rotate" at appearance.</span>
+					</div>
+
+					<div class="animatable-element relative z-50">
+						<span class="example-2-element"
+							>I'm an animatable element, my "scale" and "rotate" are animated.</span
+						>
+					</div>
+					<div
+						class="driver-end absolute bottom-0 left-4 right-4"
+						data-supersonic-driver="example-2-driver"
+						data-supersonic-type="end"
+					>
+						<span>I'm a driver, I finish an animation at appearance.</span>
+					</div>
+				</div>
+				<div class="code">
+					<span class="source-close">Close</span>
+					<pre><code class="html hljs xml"><span class="hljs-comment">&lt;!-- No CSS included, you can style drivers whatever you want --&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">h2</span>&gt;</span>2. Multiple properties<span class="hljs-tag">&lt;/<span class="hljs-name">h2</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span>
+    <span class="hljs-attr">data-supersonic-driver</span>=<span class="hljs-string">"example-2-driver"</span>
+    <span class="hljs-attr">data-supersonic-type</span>=<span class="hljs-string">"start"</span>&gt;</span>
+    I'm a driver, I animate "scale" and "rotate" at appearance.
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span>
+    <span class="hljs-attr">class</span>=<span class="hljs-string">"example-2-element"</span>&gt;</span>
+    I'm an animatable element, my "scale" and "rotate" are animated.
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span>
+    <span class="hljs-attr">data-supersonic-driver</span>=<span class="hljs-string">"example-2-driver"</span>
+    <span class="hljs-attr">data-supersonic-type</span>=<span class="hljs-string">"end"</span>&gt;</span>
+    I'm a driver, I finish an animation at appearance.
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></code></pre>
+					<pre><code class="javascript hljs"><span class="hljs-keyword">new</span> TheSupersonicPluginForScrollBasedAnimation({
+    drivers: {
+        <span class="hljs-string">"example-2-driver"</span>: {
+            properties: {
+                rotate: {
+                    start: <span class="hljs-number">0</span>,
+                    end: <span class="hljs-number">360</span>,
+                    unit: <span class="hljs-string">"deg"</span>,
+                    elements: [<span class="hljs-string">".example-2-element"</span>],
+                },
+                scale: {
+                    start: <span class="hljs-number">1</span>,
+                    end: <span class="hljs-number">1.5</span>,
+                    elements: [<span class="hljs-string">".example-2-element"</span>],
+                },
+            },
+        },
+    },
+})</code></pre>
+				</div>
+			</div>
+			<hr />
+			<div class="section">
+				<div class="example">
+					<div class="anchor" id="multiple-elements"></div>
+					<h2 class="example__header">
+						3. Multiple elements
+						<sup class="example__header__source">source</sup>
+					</h2>
+					<div class="driver-start" data-supersonic-driver="example-3-driver" data-supersonic-type="start">
+						<span
+							>I'm a driver, I animate "translateX", "scale" and "opacity" on 2 elements at
+							appearance.</span
+						>
+					</div>
+
+					<div class="animatable-element example-3-element-1">
+						<span>I'm an animatable element, my "translateX" and "opacity" are animated.</span>
+					</div>
+					<div class="animatable-element example-3-element-2">
+						<span>I'm an animatable element too, my "scale" and "opacity" are animated.</span>
+					</div>
+					<div
+						class="driver-end absolute bottom-0 left-4 right-4"
+						data-supersonic-driver="example-3-driver"
+						data-supersonic-type="end"
+					>
+						<span>I'm a driver, I finish an animation at appearance.</span>
+					</div>
+				</div>
+				<div class="code">
+					<span class="source-close">Close</span>
+					<pre><code class="html hljs xml"><span class="hljs-comment">&lt;!-- No CSS included, you can style drivers whatever you want --&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">h2</span>&gt;</span>3. Multiple elements<span class="hljs-tag">&lt;/<span class="hljs-name">h2</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span>
+    <span class="hljs-attr">data-supersonic-driver</span>=<span class="hljs-string">"example-3-driver"</span>
+    <span class="hljs-attr">data-supersonic-type</span>=<span class="hljs-string">"start"</span>&gt;</span>
+    I'm a driver, I animate "translateX", "scale" and "opacity" on 2 elements at appearance.
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> 
+    <span class="hljs-attr">class</span>=<span class="hljs-string">"example-3-element-1"</span>&gt;</span>
+    I'm an animatable element, my "translateX" and "opacity" are animated.
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> 
+    <span class="hljs-attr">class</span>=<span class="hljs-string">"example-3-element-2"</span>&gt;</span>
+    I'm an animatable element too, my "scale" and "opacity" are animated.
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span>
+    <span class="hljs-attr">data-supersonic-driver</span>=<span class="hljs-string">"example-3-driver"</span>
+    <span class="hljs-attr">data-supersonic-type</span>=<span class="hljs-string">"end"</span>&gt;</span>
+    I'm a driver, I finish an animation at appearance.
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></code></pre>
+					<pre><code class="javascript hljs"><span class="hljs-keyword">new</span> TheSupersonicPluginForScrollBasedAnimation({
+    drivers: {
+        <span class="hljs-string">"example-3-driver"</span>: {
+            properties: {
+                translateX: {
+                    start: <span class="hljs-number">0</span>,
+                    end: <span class="hljs-number">-100</span>,
+                    unit: <span class="hljs-string">"%"</span>,
+                    elements: [<span class="hljs-string">".example-3-element-1"</span>],
+                },
+                translateY: {
+                    start: <span class="hljs-number">0</span>,
+                    end: <span class="hljs-number">150</span>,
+                    unit: <span class="hljs-string">"%"</span>,
+                    elements: [<span class="hljs-string">".example-3-element-2"</span>],
+                },
+                opacity: {
+                    start: <span class="hljs-number">1</span>,
+                    end: <span class="hljs-number">0</span>,
+                    elements: [<span class="hljs-string">".example-3-element-1"</span>, <span class="hljs-string">".example-3-element-2"</span>],
+                },
+            },
+        },
+    },
+})</code></pre>
+				</div>
+			</div>
+			<hr />
+			<div class="section">
+				<div class="example">
+					<div class="anchor" id="multiple-drivers"></div>
+					<h2 class="example__header">
+						4. Multiple drivers <sup class="example__header__source">source</sup>
+					</h2>
+					<div class="driver-start" data-supersonic-driver="example-4-driver-1" data-supersonic-type="start">
+						<span>I'm a driver, I animate "translateX" on first element at appearance.</span>
+					</div>
+
+					<div class="flex my-8">
+						<div class="flex-1 animatable-element example-4-element-1">
+							<span>I'm an animatable element, i move to the left.</span>
+						</div>
+						<div class="flex-1 ml-4 animatable-element example-4-element-2">
+							<span>I'm an animatable element, i move to the right.</span>
+						</div>
+					</div>
+
+					<div
+						class="driver-start mt-40"
+						data-supersonic-driver="example-4-driver-2"
+						data-supersonic-type="start"
+					>
+						<span
+							>I'm another driver, I animate "translateX" on second element and "opacity" on 2
+							elements.</span
+						>
+					</div>
+
+					<div class="absolute bottom-0 left-4 right-4 flex">
+						<div
+							class="driver-end flex-1"
+							data-supersonic-driver="example-4-driver-1"
+							data-supersonic-type="end"
+						>
+							<span>I'm a driver, I finish an animation of first driver at appearance.</span>
+						</div>
+						<div
+							class="driver-end flex-1 ml-4"
+							data-supersonic-driver="example-4-driver-2"
+							data-supersonic-type="end"
+						>
+							<span>I'm a driver, I finish an animation of second driver at appearance.</span>
+						</div>
+					</div>
+				</div>
+				<div class="code">
+					<span class="source-close">Close</span>
+					<pre><code class="html hljs xml"><span class="hljs-comment">&lt;!-- No CSS included, you can style drivers whatever you want --&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">h2</span>&gt;</span>4. Multiple drivers<span class="hljs-tag">&lt;/<span class="hljs-name">h2</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span>
+    <span class="hljs-attr">data-supersonic-driver</span>=<span class="hljs-string">"example-4-driver-1"</span>
+    <span class="hljs-attr">data-supersonic-type</span>=<span class="hljs-string">"start"</span>&gt;</span>
+    I'm a driver, I animate "translateX" on first element at appearance.
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+
+
+
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"example-4-element-1"</span>&gt;</span>
+    I'm an animatable element, i move to the left.
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"example-4-element-2"</span>&gt;</span>
+    I'm an animatable element, i move to the right.
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+
+
+
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span>
+    <span class="hljs-attr">data-supersonic-driver</span>=<span class="hljs-string">"example-4-driver-2"</span>
+    <span class="hljs-attr">data-supersonic-type</span>=<span class="hljs-string">"start"</span>&gt;</span>
+    I'm another driver, I animate "translateX" on second element and "opacity" on 2 elements.
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+
+
+
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span>
+    <span class="hljs-attr">data-supersonic-driver</span>=<span class="hljs-string">"example-4-driver-1"</span>
+    <span class="hljs-attr">data-supersonic-type</span>=<span class="hljs-string">"end"</span>&gt;</span>
+    I'm a driver, I finish an animation of first driver at appearance.
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span>
+    <span class="hljs-attr">data-supersonic-driver</span>=<span class="hljs-string">"example-4-driver-2"</span>
+    <span class="hljs-attr">data-supersonic-type</span>=<span class="hljs-string">"end"</span>&gt;</span>
+    I'm a driver, I finish an animation of second driver at appearance.
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></code></pre>
+					<pre><code class="javascript hljs"><span class="hljs-keyword">new</span> TheSupersonicPluginForScrollBasedAnimation({
+    drivers: {
+        <span class="hljs-string">"example-4-driver-1"</span>: {
+            properties: {
+                translateX: {
+                    start: <span class="hljs-number">0</span>,
+                    end: <span class="hljs-number">-50</span>,
+                    unit: <span class="hljs-string">"%"</span>,
+                    elements: [<span class="hljs-string">".example-4-element-1"</span>],
+                },
+            },
+        },
+        <span class="hljs-string">"example-4-driver-2"</span>: {
+            properties: {
+                translateX: {
+                    start: <span class="hljs-number">0</span>,
+                    end: <span class="hljs-number">50</span>,
+                    unit: <span class="hljs-string">"%"</span>,
+                    elements: [<span class="hljs-string">".example-4-element-2"</span>],
+                },
+                opacity: {
+                    start: <span class="hljs-number">1</span>,
+                    end: <span class="hljs-number">0</span>,
+                    elements: [<span class="hljs-string">".example-4-element-1"</span>, <span class="hljs-string">".example-4-element-2"</span>],
+                },
+            },
+        },
+    },
+})</code></pre>
+				</div>
+			</div>
+			<hr />
+			<div class="section">
+				<div class="example">
+					<div class="anchor" id="top-edge"></div>
+					<h2 class="example__header">5. Top edge <sup class="example__header__source">source</sup></h2>
+
+					<div
+						class="driver-start"
+						data-supersonic-driver="example-5-driver"
+						data-supersonic-type="start"
+						data-supersonic-edge="top"
+					>
+						<span>I'm a driver, I will start animation only when i touch top edge of the screen.</span>
+					</div>
+
+					<div
+						class="driver-end absolute top-1/4 left-4 right-4"
+						data-supersonic-driver="example-5-driver"
+						data-supersonic-type="end"
+						data-supersonic-edge="top"
+					>
+						<span>I'm a driver, I finish an animation only when i touch top edge of the screen.</span>
+					</div>
+
+					<div class="animatable-element absolute left-4 top-1/3 example-5-element">
+						<span>I'm an animatable element.</span>
+					</div>
+				</div>
+				<div class="code">
+					<span class="source-close">Close</span>
+					<pre><code class="html hljs xml"><span class="hljs-comment">&lt;!-- No CSS included, you can style drivers whatever you want --&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">h2</span>&gt;</span>5. Top edge<span class="hljs-tag">&lt;/<span class="hljs-name">h2</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> 
+    <span class="hljs-attr">data-supersonic-driver</span>=<span class="hljs-string">"example-5-driver"</span>
+    <span class="hljs-attr">data-supersonic-type</span>=<span class="hljs-string">"start"</span>
+    <span class="hljs-attr">data-supersonic-edge</span>=<span class="hljs-string">"top"</span>&gt;</span>
+    I'm a driver, I will start animation only when i touch top edge of the screen.
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span>
+    <span class="hljs-attr">data-supersonic-driver</span>=<span class="hljs-string">"example-5-driver"</span>
+    <span class="hljs-attr">data-supersonic-type</span>=<span class="hljs-string">"end"</span>
+    <span class="hljs-attr">data-supersonic-edge</span>=<span class="hljs-string">"top"</span>&gt;</span>
+    I'm a driver, I finish an animation only when i touch top edge of the screen.
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"example-5-element"</span>&gt;</span>
+    I'm an animatable element.
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></code></pre>
+					<pre><code class="javascript hljs"><span class="hljs-keyword">new</span> TheSupersonicPluginForScrollBasedAnimation({
+    drivers: {
+        <span class="hljs-string">"example-5-driver"</span>: {
+            properties: {
+                translateX: {
+                    start: <span class="hljs-number">0</span>,
+                    end: <span class="hljs-number">100</span>,
+                    unit: <span class="hljs-string">"%"</span>,
+                    elements: [<span class="hljs-string">".example-5-element"</span>],
+                },
+            },
+        },
+    },
+})</code></pre>
+				</div>
+			</div>
+			<hr />
+			<div class="section h-auto">
+				<div class="example">
+					<div class="anchor" id="self-animating"></div>
+					<h2 class="example__header">6. Self-animating <sup class="example__header__source">source</sup></h2>
+
+					<div
+						class="animatable-element example-6-element mb-0 vh-50"
+						data-supersonic-driver="example-6-driver"
+						data-supersonic-type="start"
+					>
+						<span class="h-full w-full p-10 flex justify-center items-center text-center"
+							>I'm an animatable element and i animate myself without separate driver tag.<br />When i
+							will become fully visible, i will stop animating.<br /><br />My height is 50vh.</span
+						>
+					</div>
+					<div class="driver-end" data-supersonic-driver="example-6-driver" data-supersonic-type="end">
+						<span>I'm a driver, I finish an animation at appearance.</span>
+					</div>
+				</div>
+				<div class="code">
+					<span class="source-close">Close</span>
+					<pre><code class="html hljs xml"><span class="hljs-comment">&lt;!-- No CSS included, you can style drivers whatever you want --&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">h2</span>&gt;</span>6. Self-animating<span class="hljs-tag">&lt;/<span class="hljs-name">h2</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span>
+    <span class="hljs-attr">class</span>=<span class="hljs-string">"example-6-element"</span>
+    <span class="hljs-attr">data-supersonic-driver</span>=<span class="hljs-string">"example-6-driver"</span>
+    <span class="hljs-attr">data-supersonic-type</span>=<span class="hljs-string">"start"</span>&gt;</span>
+    I'm an animatable element and i animate myself without separate driver tag.<span class="hljs-tag">&lt;<span class="hljs-name">br</span> /&gt;</span>
+    When i will become fully visible, i will stop animating.&lt;<span class="hljs-name">br</span> /&gt;&lt;<span class="hljs-name">br</span> /&gt;
+    My height is 50vh.
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> 
+    <span class="hljs-attr">data-supersonic-driver</span>=<span class="hljs-string">"example-6-driver"</span> 
+    <span class="hljs-attr">data-supersonic-type</span>=<span class="hljs-string">"end"</span>&gt;</span>
+    I'm a driver, I finish an animation at appearance.
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></code></pre>
+					<pre><code class="javascript hljs"><span class="hljs-keyword">new</span> TheSupersonicPluginForScrollBasedAnimation({
+    drivers: {
+        <span class="hljs-string">"example-6-driver"</span>: {
+            properties: {
+                translateX: {
+                    start: <span class="hljs-number">0</span>,
+                    end: <span class="hljs-number">50</span>,
+                    unit: <span class="hljs-string">"%"</span>,
+                    elements: [<span class="hljs-string">".example-5-element"</span>],
+                },
+                opacity: {
+                    start: <span class="hljs-number">1</span>,
+                    end: <span class="hljs-number">0.5</span>,
+                    elements: [<span class="hljs-string">".example-5-element"</span>],
+                },
+            },
+        },
+    },
+})</code></pre>
+				</div>
+			</div>
+			<hr />
+			<div class="section">
+				<div class="example">
+					<div class="anchor" id="media-queries"></div>
+					<h2 class="example__header">7. Media queries <sup class="example__header__source">source</sup></h2>
+
+					<div class="driver-start" data-supersonic-driver="example-7-driver" data-supersonic-type="start">
+						<span
+							>I'm a driver, I animate "translateX" only on desktops and "opacity" only on mobiles.<br />If
+							you resize, you need to reload page.</span
+						>
+					</div>
+
+					<div class="animatable-element example-7-element">
+						<span>I'm an animatable element.</span>
+					</div>
+					<div
+						class="driver-end absolute bottom-0 left-4 right-4"
+						data-supersonic-driver="example-7-driver"
+						data-supersonic-type="end"
+					>
+						<span>I'm a driver, I finish an animation at appearance.</span>
+					</div>
+				</div>
+				<div class="code">
+					<span class="source-close">Close</span>
+					<pre><code class="html hljs xml"><span class="hljs-comment">&lt;!-- No CSS included, you can style drivers whatever you want --&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">h2</span>&gt;</span>7. Media queries<span class="hljs-tag">&lt;/<span class="hljs-name">h2</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span>
+    <span class="hljs-attr">data-supersonic-driver</span>=<span class="hljs-string">"example-7-driver"</span>
+    <span class="hljs-attr">data-supersonic-type</span>=<span class="hljs-string">"start"</span>&gt;</span>
+    I'm a driver, I animate "translateX" only on desktops and "opacity" only on mobiles.<span class="hljs-tag">&lt;<span class="hljs-name">br</span> /&gt;</span>
+    If you resize, you need to reload page.
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"example-7-element"</span>&gt;</span>
+    I'm an animatable element.
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span>
+    <span class="hljs-attr">data-supersonic-driver</span>=<span class="hljs-string">"example-7-driver"</span>
+    <span class="hljs-attr">data-supersonic-type</span>=<span class="hljs-string">"end"</span>&gt;</span>
+    I'm a driver, I finish an animation at appearance.
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></code></pre>
+					<pre><code class="javascript hljs"><span class="hljs-keyword">new</span> TheSupersonicPluginForScrollBasedAnimation({
+    drivers: {
+        <span class="hljs-string">"example-7-driver"</span>: {
+            properties: {
+                <span class="hljs-string">"default"</span>: { <span class="hljs-comment">// you need to provide "default" key</span>
+                    translateX: {
+                        start: <span class="hljs-number">0</span>,
+                        end: <span class="hljs-number">-20</span>,
+                        unit: <span class="hljs-string">"%"</span>,
+                        elements: [<span class="hljs-string">".example-7-element"</span>],
+                    },
+                },
+                <span class="hljs-string">"(max-width: 1024px)"</span>: { <span class="hljs-comment">// any valid media query, see <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/matchMedia">matchMedia</a></span>
+                    opacity: {
+                        start: <span class="hljs-number">1</span>,
+                        end: <span class="hljs-number">0</span>,
+                        elements: [<span class="hljs-string">".example-7-element"</span>],
+                    },
+                },
+                <span class="hljs-comment">// you can have multiple media queries, the last one matched will be applied</span>
+            },
+        },
+    },
+})</code></pre>
+				</div>
+			</div>
+			<hr />
+
+			<div class="section">
+				<div class="example">
+					<div class="anchor" id="custom-transition"></div>
+					<h2 class="example__header">
+						8. Custom transition <sup class="example__header__source">source</sup>
+					</h2>
+
+					<div class="driver-start" data-supersonic-driver="example-8-driver" data-supersonic-type="start">
+						<span>I'm a driver, I animate "rotate" with custom transition.</span>
+					</div>
+
+					<div class="animatable-element">
+						<span class="example-8-element">I'm an animatable element.</span>
+					</div>
+					<div
+						class="driver-end absolute bottom-0 left-4 right-4"
+						data-supersonic-driver="example-8-driver"
+						data-supersonic-type="end"
+					>
+						<span>I'm a driver, I finish an animation at appearance.</span>
+					</div>
+				</div>
+				<div class="code">
+					<span class="source-close">Close</span>
+					<pre><code class="html hljs xml"><span class="hljs-comment">&lt;!-- No CSS included, you can style drivers whatever you want --&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">h2</span>&gt;</span>8. Custom transition<span class="hljs-tag">&lt;/<span class="hljs-name">h2</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> 
+    <span class="hljs-attr">data-supersonic-driver</span>=<span class="hljs-string">"example-8-driver"</span>
+    <span class="hljs-attr">data-supersonic-type</span>=<span class="hljs-string">"start"</span>&gt;</span>
+    I'm a driver, I animate "rotate" with custom transition.
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"example-8-element"</span>&gt;</span>
+    I'm an animatable element.
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span>
+    <span class="hljs-attr">data-supersonic-driver</span>=<span class="hljs-string">"example-8-driver"</span>
+    <span class="hljs-attr">data-supersonic-type</span>=<span class="hljs-string">"end"</span>&gt;</span>
+    I'm a driver, I finish an animation at appearance.
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></code></pre>
+					<pre><code class="javascript hljs"><span class="hljs-keyword">new</span> TheSupersonicPluginForScrollBasedAnimation({
+    drivers: {
+        <span class="hljs-string">"example-8-driver"</span>: {
+            hooks: {
+                <span class="hljs-function">onInit(<span class="hljs-argument">driver</span>)</span> {
+                    driver.data.easedProgress = <span class="hljs-number">0</span> <span class="hljs-comment">// you can use "data" to allow hooks to communicate</span>
+                },
+                <span class="hljs-function">onBeforeRender(<span class="hljs-argument">driver</span>)</span> {
+                    <span class="hljs-keyword">let</span> delta = (driver.progress - driver.data.easedProgress) * <span class="hljs-number">0.1</span>
+
+                    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">Math</span>.abs(delta) &gt; <span class="hljs-number">0.0001</span>) driver.progress = driver.data.easedProgress += delta
+                },
+                <span class="hljs-comment">// you can apply any easing from <a href="https://easings.net/">easings.net</a> using "driver.progress"</span>
+                <span class="hljs-comment">// if you have simple transition, you can just use "transition" CSS property on target element without js calculations</span>
+            },
+            properties: {
+                rotate: {
+                    start: <span class="hljs-number">0</span>,
+                    end: <span class="hljs-number">360</span>,
+                    unit: <span class="hljs-string">"deg"</span>,
+                    elements: [<span class="hljs-string">".example-8-element"</span>],
+                },
+            },
+        },
+    },
+})</code></pre>
+				</div>
+			</div>
+			<hr />
+			<div class="section">
+				<div class="example">
+					<div class="anchor" id="custom-easing"></div>
+					<h2 class="example__header">
+						9. Custom easing
+						<sup class="example__header__source">source</sup>
+					</h2>
+					<div class="driver-start" data-supersonic-driver="example-9-driver" data-supersonic-type="start">
+						<span>I'm a driver, I animate "translateY" on 3 elements.</span>
+					</div>
+
+					<div class="flex">
+						<div class="animatable-element example-9-element-1 flex-grow">
+							<span>I'm animating without easing.</span>
+						</div>
+						<div class="animatable-element example-9-element-2 flex-grow ml-4">
+							<span
+								>I'm animating with
+								<a href="https://easings.net/#easeInOutQuart">easeInOutQuart</a>.</span
+							>
+						</div>
+						<div class="animatable-element example-9-element-3 flex-grow ml-4">
+							<span
+								>I'm animating with
+								<a href="https://easings.net/#easeInOutQuad">easeInOutQuad</a>.</span
+							>
+						</div>
+					</div>
+
+					<div
+						class="driver-end absolute bottom-0 left-4 right-4"
+						data-supersonic-driver="example-9-driver"
+						data-supersonic-type="end"
+					>
+						<span>I'm a driver, I finish an animation at appearance.</span>
+					</div>
+				</div>
+				<div class="code">
+					<span class="source-close">Close</span>
+					<pre><code class="html hljs xml"><span class="hljs-comment">&lt;!-- No CSS included, you can style drivers whatever you want --&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">h2</span>&gt;</span>9. Custom easing<span class="hljs-tag">&lt;/<span class="hljs-name">h2</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> 
+    <span class="hljs-attr">data-supersonic-driver</span>=<span class="hljs-string">"example-9-driver"</span> 
+    <span class="hljs-attr">data-supersonic-type</span>=<span class="hljs-string">"start"</span>&gt;</span>
+    I'm a driver, I animate "translateY" on 3 elements.
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"example-9-element-1"</span>&gt;</span>
+    I'm animating without easing.
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"example-9-element-2"</span>&gt;</span>
+    I'm animating with easeInOutQuart.
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"example-9-element-3"</span>&gt;</span>
+    I'm animating with easeInOutQuad.
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span>
+    <span class="hljs-attr">data-supersonic-driver</span>=<span class="hljs-string">"example-9-driver"</span>
+    <span class="hljs-attr">data-supersonic-type</span>=<span class="hljs-string">"end"</span>&gt;</span>
+    I'm a driver, I finish an animation at appearance.
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></code></pre>
+					<pre><code class="javascript hljs"><span class="hljs-keyword">new</span> TheSupersonicPluginForScrollBasedAnimation({
+    drivers: {
+        <span class="hljs-string">"example-9-driver"</span>: {
+            properties: {
+                translateY: {
+                    start: <span class="hljs-number">0</span>,
+                    end: <span class="hljs-number">300</span>,
+                    unit: <span class="hljs-string">"px"</span>,
+                    elements: [<span class="hljs-string">".example-9-element-1"</span>, <span class="hljs-string">".example-9-element-2"</span>, <span class="hljs-string">".example-9-element-3"</span>],
+                },
+            },
+        },
+    },
+    elements: {
+        <span class="hljs-string">".example-9-element-2"</span>: {
+            hooks: {
+                <span class="hljs-function">onAddProperty(<span class="hljs-argument">element</span>, <span class="hljs-argument">property</span>)</span> {
+                    <span class="hljs-keyword">const</span> _property = { ...property } <span class="hljs-comment">// we need to create a copy of "property" because there is actually only one instance of "property"</span>
+                    <span class="hljs-keyword">const</span> x = _property.driver.progress
+                    <span class="hljs-keyword">const</span> result = x &lt; <span class="hljs-number">0.5</span> ? <span class="hljs-number">8</span> * x * x * x * x : <span class="hljs-number">1</span> - <span class="hljs-built_in">Math</span>.pow(<span class="hljs-number">-2</span> * x + <span class="hljs-number">2</span>, <span class="hljs-number">4</span>) / <span class="hljs-number">2</span>
+
+                    _property.value *= result
+                    element.properties.set(_property.cssProperty, _property) <span class="hljs-comment">// we replace the original "property" in an element and the rest is magic</span>
+                },
+            },
+        },
+        <span class="hljs-string">".example-9-element-3"</span>: {
+            hooks: {
+                <span class="hljs-function">onAddProperty(<span class="hljs-argument">element</span>, <span class="hljs-argument">property</span>)</span> {
+                    <span class="hljs-keyword">const</span> _property = { ...property }
+                    <span class="hljs-keyword">const</span> x = _property.driver.progress
+                    <span class="hljs-keyword">const</span> result = x &lt; <span class="hljs-number">0.5</span> ? <span class="hljs-number">2</span> * x * x : <span class="hljs-number">1</span> - <span class="hljs-built_in">Math</span>.pow(<span class="hljs-number">-2</span> * x + <span class="hljs-number">2</span>, <span class="hljs-number">2</span>) / <span class="hljs-number">2</span>
+
+                    _property.value *= result
+
+                    element.properties.set(_property.cssProperty, _property)
+                },
+            },
+        },
+    },
+})</code></pre>
+				</div>
+			</div>
+			<hr />
+			<div class="section h-auto">
+				<div class="example">
+					<div class="anchor" id="custom-element"></div>
+					<h2 class="example__header">
+						10. Custom element <sup class="example__header__source">source</sup>
+					</h2>
+
+					<div class="driver-start" data-supersonic-driver="example-10-driver" data-supersonic-type="start">
+						<span>I'm a driver, I animate custom element.</span>
+					</div>
+					<p>
+						Thanks to
+						<a
+							href="https://sketchfab.com/3d-models/japanese-bridge-garden-d122e17593eb4012913cde927486d15a"
+							>kristenlee</a
+						>
+						for this beatiful model.
+					</p>
+				</div>
+
+				<div class="example-10-element vh-1">
+					<canvas></canvas>
+				</div>
+
+				<div class="driver-end" data-supersonic-driver="example-10-driver" data-supersonic-type="end">
+					<span>I'm a driver, I finish an animation at appearance.</span>
+				</div>
+
+				<div class="code">
+					<span class="source-close">Close</span>
+					<pre><code class="html hljs xml"><span class="hljs-comment">&lt;!-- No CSS included, you can style drivers whatever you want --&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">h2</span>&gt;</span>10. Custom element<span class="hljs-tag">&lt;/<span class="hljs-name">h2</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> 
+    <span class="hljs-attr">data-supersonic-driver</span>=<span class="hljs-string">"example-10-driver"</span> 
+    <span class="hljs-attr">data-supersonic-type</span>=<span class="hljs-string">"start"</span>&gt;</span>
+    I'm a driver, I animate custom element.
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>Thanks to kristenlee for this beatiful model.<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"example-10-element"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">canvas</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span>
+    <span class="hljs-attr">data-supersonic-driver</span>=<span class="hljs-string">"example-10-driver"</span>
+    <span class="hljs-attr">data-supersonic-type</span>=<span class="hljs-string">"end"</span>&gt;</span>
+    I'm a driver, I finish an animation at appearance.
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></code></pre>
+					<pre><code class="javascript hljs"><span class="hljs-keyword">import</span> { Scene, WebGLRenderer, AnimationMixer, Color, AmbientLight } <span class="hljs-keyword">from</span> <span class="hljs-string">"three"</span>
+
+<span class="hljs-keyword">new</span> TheSupersonicPluginForScrollBasedAnimation({
+    drivers: {
+        <span class="hljs-string">"example-10-driver"</span>: {
+            hooks: {
+                <span class="hljs-function">onInit(<span class="hljs-argument">driver</span>)</span> {
+                    <span class="hljs-keyword">const</span> container = <span class="hljs-built_in">document</span>.querySelector(<span class="hljs-string">".example-10-element"</span>)
+                    <span class="hljs-keyword">const</span> scene = <span class="hljs-keyword">new</span> Scene()
+                    <span class="hljs-keyword">const</span> renderer = <span class="hljs-keyword">new</span> WebGLRenderer({ antialias: <span class="hljs-literal">true</span>, canvas: container.querySelector(<span class="hljs-string">"canvas"</span>) })
+
+                    scene.background = <span class="hljs-keyword">new</span> Color(<span class="hljs-number">0x79bde7</span>)
+                    scene.add(<span class="hljs-keyword">new</span> AmbientLight(<span class="hljs-number">0xc0d5ff</span>, <span class="hljs-number">0.3</span>))
+
+                    renderer.setPixelRatio(<span class="hljs-built_in">window</span>.devicePixelRatio)
+                    renderer.setSize(container.clientWidth, container.clientHeight)
+
+                    <span class="hljs-keyword">const</span> loader = <span class="hljs-keyword">new</span> GLTFLoader()
+                    loader.loadAsync(modelUrl).then((gltf) =&gt; {
+                        <span class="hljs-keyword">const</span> camera = gltf.cameras[<span class="hljs-number">0</span>]
+                        camera.aspect = container.clientWidth / container.clientHeight
+                        camera.fov = <span class="hljs-number">70</span>
+                        camera.updateProjectionMatrix()
+
+                        <span class="hljs-keyword">const</span> mixer = <span class="hljs-keyword">new</span> AnimationMixer(gltf.scene)
+                        <span class="hljs-keyword">const</span> action = mixer.clipAction(gltf.animations[<span class="hljs-number">0</span>])
+                        action.play()
+
+                        driver.data = { container, scene, renderer, easedProgress, camera, mixer }
+
+                        scene.add(gltf.scene)
+                    })
+                },
+                <span class="hljs-function">onAfterRender(<span class="hljs-argument">driver</span>)</span> {
+                    <span class="hljs-keyword">if</span> (driver.data.camera) {
+                        <span class="hljs-keyword">const</span> { renderer, scene, camera } = driver.data
+                        driver.data.mixer.setTime(<span class="hljs-number">1.99</span> * driver.progress)
+                        renderer.render(scene, camera)
+                    }
+                },
+                <span class="hljs-function">onUpdateLimits(<span class="hljs-argument">driver</span>)</span> {
+                    <span class="hljs-keyword">if</span> (driver.data.camera) {
+                        <span class="hljs-keyword">const</span> { container, camera, renderer, scene } = driver.data
+
+                        camera.aspect = container.clientWidth / container.clientHeight
+                        camera.updateProjectionMatrix()
+
+                        renderer.setSize(container.clientWidth, container.clientHeight)
+
+                        renderer.render(scene, camera)
+                    }
+                },
+            },
+        },
+    },
+})</code></pre>
+				</div>
+			</div>
+
+			<hr />
+			<div class="section">
+				<div class="example">
+					<div class="anchor" id="custom-start-and-end"></div>
+					<h2 class="example__header">
+						11. Custom start and end <sup class="example__header__source">source</sup>
+					</h2>
+
+					<div class="driver-start" data-supersonic-driver="example-11-driver" data-supersonic-type="start">
+						<span>I'm a driver, I animate "translateY" with custom start and end.</span>
+					</div>
+
+					<div class="animatable-element example-11-element">
+						<span
+							>I'm an animatable element.<br /><br />I have width: 50%, so my height is dynamic.<br /><br />My
+							initial "translateY" is "-height" and i animate to "window.innerHeight - height".<br /><br />Resize
+							window to see how cool my master is.</span
+						>
+					</div>
+					<div
+						class="driver-end absolute bottom-0 left-4 right-4"
+						data-supersonic-driver="example-11-driver"
+						data-supersonic-type="end"
+					>
+						<span>I'm a driver, I finish an animation at appearance.</span>
+					</div>
+				</div>
+				<div class="code">
+					<span class="source-close">Close</span>
+					<pre><code class="html hljs xml"><span class="hljs-comment">&lt;!-- No CSS included, you can style drivers whatever you want --&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">h2</span>&gt;</span>11. Custom start and end<span class="hljs-tag">&lt;/<span class="hljs-name">h2</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> 
+    <span class="hljs-attr">data-supersonic-driver</span>=<span class="hljs-string">"example-11-driver"</span> 
+    <span class="hljs-attr">data-supersonic-type</span>=<span class="hljs-string">"start"</span>&gt;</span>
+    I'm a driver, I animate "translateY" with custom start and end.
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"example-11-element"</span>&gt;</span>
+    I'm an animatable element.<span class="hljs-tag">&lt;<span class="hljs-name">br</span> /&gt;</span>
+    I have width: 50%, so my height is dynamic.<span class="hljs-tag">&lt;<span class="hljs-name">br</span> /&gt;</span>
+    My initial "translateY" is "-height" and i animate to "window.innerHeight - height".<span class="hljs-tag">&lt;<span class="hljs-name">br</span> /&gt;</span>
+    Resize window to see how cool my master is.
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span>
+    <span class="hljs-attr">data-supersonic-driver</span>=<span class="hljs-string">"example-11-driver"</span>
+    <span class="hljs-attr">data-supersonic-type</span>=<span class="hljs-string">"end"</span>&gt;</span>
+    I'm a driver, I finish an animation at appearance.
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></code></pre>
+					<pre><code class="javascript hljs"><span class="hljs-keyword">new</span> TheSupersonicPluginForScrollBasedAnimation({
+    drivers: {
+        <span class="hljs-string">"example-11-driver"</span>: {
+            properties: {
+                translateY: {
+                    hooks: {
+                        <span class="hljs-function">onInit(<span class="hljs-argument">property</span>)</span> {
+                            <span class="hljs-comment">// start() is called each frame every 16ms so you want to cache everything</span>
+                            <span class="hljs-keyword">const</span> element = <span class="hljs-built_in">document</span>.querySelector(<span class="hljs-string">".example-7-element"</span>)
+                            property.data = {
+                                element,
+                                elementHeight: element.clientHeight,
+                                windowHeight: <span class="hljs-built_in">window</span>.innerHeight,
+                            }
+                        },
+                        <span class="hljs-function">onUpdateLimits(<span class="hljs-argument">property</span>)</span> {
+                            <span class="hljs-comment">// when window resizes, update cache</span>
+                            property.data.elementHeight = property.data.element.clientHeight
+                            property.data.windowHeight = <span class="hljs-built_in">window</span>.innerHeight
+                        },
+                    },
+                    <span class="hljs-function">start(<span class="hljs-argument">property</span>)</span> {
+                        <span class="hljs-comment">// use cached values, not directly "element.clientHeight" because it will lead to bad performance</span>
+                        <span class="hljs-keyword">return</span> -property.data.elementHeight
+                    },
+                    <span class="hljs-function">end(<span class="hljs-argument">property</span>)</span> {
+                        <span class="hljs-keyword">return</span> property.data.windowHeight - property.data.elementHeight
+                    },
+                    unit: <span class="hljs-string">"px"</span>,
+                    elements: [<span class="hljs-string">".example-7-element"</span>],
+                },
+            },
+        },
+    },
+})</code></pre>
+				</div>
+			</div>
+		</div>
+		
+	</body>
+</html>
