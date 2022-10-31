@@ -1,4 +1,4 @@
-export default function ({ base }) {
+export default function ({ base, page }) {
 	return {
 		name: "inline-assets",
 		enforce: "post",
@@ -7,23 +7,29 @@ export default function ({ base }) {
 			const htmlFiles = Object.keys(bundle).filter((i) => i.endsWith(".html"))
 			const cssAssets = Object.keys(bundle).filter((i) => i.endsWith(".css"))
 			const jsAssets = Object.keys(bundle).filter((i) => i.endsWith(".js"))
+			const glbAssets = Object.keys(bundle).filter((i) => i.endsWith(".glb"))
 
 			for (const htmlFileName of htmlFiles) {
+				let preloads = ""
 				const htmlChunk = bundle[htmlFileName]
 
 				for (const jsName of jsAssets) {
 					const jsChunk = bundle[jsName]
 
-					if (
-						jsChunk.name !== "TheSuperSonicPluginForScrollBasedAnimation" &&
-						jsChunk.name !== "three" &&
-						jsChunk.facadeModuleId &&
-						jsChunk.facadeModuleId.indexOf(htmlChunk.fileName) > -1
-					) {
+					if (jsChunk.name === "custom-element") {
+						preloads = `
+							<link rel="modulepreload" href="${jsChunk.fileName}" />
+							<link rel="preload" href="${bundle[glbAssets[0]].fileName}" as="fetch" />
+						`
+					}
+
+					if (jsChunk.name !== "custom-element") {
 						const reScript = new RegExp(
 							`<script([^>]*?) src="${base}[./]*${jsChunk.fileName}"([^>]*)></script>`
 						)
 						bundlesToDelete.push(jsName)
+
+						jsChunk.code = jsChunk.code.replaceAll('"__VITE_PRELOAD__"', "void 0")
 
 						htmlChunk.source = htmlChunk.source.replace(
 							reScript,
@@ -39,6 +45,7 @@ export default function ({ base }) {
 					bundlesToDelete.push(cssFileName)
 					htmlChunk.source = htmlChunk.source.replace(reCss, `<style>${cssChunk.source}</style>`)
 				}
+				htmlChunk.source = htmlChunk.source.replace("</head>", preloads + "</head>")
 				/* htmlChunk.source = htmlChunk.source.replace(/\s\B/gm, "") */
 			}
 			for (const name of bundlesToDelete) {

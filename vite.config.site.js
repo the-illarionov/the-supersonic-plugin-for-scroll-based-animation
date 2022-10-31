@@ -1,10 +1,11 @@
 import { resolve } from "path"
 import { defineConfig } from "vite"
 import routing from "./src-site/plugins/routing"
-//import inlineAssets from "./src-site/plugins/inline-assets"
+import inlineAssets from "./src-site/plugins/inline-assets"
 import moveBuild from "./src-site/plugins/move-build"
 
 const base = "/the-supersonic-plugin-for-scroll-based-animation/"
+const page = process.env.PAGE
 
 export default defineConfig(({ mode }) => {
 	return {
@@ -12,22 +13,17 @@ export default defineConfig(({ mode }) => {
 		plugins: [
 			//
 			routing(),
-			moveBuild({ folder: __dirname }),
-			//inlineAssets({ base }),
+			moveBuild({ folder: __dirname, page }),
+			inlineAssets({ base, page }),
 		],
 		assetsInclude: ["**/*.glb"],
 		build: {
+			emptyOutDir: page === "index",
 			outDir: "./site",
 			assetsDir: "",
 			rollupOptions: {
 				input: {
-					index: resolve(__dirname, "src-site/index.html"),
-					bartholomew: resolve(__dirname, "src-site/bartholomew.html"),
-				},
-				output: {
-					manualChunks: {
-						three: ["three"],
-					},
+					[page]: resolve(__dirname, "src-site/" + page + ".html"),
 				},
 			},
 		},
