@@ -1,6 +1,6 @@
 {
 	"name": "the-supersonic-plugin-for-scroll-based-animation",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "The Supersonic Plugin For Scroll Based Animation",
 	"keywords": [
 		"javascript",
@@ -32,8 +32,8 @@
 	"unpkg": "lib/the-supersonic-plugin-for-scroll-based-animation.iife.min.js",
 	"type": "module",
 	"scripts": {
-		"dev": "vite --config vite.config.site.js --open",
-		"preview": "vite preview --config vite.config.site.js --open",
+		"dev": "vite --config vite.config.site.js --open --host",
+		"preview": "vite preview --config vite.config.site.js --open --host",
 		"previewQuiet": "vite preview --config vite.config.site.js",
 		"test": "start-server-and-test previewQuiet http://localhost:4173/the-supersonic-plugin-for-scroll-based-animation/ 'cypress run --browser chrome --headed --e2e'",
 		"build:lib": "tsc && MINIFY=on vite build --config vite.config.lib.js && MINIFY=off vite build --config vite.config.lib.js && terser -c -m --module lib/the-supersonic-plugin-for-scroll-based-animation.js > lib/the-supersonic-plugin-for-scroll-based-animation.min.js",

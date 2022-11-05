@@ -101,7 +101,6 @@ export class TheSuperSonicPluginForScrollBasedAnimation {
 	/** Add event listeners */
 	addEventListeners() {
 		this.resizeWrapper = debounce(() => {
-			Globals.rafActive = true
 			this.updateLimits()
 			this.render({ useActiveDrivers: false })
 		})
@@ -116,9 +115,6 @@ export class TheSuperSonicPluginForScrollBasedAnimation {
 
 	/** Debounced window.resize listener */
 	onResize() {
-		cancelAnimationFrame(Globals.rafId)
-		Globals.rafActive = false
-
 		this.resizeWrapper!()
 	}
 
