@@ -208,7 +208,7 @@ export class DriverBorder {
 
 	/** Recalculates top offset */
 	updateLimits() {
-		this.top = this.domElement.getBoundingClientRect().top + Globals.scroll
+		this.top = ~~this.domElement.getBoundingClientRect().top + Globals.scroll
 
 		if (this.edge === "bottom") this.top -= Globals.screenHeight
 	}
