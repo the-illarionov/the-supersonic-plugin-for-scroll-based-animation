@@ -10,8 +10,9 @@ import { Observer } from "../engine/Observer"
 export class TheSuperSonicPluginForScrollBasedAnimation {
 	/** IntersectionObserver instance */
 	observer: Observer | null = null
-	/** Debounced window.resize listener */
-	resizeWrapper: Function | null = null
+
+	/** Debounced resize listener */
+	onResize: EventListener | null = null
 
 	constructor(config: MainConfiguration) {
 		Globals.initConfig(config)
@@ -95,42 +96,26 @@ export class TheSuperSonicPluginForScrollBasedAnimation {
 	/** Updates global scroll */
 	updateScroll() {
 		Globals.scroll =
-			window.pageYOffset || window.scrollY || document.documentElement.scrollTop || document.body.scrollTop
+			window.scrollY || window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
 	}
 
 	/** Add event listeners */
 	addEventListeners() {
-		this.resizeWrapper = debounce(() => {
+		this.onResize = () => {
 			this.updateLimits()
 			this.render({ useActiveDrivers: false })
-		})
+		}
 
-		window.addEventListener("resize", this.onResize.bind(this))
+		window.addEventListener("resize", this.onResize)
 	}
 
 	/** Removes event listeners */
 	removeEventListeners() {
-		window.removeEventListener("resize", this.onResize)
-	}
-
-	/** Debounced window.resize listener */
-	onResize() {
-		this.resizeWrapper!()
+		window.removeEventListener("resize", this.onResize!)
 	}
 
 	static Driver = Driver
 	static Property = Property
 	static Element = Element
 	static Globals = Globals
-}
-
-function debounce(func: Function) {
-	let timer: any
-	return () => {
-		clearTimeout(timer)
-		timer = setTimeout(() => {
-			// @ts-ignore
-			func.apply(this)
-		}, 500)
-	}
 }
