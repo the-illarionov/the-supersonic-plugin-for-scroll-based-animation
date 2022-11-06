@@ -1,5 +1,6 @@
 const Globals: Globals = {
 	scroll: 0,
+	screenHeight: 0,
 	rafActive: true,
 	rafId: 0,
 	renderedInitially: false,

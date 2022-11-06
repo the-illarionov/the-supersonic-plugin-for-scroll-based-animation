@@ -2,6 +2,7 @@ type _Element = import("./engine/Element").Element
 
 interface Globals {
 	scroll: number
+	screenHeight: number
 	rafActive: boolean
 	rafId: number
 	renderedInitially: boolean

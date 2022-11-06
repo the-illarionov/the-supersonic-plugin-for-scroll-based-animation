@@ -87,6 +87,7 @@ export class TheSuperSonicPluginForScrollBasedAnimation {
 
 	/** Updates global scroll and driver DOM elements top offset. Called once on page load and each time after window.resize */
 	updateLimits() {
+		this.updateScreenHeight()
 		this.updateScroll()
 		Driver.updateLimits()
 
@@ -97,6 +98,27 @@ export class TheSuperSonicPluginForScrollBasedAnimation {
 	updateScroll() {
 		Globals.scroll =
 			window.scrollY || window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+	}
+
+	/** Dirty hack for calculating screen height. We can't just use "window.innerHeight" because it "jumps" on mobile phones when you scroll and toolbar collapses */
+	updateScreenHeight() {
+		const styles = {
+			position: "absolute",
+			left: "0",
+			top: "0",
+			height: "100vh",
+			width: "1px",
+			zIndex: "-1",
+			visibility: "hidden",
+		}
+		let helper = document.createElement("div")
+		for (let property in styles) {
+			// @ts-ignore
+			helper.style.setProperty(property, styles[property])
+		}
+		document.body.appendChild(helper)
+		Globals.screenHeight = helper.clientHeight // it is a dirty hack because this line causes a reflow
+		helper.remove()
 	}
 
 	/** Add event listeners */

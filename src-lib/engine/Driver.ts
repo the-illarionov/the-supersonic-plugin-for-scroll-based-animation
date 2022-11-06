@@ -102,7 +102,7 @@ export class Driver {
 	updateLimits() {
 		this.start.updateLimits()
 		this.end.updateLimits()
-		if (this.end.top < this.start.top) this.end.top += window.innerHeight
+		if (this.end.top < this.start.top) this.end.top += Globals.screenHeight
 		this.helper.updateLimits()
 
 		for (let property of this.properties) {
@@ -210,7 +210,7 @@ export class DriverBorder {
 	updateLimits() {
 		this.top = this.domElement.getBoundingClientRect().top + Globals.scroll
 
-		if (this.edge === "bottom") this.top -= window.innerHeight
+		if (this.edge === "bottom") this.top -= Globals.screenHeight
 	}
 }
 
@@ -247,8 +247,8 @@ export class DriverHelper {
 		let top = this.driver.start.top
 		let end = this.driver.end.top
 
-		if (this.driver.start.edge === "bottom") top += window.innerHeight
-		if (this.driver.end.edge === "bottom") end += window.innerHeight
+		if (this.driver.start.edge === "bottom") top += Globals.screenHeight
+		if (this.driver.end.edge === "bottom") end += Globals.screenHeight
 
 		this.domElement.style.setProperty("top", top + "px")
 		this.domElement.style.setProperty("height", end - top + "px")
