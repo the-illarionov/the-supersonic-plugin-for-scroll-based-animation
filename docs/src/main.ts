@@ -1,7 +1,11 @@
+import { TheSuperSonicPluginForScrollBasedAnimation } from '@lib/main.ts'
+
 import './style.css'
 import typescriptLogo from './typescript.svg'
 import viteLogo from '/vite.svg'
 import { setupCounter } from './counter.ts'
+
+console.log(TheSuperSonicPluginForScrollBasedAnimation)
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <div>

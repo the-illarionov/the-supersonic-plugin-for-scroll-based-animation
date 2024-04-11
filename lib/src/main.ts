@@ -5,6 +5,7 @@ import { Element } from './engine/Element'
 import { Observer } from './engine/Observer'
 
 /**
+ *
  * Main class handling all of the logic. To initialize the plugin, you create a new instance of this class
  */
 export class TheSuperSonicPluginForScrollBasedAnimation {

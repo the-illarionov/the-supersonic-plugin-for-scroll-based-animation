@@ -1,14 +1,19 @@
 {
   "name": "docs",
-  "private": true,
-  "version": "0.0.0",
   "type": "module",
+  "version": "0.0.0",
+  "private": true,
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --port=80 --host",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview --port=80 --host",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:report": "playwright show-report --host 0.0.0.0 --port 8000"
   },
   "devDependencies": {
+    "@playwright/test": "^1.43.0",
+    "@types/node": "^20.12.7",
     "typescript": "^5.2.2",
     "vite": "^5.2.0"
   }
