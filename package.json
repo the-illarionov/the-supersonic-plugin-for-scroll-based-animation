@@ -1,57 +1,52 @@
 {
-	"name": "the-supersonic-plugin-for-scroll-based-animation",
-	"version": "1.0.3",
-	"description": "The Supersonic Plugin For Scroll Based Animation",
-	"keywords": [
-		"javascript",
-		"scroll",
-		"animation",
-		"fast",
-		"custom",
-		"parallax",
-		"supersonic",
-		"plugin",
-		"css"
-	],
-	"homepage": "https://the-illarionov.github.io/the-supersonic-plugin-for-scroll-based-animation/",
-	"bugs": {
-		"url": "https://github.com/the-illarionov/the-supersonic-plugin-for-scroll-based-animation/issues",
-		"email": "the.illarionov@gmail.com"
-	},
-	"license": "MIT",
-	"author": {
-		"name": "Alex Illarionov",
-		"email": "the.illarionov@gmail.com",
-		"url": "https://github.com/the-illarionov"
-	},
-	"browser": "lib/the-supersonic-plugin-for-scroll-based-animation.js",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/the-illarionov/the-supersonic-plugin-for-scroll-based-animation.git"
-	},
-	"unpkg": "lib/the-supersonic-plugin-for-scroll-based-animation.iife.min.js",
-	"type": "module",
-	"scripts": {
-		"dev": "vite --config vite.config.site.js --open --host",
-		"preview": "vite preview --config vite.config.site.js --open --host",
-		"previewQuiet": "vite preview --config vite.config.site.js",
-		"test": "start-server-and-test previewQuiet http://localhost:4173/the-supersonic-plugin-for-scroll-based-animation/ 'cypress run --browser chrome --headed --e2e'",
-		"build:lib": "tsc && MINIFY=on vite build --config vite.config.lib.js && MINIFY=off vite build --config vite.config.lib.js && terser -c -m --module lib/the-supersonic-plugin-for-scroll-based-animation.js > lib/the-supersonic-plugin-for-scroll-based-animation.min.js",
-		"build:site": "tsc && PAGE=index vite build --config vite.config.site.js && PAGE=bartholomew vite build --config vite.config.site.js",
-		"deploy:site": "./src-site/deploy.sh",
-		"build": "npm run build:lib && npm run build:site && npm run test"
-	},
-	"devDependencies": {
-		"@types/ejs": "^3.1.1",
-		"autoprefixer": "^10.4.12",
-		"cypress": "^10.9.0",
-		"ejs": "^3.1.8",
-		"postcss": "^8.4.18",
-		"postcss-import": "^15.0.0",
-		"start-server-and-test": "^1.14.0",
-		"tailwindcss": "^3.1.8",
-		"three": "^0.145.0",
-		"typescript": "^4.6.4",
-		"vite": "^3.2.1"
-	}
+  "name": "the-supersonic-plugin-for-scroll-based-animation",
+  "type": "module",
+  "version": "2.0.0",
+  "description": "The Supersonic Plugin For Scroll Based Animation",
+  "author": {
+    "name": "Alex Illarionov",
+    "email": "the.illarionov@gmail.com",
+    "url": "https://github.com/the-illarionov"
+  },
+  "license": "MIT",
+  "homepage": "https://the-illarionov.github.io/the-supersonic-plugin-for-scroll-based-animation/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/the-illarionov/the-supersonic-plugin-for-scroll-based-animation.git"
+  },
+  "bugs": {
+    "url": "https://github.com/the-illarionov/the-supersonic-plugin-for-scroll-based-animation/issues",
+    "email": "the.illarionov@gmail.com"
+  },
+  "keywords": [
+    "javascript",
+    "scroll",
+    "animation",
+    "fast",
+    "custom",
+    "parallax",
+    "supersonic",
+    "plugin",
+    "css"
+  ],
+  "browser": "./lib/dist/the-supersonic-plugin-for-scroll-based-animation.js",
+  "unpkg": "./lib/dist/the-supersonic-plugin-for-scroll-based-animation.js",
+  "types": "./lib/dist/main.d.ts",
+  "files": ["./lib/dist"],
+  "scripts": {
+    "lint": "eslint . && stylelint '**/*.{css}'",
+    "lint:fix": "eslint . --fix && stylelint '**/*.{css}' --fix"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^2.12.2",
+    "@kalimahapps/eslint-plugin-tailwind": "^1.0.10",
+    "@stylistic/stylelint-config": "^1.0.1",
+    "@stylistic/stylelint-plugin": "^2.1.1",
+    "eslint": "^8.56.0",
+    "postcss-html": "^1.6.0",
+    "stylelint": "^16.3.1",
+    "stylelint-config-clean-order": "^5.4.2",
+    "stylelint-config-standard": "^36.0.0",
+    "typescript": "~5.4.0"
+  }
 }

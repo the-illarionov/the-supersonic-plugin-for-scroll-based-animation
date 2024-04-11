@@ -1,0 +1,75 @@
+name: test-and-build
+
+run-name: Tests and prepares build for deploying
+
+concurrency:
+  group: '${{ github.workflow }}'
+  cancel-in-progress: true
+
+on:
+  pull_request:
+    branches:
+      master
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: arduino/setup-task@v2
+
+      - name: Prepare env
+        run: task -d .ci env
+
+      - name: Initialize everything
+        run: task -d .ci init
+
+      - name: Lint
+        run: task -d .ci root:lint
+
+      - name: 'Cache node_modules: check'
+        uses: actions/cache/restore@v4
+        id: cache-node-modules
+        with:
+          path: |
+            frontend/node_modules
+            backend/node_modules
+          key: node-modules-${{ hashFiles('frontend/yarn.lock', 'backend/yarn.lock') }}
+
+      - if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        name: 'Cache node_modules doesn''t exist: install'
+        run: task -d .ci yarn
+
+      - if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        name: 'Cache node_modules doesn''t exist: save node_modules to cache'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            frontend/node_modules
+            backend/node_modules
+          key: node-modules-${{ hashFiles('frontend/yarn.lock', 'backend/yarn.lock') }}
+
+      - name: Set permissions for node_modules
+        run: sudo chmod -R 777 frontend/node_modules
+
+      - name: Build 'frontend' and 'backend'
+        run: task -d .ci build
+
+      - name: Start project
+        run: task -d .ci up
+
+      - name: Starts testing
+        run: task -d .ci test
+
+      - name: 'Uploads ''frontend/dist'' artifact'
+        uses: actions/upload-artifact@v4
+        with:
+          path: frontend/dist
+          name: frontend-dist
+
+      - name: 'Uploads ''backend/dist'' artifact'
+        uses: actions/upload-artifact@v4
+        with:
+          path: backend/dist
+          name: backend-dist

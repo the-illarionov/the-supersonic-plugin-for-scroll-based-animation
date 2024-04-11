@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			http-equiv="X-UA-Compatible"
+			content="IE=edge"
+		/>
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0"
+		/>
+		<title>TESTS</title>
+	</head>
+	<style>
+		html,
+		body {
+			height: 100%;
+			margin: 0;
+			padding: 0;
+			background: #ccc;
+			font-size: 18px;
+		}
+		iframe {
+			width: 100%;
+			height: 100%;
+
+			background: #fff;
+			border-radius: 1rem;
+		}
+		.container {
+			display: flex;
+			height: 100%;
+			overflow: hidden;
+		}
+		.frame {
+			flex: 1;
+			margin: 1rem;
+			display: flex;
+			flex-direction: column;
+			width: 0;
+			transition: flex-grow 0.5s, opacity 0.5s;
+			opacity: 1;
+		}
+		.frame.shrinked {
+			flex-grow: 0;
+			opacity: 0;
+			margin: 0;
+		}
+
+		h1 {
+			text-align: center;
+			margin: 0 0 1rem;
+			padding: 0;
+			font-family: Arial, sans-serif;
+			font-size: 1.5rem;
+		}
+
+		.toggle {
+			vertical-align: middle;
+			margin: 0 0 0 0.5rem;
+		}
+	</style>
+	<body>
+		<div class="container">
+			<div class="frame">
+				<h1>Frontend Unit<button class="toggle">Toggle</button></h1>
+				<iframe
+					frameborder="0"
+					src="http://localhost:9000/__vitest__/"
+				></iframe>
+			</div>
+			<div class="frame">
+				<h1>Backend Unit<button class="toggle">Toggle</button></h1>
+				<iframe
+					frameborder="0"
+					src="http://localhost:9010/__vitest__/"
+				></iframe>
+			</div>
+			<div class="frame">
+				<h1>E2E<button class="toggle">Toggle</button></h1>
+				<iframe
+					frameborder="0"
+					src="http://localhost:9020"
+				></iframe>
+			</div>
+		</div>
+
+		<script>
+			const toggles = document.querySelectorAll(".toggle")
+			const frames = document.querySelectorAll(".frame")
+			let isThereShrinked = false
+
+			function changeFrames(mode = "shrink") {
+				frames.forEach((frame) => {
+					if (mode === "shrink") frame.classList.add("shrinked")
+					else if (mode === "expand") frame.classList.remove("shrinked")
+				})
+			}
+
+			toggles.forEach((toggle) => {
+				toggle.onclick = (e) => {
+					const frame = e.target.parentNode.parentNode
+
+					if (!isThereShrinked) {
+						changeFrames("shrink")
+						frame.classList.remove("shrinked")
+						isThereShrinked = true
+					} else {
+						changeFrames("expand")
+						isThereShrinked = false
+					}
+				}
+			})
+		</script>
+	</body>
+</html>

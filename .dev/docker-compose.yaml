@@ -1,0 +1,44 @@
+services:
+  docs:
+    image: ${NODE_IMAGE}
+    working_dir: /app
+    command: yarn dev
+    user: ${MY_UID}:${MY_GID}
+    ports:
+      - 80:80
+    depends_on:
+      - backend
+    volumes:
+      - ../docs:/app
+
+  docs-preview:
+    image: ${NODE_IMAGE}
+    working_dir: /app
+    command: yarn preview
+    user: ${MY_UID}:${MY_GID}
+    ports:
+      - ${PREVIEW_PORT}:80
+    volumes:
+      - ../docs:/app
+
+  lib-tests-unit:
+    image: unit-tests-ui
+    user: ${MY_UID}:${MY_GID}
+    working_dir: /app
+    command: yarn test:unit:ui
+    ports:
+      - 9000:8000
+    volumes:
+      - ../lib:/app
+
+  tests-e2e:
+    image: ${PLAYWRIGHT_IMAGE}
+    user: ${MY_UID}:${MY_GID}
+    working_dir: /app
+    depends_on:
+      - docs
+    ports:
+      - '9020:8000'
+    volumes:
+      - ../docs:/app
+    command: yarn test:e2e:report

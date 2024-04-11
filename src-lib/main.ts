@@ -1,3 +1,0 @@
-import { TheSuperSonicPluginForScrollBasedAnimation } from "./engine/TheSuperSonicPluginForScrollBasedAnimation"
-
-export default TheSuperSonicPluginForScrollBasedAnimation

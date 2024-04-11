@@ -1,0 +1,19 @@
+{
+  "name": "lib",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "minify": "terser -c -m --module dist/the-supersonic-plugin-for-scroll-based-animation.js > dist/the-supersonic-plugin-for-scroll-based-animation.min.js",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.7",
+    "terser": "^5.30.3",
+    "typescript": "^5.2.2",
+    "vite": "^5.2.0",
+    "vite-plugin-dts": "^3.8.1"
+  }
+}
