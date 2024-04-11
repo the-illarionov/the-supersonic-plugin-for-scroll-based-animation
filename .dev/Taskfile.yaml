@@ -16,10 +16,10 @@ tasks:
     desc: prepare everything for development
     cmds:
       - task root:yarn
-      #   - task lib:yarn
-      #   - task docs:yarn
+      - task lib:yarn
+      - task docs:yarn
       - docker pull $PLAYWRIGHT_IMAGE
-      - docker build -t unit-tests-ui - < $(pwd)/../unit-tests-ui/Dockerfile --build-arg NODE_IMAGE
+      - docker build -t unit-tests-ui - < ./UnitTestUi.Dockerfile --build-arg NODE_IMAGE
 
   up:
     desc: start services
