@@ -1,12 +1,22 @@
-import { TheSuperSonicPlugin } from './TheSupersonicPlugin';
+import { Selector as AnimationSelector } from './Animation.types';
 import { Driver } from './Driver';
 
 export type Constructor = {
     id: string;
     hooks?: Hooks;
-    plugin: TheSuperSonicPlugin;
     start: HTMLElement | null;
     end: HTMLElement | null;
+    elements: AnimationSelector[];
+};
+export type Render = {
+    scroll: number;
+    renderedInitially: boolean;
+    consoleColor: string;
+};
+export type CalculateProgress = {
+    scroll: number;
+    start: number;
+    end: number;
 };
 export type Hooks = {
     onBeforeInit?: (instance: Driver) => any;
@@ -18,28 +28,28 @@ export type Hooks = {
     onUpdateLimits?: (instance: Driver) => any;
 };
 export type Configuration = {
-    properties: any;
-    hooks?: Hooks;
-    start: HTMLElement | null;
-    end: HTMLElement | null;
-};
-export type Init = {
-    drivers: {
-        [id: string]: Configuration;
+    [id: string]: {
+        start: HTMLElement | null;
+        end: HTMLElement | null;
+        elements: AnimationSelector[];
+        hooks?: Hooks;
     };
-    plugin: TheSuperSonicPlugin;
-};
-export type Render = {
-    useActiveDrivers: boolean;
-    plugin: TheSuperSonicPlugin;
 };
 export type BorderConstructor = {
     domElement: HTMLElement | null;
-    plugin: TheSuperSonicPlugin;
     driver: Driver;
     type: 'start' | 'end';
 };
 export type HelperConstructor = {
     driver: Driver;
-    plugin: TheSuperSonicPlugin;
+};
+export type UpdateLimits = {
+    scroll: number;
+    screenHeight: number;
+};
+export type BorderUpdateLimits = {
+    scroll: number;
+};
+export type HelperUpdateLimits = {
+    screenHeight: number;
 };

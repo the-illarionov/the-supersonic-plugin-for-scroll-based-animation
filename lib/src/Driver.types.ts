@@ -1,11 +1,12 @@
 import type { Driver } from './Driver'
-import type { ElementSelector } from './Element.types'
+import type { Selector as AnimationSelector } from './Animation.types'
 
 export type Constructor = {
   id: string
   hooks?: Hooks
   start: HTMLElement | null
   end: HTMLElement | null
+  elements: AnimationSelector[]
 }
 
 export type Render = {
@@ -34,7 +35,7 @@ export type Configuration = {
   [id: string]: {
     start: HTMLElement | null
     end: HTMLElement | null
-    elements: ElementSelector[]
+    elements: AnimationSelector[]
     hooks?: Hooks
   }
 }

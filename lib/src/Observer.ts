@@ -19,7 +19,7 @@ export class Observer {
             driver.activate()
           }
 
-					 else {
+          else {
             driverActiveInstances.delete(driver)
             driver.deactivate()
           }

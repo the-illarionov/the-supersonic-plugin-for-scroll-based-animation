@@ -54,52 +54,10 @@ export class TheSuperSonicPlugin {
         hooks: drivers[id].hooks,
         start: drivers[id].start,
         end: drivers[id].end,
+        elements: drivers[id].elements,
       })
       this.driverInstances.set(id, driver)
     }
-
-    /* // Initializing properties
-    for (const driverId in drivers) {
-      if ('properties' in drivers[driverId]) {
-        const properties = drivers[driverId].properties
-
-        for (const cssProperty in properties) {
-          const data = properties[cssProperty]
-
-          new Property({
-            driverId,
-            cssProperty,
-            start: data.start,
-            end: data.end,
-            unit: data.unit,
-            hooks: data.hooks,
-            plugin: this,
-          })
-        }
-      }
-    }
-
-    // Initializing elements
-    for (const driverId in drivers) {
-      const driver = this.driverInstances.get(driverId)!
-
-      const properties = drivers[driverId].properties
-      for (const cssProperty in properties) {
-        const property = this.propertyInstances.get(`${driverId}---${cssProperty}`)!
-
-        for (const selector of properties[cssProperty].elements!) {
-          let element = this.elementInstances.get(selector)
-          if (!element) {
-            let hooks: Hooks | undefined
-            if (elements && elements[selector] && elements[selector].hooks)
-              hooks = elements[selector].hooks
-            element = new Element({ id: selector, hooks, plugin: this })
-          }
-          driver.elements.add(element)
-          property.elements.add(element)
-        }
-      }
-    } */
 
     this.updateLimits()
 

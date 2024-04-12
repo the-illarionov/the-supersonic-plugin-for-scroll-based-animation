@@ -77,9 +77,9 @@ Other solutions did not go well, so I decided to write my own (of course, I did)
 
     Yeah, it lags a little, but check the Heap size and total Scripting time!
 
-	The Plugin itself still works extremely fast, it takes about ***0.5ms*** per frame to make all of the calculations, the rest is rendering.
+  The Plugin itself still works extremely fast, it takes about ***0.5ms*** per frame to make all of the calculations, the rest is rendering.
 
-   	It is one goddamn thousand HTML elements animating over here!
+     It is one goddamn thousand HTML elements animating over here!
 
 5. ## Bonuses
 

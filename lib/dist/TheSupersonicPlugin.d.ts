@@ -1,7 +1,5 @@
 import { Configuration, Hooks, Render } from './TheSupersonicPlugin.types';
 import { Observer } from './Observer';
-import { Element } from './Element';
-import { Property } from './Property';
 import { Driver } from './Driver';
 
 /**
@@ -21,22 +19,25 @@ export declare class TheSuperSonicPlugin {
     screenHeight: number;
     /** Required to get all of the drivers render at once to stand on their first frame */
     renderedInitially: boolean;
+    rafId: number;
     hooks: Hooks;
+    consoleColor: string;
     /** IntersectionObserver instance */
     observer: Observer | null;
     /** Debounced resize listener */
     onResize: EventListener | null;
-    constructor({ drivers, hooks, elements }: Configuration);
+    /** All Driver instances */
+    driverInstances: Map<string, Driver>;
+    /** All active Driver instances */
+    driverActiveInstances: Set<Driver>;
+    constructor({ drivers, hooks }: Configuration);
     /** Removes all of the plugin stuff (useful for SPA) */
     uninit(): void;
-    /** Main rendering cycle. Active drivers are visible ones. On initial plugin load all of the drivers must be rendered in their initial stage, so "useActiveDrivers: false" */
+    /** Main rendering cycle. Active drivers are visible ones */
     render({ useActiveDrivers }: Render): void;
     /** Updates global scroll and driver DOM elements top offset. Called once on page load and each time after window.resize */
     updateLimits(): void;
     updateScroll(): void;
     /** Dirty hack for calculating screen height. We can't just use "window.innerHeight" because it "jumps" on mobile phones when you scroll and toolbar collapses */
     updateScreenHeight(): void;
-    static Driver: typeof Driver;
-    static Property: typeof Property;
-    static Element: typeof Element;
 }

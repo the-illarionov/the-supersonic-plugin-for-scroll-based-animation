@@ -34,8 +34,8 @@
   "types": "./lib/dist/main.d.ts",
   "files": ["./lib/dist"],
   "scripts": {
-    "lint": "eslint . && stylelint '**/*.{css}'",
-    "lint:fix": "eslint . --fix && stylelint '**/*.{css}' --fix"
+    "lint": "eslint . && stylelint '**/*.css'",
+    "lint:fix": "eslint . --fix && stylelint '**/*.css' --fix"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.12.2",

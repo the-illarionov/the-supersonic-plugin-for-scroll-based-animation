@@ -1,11 +1,9 @@
 import type { TheSuperSonicPlugin } from './TheSupersonicPlugin'
 import type { Configuration as DriverConfiguration } from './Driver.types'
-import type { Configuration as ElementConfiguration } from './Element.types'
 
 export type Configuration = {
   hooks?: Hooks
   drivers: DriverConfiguration
-  elements?: ElementConfiguration
 }
 
 export type Hooks = {

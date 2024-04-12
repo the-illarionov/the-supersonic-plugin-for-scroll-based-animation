@@ -5,13 +5,41 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite + TS</title>
+    <style>
+        @keyframes bar {
+            100% {
+                translate: 1000px 0 0;
+            }
+        }
+
+        @keyframes qwe {
+            100% {
+                scale: 10;
+            }
+        }
+
+        .foo {
+            animation-duration: 1s, 1s;
+            animation-play-state: paused, paused;
+            animation-name: bar, qwe;
+            animation-timing-function: linear, linear;
+            animation-fill-mode: forwards, forwards;
+        }
+    </style>
   </head>
   <body>
     <div class="start"></div>
 
-    <div class="fo" style="position: fixed; left: 0; top: 0; width: 20px; height: 20px; background: red"></div>
+    <div class="start-2" style="position: absolute; top: 100vh"></div>
+
+    <div class="foo" style="position: fixed; left: 0; top: 0; width: 20px; height: 20px; background: red"></div>
+
+    <div class="foo" style="position: fixed; left: 0; top: 100px; width: 20px; height: 20px; background: red"></div>
 
     <div class="end" style="position: absolute; top: 1000vh"></div>
+
+
+    <div class="end-2" style="position: absolute; top: 500vh"></div>
 
     <div style="height: 1000vh"></div>
     <script type="module" src="/src/main.ts"></script>

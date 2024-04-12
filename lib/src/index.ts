@@ -1,11 +1,9 @@
 import { TheSuperSonicPlugin } from './TheSupersonicPlugin'
 import { Driver } from './Driver'
-import { Property } from './Property'
-import { Element } from './Element'
+import { Animation } from './Animation'
 
 export {
   TheSuperSonicPlugin,
   Driver,
-  Property,
-  Element,
+  Animation,
 }

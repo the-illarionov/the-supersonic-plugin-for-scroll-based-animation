@@ -1,15 +1,9 @@
-import { Configuration as ElementConfiguration } from './Element.types';
 import { Configuration as DriverConfiguration } from './Driver.types';
 import { TheSuperSonicPlugin } from './TheSupersonicPlugin';
 
 export type Configuration = {
     hooks?: Hooks;
-    drivers: {
-        [id: string]: DriverConfiguration;
-    };
-    elements?: {
-        [elementSelector: string]: ElementConfiguration;
-    };
+    drivers: DriverConfiguration;
 };
 export type Hooks = {
     onBeforeInit?: (instance: TheSuperSonicPlugin) => void;

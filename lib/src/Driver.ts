@@ -1,5 +1,7 @@
 import { toFixed } from './utils'
 
+import { Animation } from './Animation'
+
 import type { BorderConstructor, BorderUpdateLimits, CalculateProgress, Constructor, HelperConstructor, HelperUpdateLimits, Hooks, Render, UpdateLimits } from './Driver.types'
 
 /**
@@ -18,11 +20,13 @@ export class Driver {
   /** End is linked to [data-supersonic-type="end"] HTML element */
   end: Border
 
+  animations: Map<string, Animation> = new Map()
+
   helper: Helper
 
   hooks: Hooks
 
-  constructor({ id, start, end, hooks = {} }: Constructor) {
+  constructor({ id, start, end, elements = [], hooks = {} }: Constructor) {
     this.id = id
     this.hooks = hooks
 
@@ -43,6 +47,50 @@ export class Driver {
 
     this.helper = new Helper({ driver: this })
 
+    // Initializing animations
+    elements.forEach((selector) => {
+      const actualSelector = typeof selector === 'string' ? selector : selector.selector
+      const domElements = document.querySelectorAll<HTMLElement>(actualSelector)
+
+      if (domElements.length === 0)
+        throw new Error(`Can't find element "${actualSelector}"`)
+
+      domElements.forEach((domElement, domElementIndex) => {
+        const animations = domElement.getAnimations() as unknown as CSSAnimation[]
+
+        let actualAnimations: CSSAnimation[] = []
+
+        if (typeof selector === 'string') {
+          actualAnimations = animations
+
+          if (actualAnimations.length === 0)
+            console.warn(`Element "${actualSelector}" hasn't animations`)
+        }
+        else if (typeof selector === 'object') {
+          if (!selector.animations || selector.animations.length === 0)
+            throw new Error(`Can't find animations at element "${actualSelector}"`)
+
+          selector.animations.forEach((animationName) => {
+            const cssAnimation = animations.find(animation => animation.animationName === animationName)
+
+            if (cssAnimation)
+              actualAnimations.push(cssAnimation)
+            else console.warn(`Element "${actualSelector}" hasn't animation: "${animationName}"`)
+          })
+        }
+
+        actualAnimations.forEach((cssAnimation) => {
+          const id = `${actualSelector}---${domElementIndex}---${cssAnimation.animationName}`
+          const animation = new Animation({
+            id,
+            animation: cssAnimation,
+          })
+
+          this.animations.set(id, animation)
+        })
+      })
+    })
+
     if (this.hooks.onAfterInit)
       this.hooks.onAfterInit(this)
   }
@@ -61,11 +109,15 @@ export class Driver {
 
     if (oldProgress !== this.progress || !renderedInitially) {
       console.groupCollapsed(
-					`%cDriver "${this.id}" starts rendering, progress is ${this.progress}, scroll is ${scroll}`,
-					`color: ${consoleColor}`,
+          `%cDriver "${this.id}" starts rendering, progress is ${this.progress}, scroll is ${scroll}`,
+          `color: ${consoleColor}`,
       )
 
-      // code render animations
+      for (const animation of this.animations.values()) {
+        console.log(`Animation "${animation.id}" starts rendering`)
+        animation.render({ driverProgress: this.progress })
+        console.log(`Animation "${animation.id}" finished rendering`)
+      }
 
       console.log(`Driver "${this.id}" finished rendering`)
       console.groupEnd()
@@ -159,10 +211,10 @@ class Helper {
     document.body.appendChild(this.domElement)
 
     /*
-		this.domElement.style.left =
-				Array.from(document.querySelectorAll("[data-supersonic-type='helper']")).indexOf(this.domElement) * 5 +
-				"px"
-		*/
+    this.domElement.style.left =
+        Array.from(document.querySelectorAll("[data-supersonic-type='helper']")).indexOf(this.domElement) * 5 +
+        "px"
+    */
   }
 
   /** Recalculates position of helper */

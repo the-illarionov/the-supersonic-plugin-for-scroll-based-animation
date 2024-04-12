@@ -1,9 +1,16 @@
-import type { Constructor } from './Animation.types'
+import type { Constructor, Render } from './Animation.types'
 
 export class Animation {
-  element: HTMLElement
+  id: string
+  animation: CSSAnimation
 
-  constructor({ element }: Constructor) {
-    this.element = element
+  constructor({ id, animation }: Constructor) {
+    this.id = id
+    this.animation = animation
+  }
+
+  render({ driverProgress }: Render) {
+    // как будто хук может вовзращать driverProgress
+    this.animation.currentTime = driverProgress * 1000
   }
 }
