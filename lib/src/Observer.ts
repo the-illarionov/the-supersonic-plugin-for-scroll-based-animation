@@ -3,21 +3,26 @@ import type { Constructor } from './Observer.types'
 export class Observer {
   instance: IntersectionObserver
 
-  constructor({ observables, plugin }: Constructor) {
+  constructor({ observables, driverInstances, driverActiveInstances }: Constructor) {
     this.instance = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           const target = entry.target as HTMLElement
           const driverId = target.dataset.supersonicDriver!
-          const driver = plugin.driverInstances.get(driverId)
+          const driver = driverInstances.get(driverId)
 
           if (!driver)
             throw new Error(`Observer can't find driver "${driverId}"`)
 
-          if (entry.isIntersecting)
+          if (entry.isIntersecting) {
+            driverActiveInstances.add(driver)
             driver.activate()
-					 else
+          }
+
+					 else {
+            driverActiveInstances.delete(driver)
             driver.deactivate()
+          }
         })
       },
     )

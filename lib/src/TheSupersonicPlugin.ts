@@ -1,7 +1,4 @@
-/* import { Globals, devGlobals } from './singletons/Globals' */
 import { Driver } from './Driver'
-import { Property } from './Property'
-import { Element } from './Element'
 import { Observer } from './Observer'
 import { debounce } from './utils'
 
@@ -44,13 +41,7 @@ export class TheSuperSonicPlugin {
   /** All active Driver instances */
   driverActiveInstances: Set<Driver> = new Set()
 
-  propertyInstances: Map<string, Property> = new Map()
-
-  elementInstances: Map<string, Element> = new Map()
-  /** Element instances which are being animated right now */
-  elementActiveInstances: Set<Element> = new Set()
-
-  constructor({ drivers, hooks = {}, elements = {} }: Configuration) {
+  constructor({ drivers, hooks = {} }: Configuration) {
     this.hooks = hooks
 
     if (this.hooks?.onBeforeInit)
@@ -58,16 +49,16 @@ export class TheSuperSonicPlugin {
 
     // Initializing driver instances
     for (const id in drivers) {
-      new Driver({
+      const driver = new Driver({
         id,
         hooks: drivers[id].hooks,
-        plugin: this,
         start: drivers[id].start,
         end: drivers[id].end,
       })
+      this.driverInstances.set(id, driver)
     }
 
-    // Initializing properties
+    /* // Initializing properties
     for (const driverId in drivers) {
       if ('properties' in drivers[driverId]) {
         const properties = drivers[driverId].properties
@@ -108,13 +99,17 @@ export class TheSuperSonicPlugin {
           property.elements.add(element)
         }
       }
-    }
+    } */
 
     this.updateLimits()
 
     // Creating IntersectionObserver, which handles "active" state on Driver instances
     const observables = Array.from(document.querySelectorAll<HTMLElement>('[data-supersonic-type="helper"]'))
-    this.observer = new Observer({ observables, plugin: this })
+    this.observer = new Observer({
+      observables,
+      driverInstances: this.driverInstances,
+      driverActiveInstances: this.driverActiveInstances,
+    })
 
     // Adding event listener for resize
     const resize = () => {
@@ -137,8 +132,6 @@ export class TheSuperSonicPlugin {
       this.hooks.onAfterInit(this)
 
     console.log('Driver instances:', this.driverInstances)
-    console.log('Property instances:', this.propertyInstances)
-    console.log('Element instances:', this.elementInstances)
   }
 
   /** Removes all of the plugin stuff (useful for SPA) */
@@ -147,8 +140,7 @@ export class TheSuperSonicPlugin {
       driver.helper.uninit()
 
     this.driverInstances.clear()
-    this.propertyInstances.clear()
-    this.elementInstances.clear()
+    this.driverActiveInstances.clear()
 
     this.observer!.uninit()
     cancelAnimationFrame(this.rafId)
@@ -156,27 +148,22 @@ export class TheSuperSonicPlugin {
     window.removeEventListener('resize', this.onResize!)
   }
 
-  /** Main rendering cycle. Active drivers are visible ones. On initial plugin load all of the drivers must be rendered in their initial stage, so "useActiveDrivers: false" */
+  /** Main rendering cycle. Active drivers are visible ones */
   render({ useActiveDrivers }: Render) {
     this.updateScroll()
 
     if (this.hooks.onBeforeRender)
       this.hooks.onBeforeRender(this)
 
-    // Rendering drivers
     const drivers = useActiveDrivers ? this.driverActiveInstances.values() : this.driverInstances.values()
 
     for (const driver of drivers) {
-      if (!this.renderedInitially)
-        driver.initialDistanceToScroll = driver.end.top - this.scroll
-      driver.render()
+      driver.render({
+        scroll: this.scroll,
+        renderedInitially: this.renderedInitially,
+        consoleColor: this.consoleColor,
+      })
     }
-
-    // Rendering elements
-    for (const element of this.elementActiveInstances.values())
-      element.render()
-
-    this.elementActiveInstances.clear()
 
     this.rafId = requestAnimationFrame(() => {
       this.render({ useActiveDrivers: true })
@@ -196,8 +183,12 @@ export class TheSuperSonicPlugin {
     this.updateScreenHeight()
     this.updateScroll()
 
-    for (const driver of this.driverInstances.values())
-      driver.updateLimits()
+    for (const driver of this.driverInstances.values()) {
+      driver.updateLimits({
+        scroll: this.scroll,
+        screenHeight: this.screenHeight,
+      })
+    }
   }
 
   updateScroll() {

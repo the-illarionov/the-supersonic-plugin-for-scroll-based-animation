@@ -18,5 +18,14 @@ export type Constructor = {
 }
 
 export type Configuration = {
-  hooks?: Hooks
+  [elementSelector: string]: {
+    hooks?: Hooks
+  }
 }
+
+export type ElementSelector = |
+  string |
+  {
+    selector: string
+    animations: string[]
+  }

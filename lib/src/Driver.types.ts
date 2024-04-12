@@ -1,12 +1,23 @@
 import type { Driver } from './Driver'
-import type { TheSuperSonicPlugin } from './TheSupersonicPlugin'
+import type { ElementSelector } from './Element.types'
 
 export type Constructor = {
   id: string
   hooks?: Hooks
-  plugin: TheSuperSonicPlugin
   start: HTMLElement | null
   end: HTMLElement | null
+}
+
+export type Render = {
+  scroll: number
+  renderedInitially: boolean
+  consoleColor: string
+}
+
+export type CalculateProgress = {
+  scroll: number
+  start: number
+  end: number
 }
 
 export type Hooks = {
@@ -20,20 +31,33 @@ export type Hooks = {
 }
 
 export type Configuration = {
-  properties: any
-  hooks?: Hooks
-  start: HTMLElement | null
-  end: HTMLElement | null
+  [id: string]: {
+    start: HTMLElement | null
+    end: HTMLElement | null
+    elements: ElementSelector[]
+    hooks?: Hooks
+  }
 }
 
 export type BorderConstructor = {
   domElement: HTMLElement | null
-  plugin: TheSuperSonicPlugin
   driver: Driver
   type: 'start' | 'end'
 }
 
 export type HelperConstructor = {
   driver: Driver
-  plugin: TheSuperSonicPlugin
+}
+
+export type UpdateLimits = {
+  scroll: number
+  screenHeight: number
+}
+
+export type BorderUpdateLimits = {
+  scroll: number
+}
+
+export type HelperUpdateLimits = {
+  screenHeight: number
 }

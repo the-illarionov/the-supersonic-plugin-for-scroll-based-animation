@@ -1,6 +1,7 @@
-import type { TheSuperSonicPlugin } from './TheSupersonicPlugin'
+import type { Driver } from './Driver'
 
 export type Constructor = {
   observables: HTMLElement[]
-  plugin: TheSuperSonicPlugin
+  driverInstances: Map<string, Driver>
+  driverActiveInstances: Set<Driver>
 }

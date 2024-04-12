@@ -4,12 +4,8 @@ import type { Configuration as ElementConfiguration } from './Element.types'
 
 export type Configuration = {
   hooks?: Hooks
-  drivers: {
-    [id: string]: DriverConfiguration
-  }
-  elements?: {
-    [elementSelector: string]: ElementConfiguration
-  }
+  drivers: DriverConfiguration
+  elements?: ElementConfiguration
 }
 
 export type Hooks = {
