@@ -1,7 +1,7 @@
-import { Driver } from './Driver'
-import { Property } from './Property'
+import type { Driver } from './Driver'
+import type { Property } from './Property'
 
-import type { Constructor, Hooks, Init } from './Element.types'
+import type { Constructor, Hooks } from './Element.types'
 import type { TheSuperSonicPlugin } from './TheSupersonicPlugin'
 
 /**
@@ -57,7 +57,7 @@ export class Element {
       }
     }
 
-    Element.instances.set(this.id, this)
+    this.plugin.elementInstances.set(this.id, this)
 
     if (this.hooks.onInit)
       this.hooks.onInit(this)
@@ -165,55 +165,6 @@ export class Element {
   updateLimits(driver: Driver) {
     if (this.hooks.onUpdateLimits)
       this.hooks.onUpdateLimits(this, driver)
-  }
-
-  //
-  //
-  // static properties
-  /** All Elements instances */
-  static instances: Map<string, Element> = new Map()
-
-  /** Element instances which are being animated right now */
-  static activeInstances: Set<Element> = new Set()
-
-  //
-  //
-  // static methods
-  /** Initialize Element instances */
-  static init({ drivers, elements, plugin }: Init) {
-    for (const driverId in drivers) {
-      const driver = Driver.instances.get(driverId)!
-
-      const properties = drivers[driverId].properties
-      for (const cssProperty in properties) {
-        const property = Property.instances.get(`${driverId}---${cssProperty}`)!
-
-        for (const selector of properties[cssProperty].elements!) {
-          let element = Element.instances.get(selector)
-          if (!element) {
-            let hooks: Hooks | undefined
-            if (elements && elements[selector] && elements[selector].hooks)
-              hooks = elements[selector].hooks
-            element = new Element({ id: selector, hooks, plugin })
-          }
-          driver.elements.add(element)
-          property.elements.add(element)
-        }
-      }
-    }
-  }
-
-  /** Uninitialize Element instances */
-  static uninit() {
-    Element.instances.clear()
-  }
-
-  /** Render all of active Element instances */
-  static render() {
-    for (const element of Element.activeInstances.values())
-      element.render()
-
-    Element.activeInstances.clear()
   }
 
   static transformKeys = [

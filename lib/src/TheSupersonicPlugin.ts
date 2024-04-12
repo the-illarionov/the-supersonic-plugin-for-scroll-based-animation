@@ -27,6 +27,8 @@ export class TheSuperSonicPlugin {
   /** Required to get all of the drivers render at once to stand on their first frame */
   renderedInitially: boolean = false
 
+  rafId = 0
+
   hooks: Hooks = {}
 
   consoleColor = '#ffffff'
@@ -37,22 +39,82 @@ export class TheSuperSonicPlugin {
   /** Debounced resize listener */
   onResize: EventListener | null = null
 
+  /** All Driver instances */
+  driverInstances: Map<string, Driver> = new Map()
+  /** All active Driver instances */
+  driverActiveInstances: Set<Driver> = new Set()
+
+  propertyInstances: Map<string, Property> = new Map()
+
+  elementInstances: Map<string, Element> = new Map()
+  /** Element instances which are being animated right now */
+  elementActiveInstances: Set<Element> = new Set()
+
   constructor({ drivers, hooks = {}, elements = {} }: Configuration) {
     this.hooks = hooks
 
     if (this.hooks?.onBeforeInit)
       this.hooks.onBeforeInit(this)
 
-    // Initializing instances
-    Driver.init({ drivers, plugin: this })
-    Property.init({ drivers })
-    Element.init({ drivers, elements, plugin: this })
+    // Initializing driver instances
+    for (const id in drivers) {
+      new Driver({
+        id,
+        hooks: drivers[id].hooks,
+        plugin: this,
+        start: drivers[id].start,
+        end: drivers[id].end,
+      })
+    }
+
+    // Initializing properties
+    for (const driverId in drivers) {
+      if ('properties' in drivers[driverId]) {
+        const properties = drivers[driverId].properties
+
+        for (const cssProperty in properties) {
+          const data = properties[cssProperty]
+
+          new Property({
+            driverId,
+            cssProperty,
+            start: data.start,
+            end: data.end,
+            unit: data.unit,
+            hooks: data.hooks,
+            plugin: this,
+          })
+        }
+      }
+    }
+
+    // Initializing elements
+    for (const driverId in drivers) {
+      const driver = this.driverInstances.get(driverId)!
+
+      const properties = drivers[driverId].properties
+      for (const cssProperty in properties) {
+        const property = this.propertyInstances.get(`${driverId}---${cssProperty}`)!
+
+        for (const selector of properties[cssProperty].elements!) {
+          let element = this.elementInstances.get(selector)
+          if (!element) {
+            let hooks: Hooks | undefined
+            if (elements && elements[selector] && elements[selector].hooks)
+              hooks = elements[selector].hooks
+            element = new Element({ id: selector, hooks, plugin: this })
+          }
+          driver.elements.add(element)
+          property.elements.add(element)
+        }
+      }
+    }
 
     this.updateLimits()
 
     // Creating IntersectionObserver, which handles "active" state on Driver instances
     const observables = Array.from(document.querySelectorAll<HTMLElement>('[data-supersonic-type="helper"]'))
-    this.observer = new Observer(observables)
+    this.observer = new Observer({ observables, plugin: this })
 
     // Adding event listener for resize
     const resize = () => {
@@ -74,17 +136,22 @@ export class TheSuperSonicPlugin {
     if (this.hooks?.onAfterInit)
       this.hooks.onAfterInit(this)
 
-    console.log('Driver instances:', Driver.instances)
-    console.log('Property instances:', Property.instances)
-    console.log('Element instances:', Element.instances)
+    console.log('Driver instances:', this.driverInstances)
+    console.log('Property instances:', this.propertyInstances)
+    console.log('Element instances:', this.elementInstances)
   }
 
   /** Removes all of the plugin stuff (useful for SPA) */
   uninit() {
-    Driver.uninit()
-    Property.uninit()
-    Element.uninit()
+    for (const driver of this.driverInstances.values())
+      driver.helper.uninit()
+
+    this.driverInstances.clear()
+    this.propertyInstances.clear()
+    this.elementInstances.clear()
+
     this.observer!.uninit()
+    cancelAnimationFrame(this.rafId)
 
     window.removeEventListener('resize', this.onResize!)
   }
@@ -96,10 +163,22 @@ export class TheSuperSonicPlugin {
     if (this.hooks.onBeforeRender)
       this.hooks.onBeforeRender(this)
 
-    Driver.render({ useActiveDrivers, plugin: this })
-    Element.render()
+    // Rendering drivers
+    const drivers = useActiveDrivers ? this.driverActiveInstances.values() : this.driverInstances.values()
 
-    requestAnimationFrame(() => {
+    for (const driver of drivers) {
+      if (!this.renderedInitially)
+        driver.initialDistanceToScroll = driver.end.top - this.scroll
+      driver.render()
+    }
+
+    // Rendering elements
+    for (const element of this.elementActiveInstances.values())
+      element.render()
+
+    this.elementActiveInstances.clear()
+
+    this.rafId = requestAnimationFrame(() => {
       this.render({ useActiveDrivers: true })
     })
 
@@ -116,7 +195,9 @@ export class TheSuperSonicPlugin {
   updateLimits() {
     this.updateScreenHeight()
     this.updateScroll()
-    Driver.updateLimits()
+
+    for (const driver of this.driverInstances.values())
+      driver.updateLimits()
   }
 
   updateScroll() {
@@ -142,8 +223,4 @@ export class TheSuperSonicPlugin {
     this.screenHeight = helper.clientHeight
     helper.remove()
   }
-
-  static Driver = Driver
-  static Property = Property
-  static Element = Element
 }

@@ -2,7 +2,6 @@ import type { Element } from './Element'
 import type { Driver } from './Driver'
 import type { Property } from './Property'
 import type { TheSuperSonicPlugin } from './TheSupersonicPlugin'
-import type { Configuration as DriverConfiguration } from './Driver.types'
 
 export type Hooks = {
   onInit?: (instance: Element) => any
@@ -20,14 +19,4 @@ export type Constructor = {
 
 export type Configuration = {
   hooks?: Hooks
-}
-
-export type Init = {
-  drivers: {
-    [id: string]: DriverConfiguration
-  }
-  plugin: TheSuperSonicPlugin
-  elements: {
-    [elementSelector: string]: Configuration
-  }
 }

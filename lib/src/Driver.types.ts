@@ -26,18 +26,6 @@ export type Configuration = {
   end: HTMLElement | null
 }
 
-export type Init = {
-  drivers: {
-    [id: string]: Configuration
-  }
-  plugin: TheSuperSonicPlugin
-}
-
-export type Render = {
-  useActiveDrivers: boolean
-  plugin: TheSuperSonicPlugin
-}
-
 export type BorderConstructor = {
   domElement: HTMLElement | null
   plugin: TheSuperSonicPlugin

@@ -1,7 +1,8 @@
-import { Driver } from './Driver'
+import type { Driver } from './Driver'
 import { toFixed } from './utils'
 import type { Element } from './Element'
-import type { Constructor, Hooks, Init } from './Property.types'
+import type { Constructor, Hooks } from './Property.types'
+import type { TheSuperSonicPlugin } from './TheSupersonicPlugin'
 
 /**
  * The main purpose of Property is to translate this.driver.progress into CSS property
@@ -28,17 +29,20 @@ export class Property {
   /** Elements which are animated by this Property. Elements are added during creating Element instance */
   elements: Set<Element> = new Set()
 
-  constructor({ driverId, cssProperty, start, end, unit = '', hooks = {} }: Constructor) {
+  plugin: TheSuperSonicPlugin
+
+  constructor({ driverId, cssProperty, start, end, plugin, unit = '', hooks = {} }: Constructor) {
     this.cssProperty = cssProperty
     this.start = start
     this.end = end
     this.unit = unit
     this.hooks = hooks
+    this.plugin = plugin
 
     this.id = `${driverId}---${cssProperty}`
-    this.driver = Driver.instances.get(driverId)!
+    this.driver = this.plugin.driverInstances.get(driverId)!
 
-    Property.instances.set(this.id, this)
+    this.plugin.propertyInstances.set(this.id, this)
     this.driver.properties.add(this)
 
     if (this.hooks.onInit)
@@ -80,52 +84,5 @@ export class Property {
   updateLimits() {
     if (this.hooks.onUpdateLimits)
       this.hooks.onUpdateLimits(this)
-  }
-
-  //
-  //
-  // static properties
-  /** All Property instances */
-  static instances: Map<string, Property> = new Map()
-
-  //
-  //
-  // static methods
-  /** Initialize Property instances with check for mediaQueries */
-  static init({ drivers }: Init) {
-    for (const driverId in drivers) {
-      if ('properties' in drivers[driverId]) {
-        if ('default' in drivers[driverId].properties) {
-          const rules = Object.keys(drivers[driverId].properties)
-          let match = 'default'
-          for (const rule of rules) {
-            if (rule !== 'default' && matchMedia(rule).matches)
-              match = rule
-          }
-
-          drivers[driverId].properties = drivers[driverId].properties[match]
-        }
-
-        const properties = drivers[driverId].properties
-
-        for (const cssProperty in properties) {
-          const data = properties[cssProperty]
-
-          new Property({
-            driverId,
-            cssProperty,
-            start: data.start,
-            end: data.end,
-            unit: data.unit,
-            hooks: data.hooks,
-          })
-        }
-      }
-    }
-  }
-
-  /** Uninitialize Property instances */
-  static uninit() {
-    Property.instances.clear()
   }
 }

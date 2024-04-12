@@ -1,9 +1,9 @@
 import { toFixed } from './utils'
 import type { Property } from './Property'
 import type { TheSuperSonicPlugin } from './TheSupersonicPlugin'
-import { Element } from './Element'
+import type { Element } from './Element'
 
-import type { BorderConstructor, Constructor, HelperConstructor, Hooks, Init, Render } from './Driver.types'
+import type { BorderConstructor, Constructor, HelperConstructor, Hooks } from './Driver.types'
 
 /**
  * The main purpose of Driver is to calculate current progress from 0 to 1 depending on current scroll
@@ -56,7 +56,7 @@ export class Driver {
 
     this.helper = new Helper({ driver: this, plugin })
 
-    Driver.instances.set(id, this)
+    this.plugin.driverInstances.set(id, this)
 
     if (this.hooks.onAfterInit)
       this.hooks.onAfterInit(this)
@@ -80,7 +80,7 @@ export class Driver {
         property.render()
 
       for (const element of this.elements)
-        Element.activeInstances.add(element)
+        this.plugin.elementActiveInstances.add(element)
 
       if (this.hooks.onAfterRender)
         this.hooks.onAfterRender(this)
@@ -121,7 +121,7 @@ export class Driver {
   /** Activates driver when it becomes visible on the screen */
   activate() {
     this.active = true
-    Driver.activeInstances.add(this)
+    this.plugin.driverActiveInstances.add(this)
 
     if (this.hooks.onActivation)
       this.hooks.onActivation(this)
@@ -132,61 +132,12 @@ export class Driver {
   /** Deactivates driver when it's progress becomes 0 or 1' */
   deactivate() {
     this.active = false
-    Driver.activeInstances.delete(this)
+    this.plugin.driverActiveInstances.delete(this)
 
     if (this.hooks.onDeactivation)
       this.hooks.onDeactivation(this)
 
     console.log(`Driver "${this.id}" deactivated`)
-  }
-
-  //
-  //
-  // static properties
-  /** All Driver instances */
-  static instances: Map<string, Driver> = new Map()
-  /** All active Driver instances */
-  static activeInstances: Set<Driver> = new Set()
-
-  //
-  //
-  // static methods
-  /** Initialize Driver instances */
-  static init({ drivers, plugin }: Init) {
-    for (const id in drivers) {
-      new Driver({
-        id,
-        hooks: drivers[id].hooks,
-        plugin,
-        start: drivers[id].start,
-        end: drivers[id].end,
-      })
-    }
-  }
-
-  /** Unitialize Driver instances */
-  static uninit() {
-    for (const driver of Driver.instances.values())
-      driver.helper.uninit()
-
-    Driver.instances.clear()
-  }
-
-  /** Render all of the Driver instances (active or not, depending on argument "useActiveDrivers") */
-  static render({ useActiveDrivers, plugin }: Render) {
-    const drivers = useActiveDrivers ? Driver.activeInstances.values() : Driver.instances.values()
-
-    for (const driver of drivers) {
-      if (!plugin.renderedInitially)
-        driver.initialDistanceToScroll = driver.end.top - plugin.scroll
-      driver.render()
-    }
-  }
-
-  /** Call "updateLimits()" on each Driver instance, even deactivated */
-  static updateLimits() {
-    for (const driver of Driver.instances.values())
-      driver.updateLimits()
   }
 }
 
