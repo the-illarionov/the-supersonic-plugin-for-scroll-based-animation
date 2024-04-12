@@ -6,7 +6,7 @@ export default defineConfig(({ mode }) => {
   return {
     build: {
       lib: {
-        entry: resolve(__dirname, 'src/main.ts'),
+        entry: resolve(__dirname, 'src/index.ts'),
         fileName: 'the-supersonic-plugin-for-scroll-based-animation',
         formats: ['es'],
       },

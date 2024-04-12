@@ -39,6 +39,7 @@ export default antfu({
     ],
 
     'no-console': 'off',
+    'no-new': 'off',
     'node/prefer-global/process': 'off',
     'ts/consistent-type-definitions': 'off',
   },
