@@ -1,3 +1,4 @@
+import { Constructor, Hooks, Init } from './Property.types';
 import { Element } from './Element';
 import { Driver } from './Driver';
 
@@ -16,7 +17,7 @@ export declare class Property {
     /** Ending numeric value of property (can be a Function) */
     end: number | Function;
     /** Property hooks */
-    hooks: PropertyHooks;
+    hooks: Hooks;
     /** Current value of property */
     value: number;
     /** You can store your custom data here to use between hooks */
@@ -25,7 +26,7 @@ export declare class Property {
     unit: string;
     /** Elements which are animated by this Property. Elements are added during creating Element instance */
     elements: Set<Element>;
-    constructor({ driverId, cssProperty, start, end, unit, hooks }: PropertyConstructor);
+    constructor({ driverId, cssProperty, start, end, unit, hooks }: Constructor);
     /** Property calculates it's value depending on driver.progress and adds itself to all of the corresponding elements */
     render(): void;
     /** Calculates value */
@@ -35,7 +36,7 @@ export declare class Property {
     /** All Property instances */
     static instances: Map<string, Property>;
     /** Initialize Property instances with check for mediaQueries */
-    static init({ drivers }: MainConfiguration): void;
+    static init({ drivers }: Init): void;
     /** Uninitialize Property instances */
     static uninit(): void;
 }

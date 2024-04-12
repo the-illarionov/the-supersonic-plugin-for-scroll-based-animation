@@ -72,7 +72,8 @@ export class Driver {
 
     if (oldProgress !== this.progress || !this.plugin.renderedInitially) {
       console.groupCollapsed(
-					`Driver "${this.id}" starts rendering, progress is ${this.progress}, scroll is ${this.plugin.scroll}`,
+					`%cDriver "${this.id}" starts rendering, progress is ${this.progress}, scroll is ${this.plugin.scroll}`,
+					`color: ${this.plugin.consoleColor}`,
       )
 
       for (const property of this.properties)

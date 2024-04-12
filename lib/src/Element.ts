@@ -68,7 +68,7 @@ export class Element {
     if (this.hooks.onBeforeRender)
       this.hooks.onBeforeRender(this)
 
-    console.groupCollapsed(`Element "${this.id}" starts rendering`)
+    console.groupCollapsed(`%cElement "${this.id}" starts rendering`, `color: ${this.plugin.consoleColor}`)
 
     const flatProperties = this.calculateFlatProperties()
 

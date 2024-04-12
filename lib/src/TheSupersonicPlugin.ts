@@ -29,6 +29,8 @@ export class TheSuperSonicPlugin {
 
   hooks: Hooks = {}
 
+  consoleColor = '#ffffff'
+
   /** IntersectionObserver instance */
   observer: Observer | null = null
 
@@ -103,6 +105,11 @@ export class TheSuperSonicPlugin {
 
     if (this.hooks.onAfterRender)
       this.hooks.onAfterRender(this)
+
+    if (import.meta.env.DEV) {
+      const randomInt = ~~(Math.random() * 100000)
+      this.consoleColor = `#${randomInt.toString(16).padStart(6, 'f')}`
+    }
   }
 
   /** Updates global scroll and driver DOM elements top offset. Called once on page load and each time after window.resize */

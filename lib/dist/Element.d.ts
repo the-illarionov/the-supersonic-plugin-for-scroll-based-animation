@@ -1,3 +1,5 @@
+import { TheSuperSonicPlugin } from './TheSupersonicPlugin';
+import { Constructor, Hooks, Init } from './Element.types';
 import { Property } from './Property';
 import { Driver } from './Driver';
 
@@ -10,28 +12,30 @@ export declare class Element {
     /** Normally, one Element instance goes for one DOM element, but you can have multiple DOM elements with same selector, so it is an Array */
     domElements: Array<HTMLElement>;
     /** Element hooks */
-    hooks: ElementHooks;
+    hooks: Hooks;
     /** You can store your custom data here to use between hooks */
     data: {};
     /** List of added Property instances */
     properties: Map<string, Property>;
     /** In case of translate presence we need to keep them */
-    translate3d: translate3d;
-    constructor({ id, hooks }: ElementConstructor);
-    /** Parsing initial translate values and save them */
-    saveInitialTranslate(): void;
-    /** Initializing DOM elements */
-    initDomElements(): void;
+    translate3d: {
+        [key: string]: string;
+    };
+    plugin: TheSuperSonicPlugin;
+    constructor({ id, hooks, plugin }: Constructor);
     /** Main core of the whole plugin. Element parses it's "properties", normalizes them and applies */
     render(): void;
     /**
      * Called by Property.ts:56. On the first onload render it checks if property already exists and if it does, checks if driver of added property is closest to scroll. It prevents bugs when:
      * 1. You have multiple drivers animating same property
      * 2. You scroll
-     * 3. You reload page */
+     * 3. You reload page
+     */
     addProperty(property: Property): void;
     /** Turns multiple transform properties into single CSS "transform" value */
-    calculateFlatProperties(): flattenedProperties;
+    calculateFlatProperties(): {
+        [key: string]: string;
+    };
     /** To allow user to hook to an initiator driver's updateLimits() */
     updateLimits(driver: Driver): void;
     /** All Elements instances */
@@ -39,7 +43,7 @@ export declare class Element {
     /** Element instances which are being animated right now */
     static activeInstances: Set<Element>;
     /** Initialize Element instances */
-    static init({ drivers, elements }: MainConfiguration): void;
+    static init({ drivers, elements, plugin }: Init): void;
     /** Uninitialize Element instances */
     static uninit(): void;
     /** Render all of active Element instances */
