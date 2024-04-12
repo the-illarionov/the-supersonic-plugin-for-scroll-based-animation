@@ -5,6 +5,8 @@ export type Constructor = {
   id: string
   hooks?: Hooks
   plugin: TheSuperSonicPlugin
+  start: HTMLElement | null
+  end: HTMLElement | null
 }
 
 export type Hooks = {
@@ -20,6 +22,8 @@ export type Hooks = {
 export type Configuration = {
   properties: any
   hooks?: Hooks
+  start: HTMLElement | null
+  end: HTMLElement | null
 }
 
 export type Init = {
@@ -36,8 +40,9 @@ export type Render = {
 
 export type BorderConstructor = {
   domElement: HTMLElement | null
-  selector: string
   plugin: TheSuperSonicPlugin
+  driver: Driver
+  type: 'start' | 'end'
 }
 
 export type HelperConstructor = {
