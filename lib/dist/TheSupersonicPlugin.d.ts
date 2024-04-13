@@ -8,7 +8,13 @@ import { Driver } from './Driver';
  *
  * @example
  * const plugin = new TheSuperSonicPlugin({
- *  // config
+ *   drivers: {
+ *     'name-of-your-driver': {
+ *        start: document.querySelector('.start'),
+ *        end: document.querySelector('.end'),
+ *        elements: ['.animatable-element']
+ *      }
+ *   }
  * });
  *
  */
@@ -19,22 +25,22 @@ export declare class TheSuperSonicPlugin {
     screenHeight: number;
     /** Required to get all of the drivers render at once to stand on their first frame */
     renderedInitially: boolean;
+    /** Used to cancelAnimationFrame on 'uninit()' */
     rafId: number;
-    hooks: Hooks;
+    /** Color of console messages in dev mode. It changes each frame to make it more convenient to visually separate frames */
     consoleColor: string;
     /** IntersectionObserver instance */
     observer: Observer | null;
     /** Debounced resize listener */
     onResize: EventListener | null;
-    /** All Driver instances */
+    hooks: Hooks;
     driverInstances: Map<string, Driver>;
-    /** All active Driver instances */
     driverActiveInstances: Set<Driver>;
     constructor({ drivers, hooks }: Configuration);
     /** Removes all of the plugin stuff (useful for SPA) */
     uninit(): void;
     /** Main rendering cycle. Active drivers are visible ones */
-    render({ useActiveDrivers }: Render): void;
+    render({ useActiveDrivers }: Render): false | undefined;
     /** Updates global scroll and driver DOM elements top offset. Called once on page load and each time after window.resize */
     updateLimits(): void;
     updateScroll(): void;

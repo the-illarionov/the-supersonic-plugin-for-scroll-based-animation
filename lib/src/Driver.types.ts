@@ -6,13 +6,13 @@ export type Constructor = {
   hooks?: Hooks
   start: HTMLElement | null
   end: HTMLElement | null
-  elements: AnimationSelector[]
+  elements?: AnimationSelector[]
 }
 
 export type Render = {
   scroll: number
   renderedInitially: boolean
-  consoleColor: string
+  consoleColor?: string
 }
 
 export type CalculateProgress = {

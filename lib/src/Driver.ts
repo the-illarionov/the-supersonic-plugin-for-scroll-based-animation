@@ -122,7 +122,7 @@ export class Driver {
   }
 
   /** Driver calculates its progress and then renders all of it's properties with progress value */
-  render({ scroll, renderedInitially, consoleColor }: Render) {
+  render({ scroll, renderedInitially, consoleColor = '#000000' }: Render) {
     const oldProgress = this.progress
     this.progress = this.calculateProgress({
       scroll,

@@ -6,12 +6,13 @@ export type Configuration = {
     drivers: DriverConfiguration;
 };
 export type Hooks = {
-    onBeforeInit?: (instance: TheSuperSonicPlugin) => void;
-    onAfterInit?: (instance: TheSuperSonicPlugin) => void;
-    onBeforeRender?: (instance: TheSuperSonicPlugin) => void;
-    onAfterRender?: (instance: TheSuperSonicPlugin) => void;
-    onBeforeResize?: (instance: TheSuperSonicPlugin) => void;
-    onAfterResize?: (instance: TheSuperSonicPlugin) => void;
+    onBeforeInit?: (plugin: TheSuperSonicPlugin) => void;
+    onAfterInit?: (plugin: TheSuperSonicPlugin) => void;
+    /** You can `return false` inside your hook, it will cancel rendering */
+    onBeforeRender?: (plugin: TheSuperSonicPlugin) => void | undefined | boolean;
+    onAfterRender?: (plugin: TheSuperSonicPlugin) => void;
+    onBeforeResize?: (plugin: TheSuperSonicPlugin) => void;
+    onAfterResize?: (plugin: TheSuperSonicPlugin) => void;
 };
 export type Render = {
     useActiveDrivers: boolean;

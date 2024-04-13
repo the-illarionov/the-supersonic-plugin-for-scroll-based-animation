@@ -6,12 +6,12 @@ export type Constructor = {
     hooks?: Hooks;
     start: HTMLElement | null;
     end: HTMLElement | null;
-    elements: AnimationSelector[];
+    elements?: AnimationSelector[];
 };
 export type Render = {
     scroll: number;
     renderedInitially: boolean;
-    consoleColor: string;
+    consoleColor?: string;
 };
 export type CalculateProgress = {
     scroll: number;
@@ -19,13 +19,14 @@ export type CalculateProgress = {
     end: number;
 };
 export type Hooks = {
-    onBeforeInit?: (instance: Driver) => any;
-    onAfterInit?: (instance: Driver) => any;
-    onBeforeRender?: (instance: Driver) => any;
-    onAfterRender?: (instance: Driver) => any;
-    onActivation?: (instance: Driver) => any;
-    onDeactivation?: (instance: Driver) => any;
-    onUpdateLimits?: (instance: Driver) => any;
+    onBeforeInit?: (driver: Driver) => void;
+    onAfterInit?: (driver: Driver) => void;
+    /** You can `return false` inside your hook, it will cancel rendering */
+    onBeforeRender?: (driver: Driver) => void | undefined | boolean;
+    onAfterRender?: (driver: Driver) => void;
+    onActivation?: (driver: Driver) => void;
+    onDeactivation?: (driver: Driver) => void;
+    onUpdateLimits?: (driver: Driver) => void;
 };
 export type Configuration = {
     [id: string]: {
@@ -41,7 +42,7 @@ export type BorderConstructor = {
     type: 'start' | 'end';
 };
 export type HelperConstructor = {
-    driver: Driver;
+    id: string;
 };
 export type UpdateLimits = {
     scroll: number;
@@ -52,4 +53,6 @@ export type BorderUpdateLimits = {
 };
 export type HelperUpdateLimits = {
     screenHeight: number;
+    start: number;
+    end: number;
 };

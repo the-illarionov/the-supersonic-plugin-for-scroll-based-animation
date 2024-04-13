@@ -1,3 +1,5 @@
+/// <reference types="vitest" />
+
 import { resolve } from 'node:path'
 import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
@@ -15,6 +17,9 @@ export default defineConfig(({ mode }) => {
       drop: mode === 'production'
         ? ['console']
         : [],
+    },
+    test: {
+      environment: 'jsdom',
     },
     plugins: [dts()],
   }
