@@ -7,14 +7,15 @@ export type Configuration = {
 }
 
 export type Hooks = {
-  onBeforeInit?: (instance: TheSuperSonicPlugin) => void
-  onAfterInit?: (instance: TheSuperSonicPlugin) => void
+  onBeforeInit?: (plugin: TheSuperSonicPlugin) => void
+  onAfterInit?: (plugin: TheSuperSonicPlugin) => void
 
-  onBeforeRender?: (instance: TheSuperSonicPlugin) => void
-  onAfterRender?: (instance: TheSuperSonicPlugin) => void
+  /** You can `return false` inside your hook, it will cancel rendering */
+  onBeforeRender?: (plugin: TheSuperSonicPlugin) => void | undefined | boolean
+  onAfterRender?: (plugin: TheSuperSonicPlugin) => void
 
-  onBeforeResize?: (instance: TheSuperSonicPlugin) => void
-  onAfterResize?: (instance: TheSuperSonicPlugin) => void
+  onBeforeResize?: (plugin: TheSuperSonicPlugin) => void
+  onAfterResize?: (plugin: TheSuperSonicPlugin) => void
 }
 
 export type Render = {

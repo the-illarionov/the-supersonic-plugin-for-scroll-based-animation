@@ -19,7 +19,7 @@
         }
 
         .foo {
-            animation-duration: 1s, 1s;
+            animation-duration: 10s, 10s;
             animation-play-state: paused, paused;
             animation-name: bar, qwe;
             animation-timing-function: linear, linear;
@@ -34,12 +34,12 @@
 
     <div class="foo" style="position: fixed; left: 0; top: 0; width: 20px; height: 20px; background: red"></div>
 
-    <div class="foo" style="position: fixed; left: 0; top: 100px; width: 20px; height: 20px; background: red"></div>
+    <div class="foo" data-foo="true" style="position: fixed; left: 0; top: 100px; width: 20px; height: 20px; background: red"></div>
 
     <div class="end" style="position: absolute; top: 1000vh"></div>
 
 
-    <div class="end-2" style="position: absolute; top: 500vh"></div>
+    <div class="end-2" style="position: absolute; top: 300vh"></div>
 
     <div style="height: 1000vh"></div>
     <script type="module" src="/src/main.ts"></script>

@@ -10,7 +10,13 @@ import type { Configuration, Hooks, Render } from './TheSupersonicPlugin.types'
  *
  * @example
  * const plugin = new TheSuperSonicPlugin({
- *  // config
+ *   drivers: {
+ *     'name-of-your-driver': {
+ *        start: document.querySelector('.start'),
+ *        end: document.querySelector('.end'),
+ *        elements: ['.animatable-element']
+ *      }
+ *   }
  * });
  *
  */
@@ -24,10 +30,10 @@ export class TheSuperSonicPlugin {
   /** Required to get all of the drivers render at once to stand on their first frame */
   renderedInitially: boolean = false
 
+  /** Used to cancelAnimationFrame on 'uninit()' */
   rafId = 0
 
-  hooks: Hooks = {}
-
+  /** Color of console messages in dev mode. It changes each frame to make it more convenient to visually separate frames */
   consoleColor = '#ffffff'
 
   /** IntersectionObserver instance */
@@ -36,9 +42,9 @@ export class TheSuperSonicPlugin {
   /** Debounced resize listener */
   onResize: EventListener | null = null
 
-  /** All Driver instances */
+  hooks: Hooks = {}
+
   driverInstances: Map<string, Driver> = new Map()
-  /** All active Driver instances */
   driverActiveInstances: Set<Driver> = new Set()
 
   constructor({ drivers, hooks = {} }: Configuration) {
@@ -110,8 +116,12 @@ export class TheSuperSonicPlugin {
   render({ useActiveDrivers }: Render) {
     this.updateScroll()
 
-    if (this.hooks.onBeforeRender)
-      this.hooks.onBeforeRender(this)
+    if (this.hooks.onBeforeRender) {
+      const onBeforeRenderReturn = this.hooks.onBeforeRender(this)
+
+      if (typeof onBeforeRenderReturn !== 'undefined' && !onBeforeRenderReturn)
+        return false
+    }
 
     const drivers = useActiveDrivers ? this.driverActiveInstances.values() : this.driverInstances.values()
 

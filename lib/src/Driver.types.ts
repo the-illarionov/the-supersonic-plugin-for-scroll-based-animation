@@ -22,13 +22,14 @@ export type CalculateProgress = {
 }
 
 export type Hooks = {
-  onBeforeInit?: (instance: Driver) => any
-  onAfterInit?: (instance: Driver) => any
-  onBeforeRender?: (instance: Driver) => any
-  onAfterRender?: (instance: Driver) => any
-  onActivation?: (instance: Driver) => any
-  onDeactivation?: (instance: Driver) => any
-  onUpdateLimits?: (instance: Driver) => any
+  onBeforeInit?: (driver: Driver) => void
+  onAfterInit?: (driver: Driver) => void
+  /** You can `return false` inside your hook, it will cancel rendering */
+  onBeforeRender?: (driver: Driver) => void | undefined | boolean
+  onAfterRender?: (driver: Driver) => void
+  onActivation?: (driver: Driver) => void
+  onDeactivation?: (driver: Driver) => void
+  onUpdateLimits?: (driver: Driver) => void
 }
 
 export type Configuration = {
@@ -47,7 +48,7 @@ export type BorderConstructor = {
 }
 
 export type HelperConstructor = {
-  driver: Driver
+  id: string
 }
 
 export type UpdateLimits = {
@@ -61,4 +62,6 @@ export type BorderUpdateLimits = {
 
 export type HelperUpdateLimits = {
   screenHeight: number
+  start: number
+  end: number
 }

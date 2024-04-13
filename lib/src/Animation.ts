@@ -1,16 +1,43 @@
-import type { Constructor, Render } from './Animation.types'
+import type { Constructor, Hooks, Render } from './Animation.types'
+import type { Driver } from './Driver'
 
 export class Animation {
   id: string
-  animation: CSSAnimation
 
-  constructor({ id, animation }: Constructor) {
+  cssAnimation: CSSAnimation
+
+  /** You can store your custom data here to use between hooks */
+  data: any = {}
+
+  /** Reference to linked `Driver` instance */
+  driver: Driver
+
+  domElement: HTMLElement
+
+  hooks: Hooks
+
+  constructor({ id, cssAnimation, hooks, driver, domElement }: Constructor) {
     this.id = id
-    this.animation = animation
+    this.driver = driver
+    this.cssAnimation = cssAnimation
+    this.hooks = hooks
+    this.domElement = domElement
+
+    if (this.hooks.onInit)
+      this.hooks.onInit(this)
   }
 
   render({ driverProgress }: Render) {
-    // как будто хук может вовзращать driverProgress
-    this.animation.currentTime = driverProgress * 1000
+    if (this.hooks.onBeforeRender) {
+      const onBeforeRenderReturn = this.hooks.onBeforeRender(this)
+
+      if (typeof onBeforeRenderReturn !== 'undefined' && !onBeforeRenderReturn)
+        return false
+    }
+
+    this.cssAnimation.currentTime = driverProgress * 10000
+
+    if (this.hooks.onAfterRender)
+      this.hooks.onAfterRender(this)
   }
 }
