@@ -21,6 +21,8 @@ export default defineConfig(({ mode }) => {
     test: {
       environment: 'jsdom',
     },
-    plugins: [dts()],
+    plugins: [dts({
+      exclude: ['**/*.test.ts', '**/utils.ts'],
+    })],
   }
 })

@@ -31,7 +31,7 @@
   ],
   "browser": "./lib/dist/the-supersonic-plugin-for-scroll-based-animation.js",
   "unpkg": "./lib/dist/the-supersonic-plugin-for-scroll-based-animation.js",
-  "types": "./lib/dist/main.d.ts",
+  "types": "./lib/dist/index.d.ts",
   "files": ["./lib/dist"],
   "scripts": {
     "lint": "eslint . && stylelint '**/*.css'",
