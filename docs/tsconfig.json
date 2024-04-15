@@ -23,5 +23,5 @@
     "isolatedModules": true,
     "skipLibCheck": true
   },
-  "include": ["src", "playwright.config.ts", "vite.config.ts", "env.d.ts"]
+  "include": ["src", "vite.config.ts", "env.d.ts"]
 }

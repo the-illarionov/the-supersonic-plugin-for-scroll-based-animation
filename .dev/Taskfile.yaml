@@ -18,7 +18,6 @@ tasks:
       - task root:yarn
       - task lib:yarn
       - task docs:yarn
-      - docker pull $PLAYWRIGHT_IMAGE
       - docker build -t unit-tests-ui - < ./UnitTestUi.Dockerfile --build-arg NODE_IMAGE
 
   up:
@@ -148,7 +147,7 @@ tasks:
           $NODE_IMAGE /bin/bash -c "yarn build"
 
   # TESTS
-  test:unit:
+  test:
     desc: runs unit tests in 'lib' directory
     cmds:
       - |
@@ -157,28 +156,3 @@ tasks:
           -w /app \
           $NODE_IMAGE \
           yarn test:unit
-
-  test:e2e:
-    desc: runs e2e tests in 'docs' directory
-    cmds:
-      - |
-        docker run --user {{.MY_UID}}:{{.MY_GID}} \
-          --rm --network="host" --ipc=host \
-          -v $(pwd)/../docs:/app \
-          -w /app \
-          $PLAYWRIGHT_IMAGE \
-          yarn test:e2e
-
-  test:e2e:ui:
-    desc: runs e2e tests in 'docs' directory in UI mode (works only in Linux)
-    # TODO: Please refer to https://www.oddbird.net/2022/11/30/headed-playwright-in-docker/ if you want to make it work on Windows or macOS
-    cmds:
-      - |
-        docker run --user {{.MY_UID}}:{{.MY_GID}} \
-          --rm --network="host" --ipc=host \
-          -e DISPLAY=${DISPLAY} \
-          -v /tmp/.X11-unix:/tmp/.X11-unix \
-          -v $(pwd)/../docs:/app \
-          -w /app \
-          $PLAYWRIGHT_IMAGE \
-          yarn test:e2e:ui
