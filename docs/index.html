@@ -26,6 +26,27 @@
         height: 5px;
         background: red;
       }
+
+      .foo {
+        position: fixed;
+        z-index: 100;
+        left: 0;
+        top: 0;
+        width: 50px;
+        height: 50px;
+        background: yellow;
+
+        animation-name: foo;
+        animation-duration: 10s;
+        animation-play-state: paused;
+        animation-fill-mode: forwards;
+      }
+
+      @keyframes foo {
+        to {
+          translate: calc(100vw - 50px) 0 0;
+        }
+      }
     </style>
   </head>
   <body>
@@ -256,11 +277,10 @@
       </iframe>
     </div>
 
-    <!-- <div class="start" style="top: 100vh"></div>
+    <div class="start" style="top: 100vh"></div>
     <div class="end" style="top: 200vh"></div>
     <div class="foo"></div>
 
     <script type="module" src="/src/main.ts"></script>
-    -->
   </body>
 </html>

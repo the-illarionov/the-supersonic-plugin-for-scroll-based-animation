@@ -176,14 +176,16 @@ export class Driver {
   updateLimits({ scroll, screenHeight }: UpdateLimits) {
     this.start.updateLimits({ scroll, screenHeight })
     this.end.updateLimits({ scroll, screenHeight })
+
+    const top = this.start.top + screenHeight
+    const bottom = this.end.top - top
     this.helper.updateLimits({
-      top: this.start.top,
-      bottom: this.end.top,
-      screenHeight,
+      top,
+      height: bottom - top,
     })
 
     if (this.hooks.onUpdateLimits)
-      this.hooks.onUpdateLimits(this)
+      this.hooks.onUpdateLimits({ driver: this, scroll, screenHeight })
   }
 
   /** Activates driver when it becomes visible on the screen */
@@ -244,18 +246,19 @@ class Helper {
 
     document.body.appendChild(this.domElement)
 
-    /* this.domElement.style.left
+    this.domElement.style.left
         = `${Array.from(document.querySelectorAll('[data-supersonic-type=\'helper\']')).indexOf(this.domElement) * 5
          }px`
     this.domElement.style.width = '50px'
     this.domElement.style.background = 'blue'
-    this.domElement.style.opacity = '0.5' */
+    this.domElement.style.opacity = '0.5'
   }
 
-  /** Recalculates position of helper */
-  updateLimits({ top, bottom, screenHeight }: HelperUpdateLimits) {
+  /** Sets position of helper */
+  updateLimits({ top, height }: HelperUpdateLimits) {
+    if (height <= 0)
+      height = 1
     this.domElement.style.setProperty('top', `${top}px`)
-    const height = bottom - top + screenHeight
     this.domElement.style.setProperty('height', `${height}px`)
   }
 

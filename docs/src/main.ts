@@ -5,6 +5,15 @@ const f = new TheSuperSonicPlugin({
     foo: {
       start: document.querySelector('.start'),
       end: document.querySelector('.end'),
+      elements: ['.foo'],
+      hooks: {
+        onUpdateLimits({ driver, screenHeight }) {
+          driver.helper.updateLimits({
+            top: driver.start.top,
+            height: driver.end.top - driver.start.top + screenHeight,
+          })
+        },
+      },
     },
   },
 })

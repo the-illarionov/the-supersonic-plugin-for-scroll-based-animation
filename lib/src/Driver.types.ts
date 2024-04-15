@@ -30,7 +30,7 @@ export type Hooks = {
   onAfterRender?: (driver: Driver) => void
   onActivation?: (driver: Driver) => void
   onDeactivation?: (driver: Driver) => void
-  onUpdateLimits?: (driver: Driver) => void
+  onUpdateLimits?: ({ driver, scroll, screenHeight }: { driver: Driver, scroll: number, screenHeight: number }) => void
 }
 
 export type Configuration = {
@@ -65,6 +65,5 @@ export type BorderUpdateLimits = {
 
 export type HelperUpdateLimits = {
   top: number
-  bottom: number
-  screenHeight: number
+  height: number
 }
