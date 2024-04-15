@@ -1,4 +1,4 @@
-/* import { TheSuperSonicPlugin } from '../../lib/src/index'
+import { TheSuperSonicPlugin } from '../../lib/src/index'
 
 const f = new TheSuperSonicPlugin({
   drivers: {
@@ -9,4 +9,4 @@ const f = new TheSuperSonicPlugin({
   },
 })
 
-console.log(f) */
+console.log(f)
