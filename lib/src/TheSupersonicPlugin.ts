@@ -21,6 +21,8 @@ import type { Configuration, Hooks, Render } from './TheSupersonicPlugin.types'
  *
  */
 export class TheSuperSonicPlugin {
+  /** Unique id of thisrunning instance */
+  id: string
   /** Current window scrollY */
   scroll = 0
 
@@ -48,6 +50,7 @@ export class TheSuperSonicPlugin {
   driverActiveInstances: Set<Driver> = new Set()
 
   constructor({ drivers, hooks = {} }: Configuration) {
+    this.id = Math.random().toString(16).substring(2)
     this.hooks = hooks
 
     if (this.hooks?.onBeforeInit)
@@ -61,6 +64,7 @@ export class TheSuperSonicPlugin {
         start: drivers[id].start,
         end: drivers[id].end,
         elements: drivers[id].elements,
+        pluginId: this.id,
       })
       this.driverInstances.set(id, driver)
     }
@@ -68,7 +72,7 @@ export class TheSuperSonicPlugin {
     this.updateLimits()
 
     // Creating IntersectionObserver, which handles "active" state on Driver instances
-    const observables = Array.from(document.querySelectorAll<HTMLElement>('[data-supersonic-type="helper"]'))
+    const observables = Array.from(document.querySelectorAll<HTMLElement>(`[data-supersonic-type="helper"][data-supersonic-plugin-id="${this.id}"]`))
     this.observer = new Observer({
       observables,
       driverInstances: this.driverInstances,

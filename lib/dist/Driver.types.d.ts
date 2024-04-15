@@ -7,6 +7,7 @@ export type Constructor = {
     start: HTMLElement | null;
     end: HTMLElement | null;
     elements?: AnimationSelector[];
+    pluginId: string;
 };
 export type Render = {
     scroll: number;
@@ -32,7 +33,7 @@ export type Configuration = {
     [id: string]: {
         start: HTMLElement | null;
         end: HTMLElement | null;
-        elements: AnimationSelector[];
+        elements?: AnimationSelector[];
         hooks?: Hooks;
     };
 };
@@ -43,6 +44,7 @@ export type BorderConstructor = {
 };
 export type HelperConstructor = {
     id: string;
+    pluginId: string;
 };
 export type UpdateLimits = {
     scroll: number;

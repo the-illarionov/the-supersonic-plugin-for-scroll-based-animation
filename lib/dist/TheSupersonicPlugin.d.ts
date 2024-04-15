@@ -19,6 +19,8 @@ import { Driver } from './Driver';
  *
  */
 export declare class TheSuperSonicPlugin {
+    /** Unique id of thisrunning instance */
+    id: string;
     /** Current window scrollY */
     scroll: number;
     /** Current screen height */

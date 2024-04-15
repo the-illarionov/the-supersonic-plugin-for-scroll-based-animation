@@ -4,6 +4,7 @@ import { Driver } from './Driver'
 it('adds onBeforeInit hook', () => {
   const driver = new Driver({
     id: 'id',
+    pluginId: 'plugin',
     start: {} as HTMLElement,
     end: {} as HTMLElement,
     hooks: {
@@ -19,6 +20,7 @@ it('adds onBeforeInit hook', () => {
 it('adds onAfterInit hook', () => {
   const driver = new Driver({
     id: 'id',
+    pluginId: 'plugin',
     start: {} as HTMLElement,
     end: {} as HTMLElement,
     hooks: {
@@ -34,6 +36,7 @@ it('adds onAfterInit hook', () => {
 it('adds onBeforeRender hook', () => {
   const driver = new Driver({
     id: 'id',
+    pluginId: 'plugin',
     start: {} as HTMLElement,
     end: {} as HTMLElement,
     hooks: {
@@ -55,6 +58,7 @@ it('adds onBeforeRender hook', () => {
 it('adds onAfterRender hook', () => {
   const driver = new Driver({
     id: 'id',
+    pluginId: 'plugin',
     start: {} as HTMLElement,
     end: {} as HTMLElement,
     hooks: {
@@ -74,6 +78,7 @@ it('adds onUpdateLimits hook', () => {
 
   const driver = new Driver({
     id: 'id',
+    pluginId: 'plugin',
     start,
     end,
     hooks: {
@@ -93,6 +98,7 @@ it('creates borders and tests "updateLimits"', () => {
 
   const driver = new Driver({
     id: 'id',
+    pluginId: 'plugin',
     start,
     end,
   })
@@ -106,6 +112,7 @@ it('creates borders and tests "updateLimits"', () => {
 it('creates helper and tests "updateLimits"', () => {
   const driver = new Driver({
     id: 'id',
+    pluginId: 'plugin',
     start: {} as HTMLElement,
     end: {} as HTMLElement,
   })
@@ -121,6 +128,7 @@ it('renders and calculates progress', () => {
 
   const driver = new Driver({
     id: 'id',
+    pluginId: 'plugin',
     start,
     end,
   })
@@ -140,6 +148,7 @@ it('reports an error if element is not found', () => {
     // eslint-disable-next-line no-new
     new Driver({
       id: 'id',
+      pluginId: 'plugin',
       start: {} as HTMLElement,
       end: {} as HTMLElement,
       elements: ['.foo'],
@@ -156,6 +165,7 @@ it('warns in console if element hasn\'t animations', () => {
   // eslint-disable-next-line no-new
   new Driver({
     id: 'id',
+    pluginId: 'plugin',
     start: {} as HTMLElement,
     end: {} as HTMLElement,
     elements: ['.animatable-element'],
@@ -169,6 +179,7 @@ it('creates animations from simple config', () => {
 
   const driver = new Driver({
     id: 'driver-id',
+    pluginId: 'plugin',
     start: {} as HTMLElement,
     end: {} as HTMLElement,
     elements: ['.animatable-element'],
@@ -183,6 +194,7 @@ it('creates only specified animations', () => {
 
   const driver = new Driver({
     id: 'driver-id',
+    pluginId: 'plugin',
     start: {} as HTMLElement,
     end: {} as HTMLElement,
     elements: [{
@@ -200,6 +212,7 @@ it('adds onInit hook to animation', () => {
 
   const driver = new Driver({
     id: 'driver-id',
+    pluginId: 'plugin',
     start: {} as HTMLElement,
     end: {} as HTMLElement,
     elements: [{
@@ -224,6 +237,7 @@ it('renders animation', () => {
 
   const driver = new Driver({
     id: 'driver-id',
+    pluginId: 'plugin',
     start,
     end,
     elements: ['.animatable-element'],
@@ -242,6 +256,7 @@ it('adds onBeforeRender hook to animation', () => {
 
   const driver = new Driver({
     id: 'driver-id',
+    pluginId: 'plugin',
     start,
     end,
     elements: [{
