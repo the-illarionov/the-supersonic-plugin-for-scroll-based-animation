@@ -136,7 +136,7 @@ export class Driver {
     if (this.hooks.onBeforeRender) {
       const onBeforeRenderReturn = this.hooks.onBeforeRender(this)
 
-      if (typeof onBeforeRenderReturn !== 'undefined' && !onBeforeRenderReturn)
+      if (typeof onBeforeRenderReturn === 'boolean' && !onBeforeRenderReturn)
         return false
     }
 

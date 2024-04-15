@@ -28,14 +28,19 @@ export class Animation {
   }
 
   render({ driverProgress }: Render) {
+    let currentTime = driverProgress * 10000
+
     if (this.hooks.onBeforeRender) {
       const onBeforeRenderReturn = this.hooks.onBeforeRender(this)
 
-      if (typeof onBeforeRenderReturn !== 'undefined' && !onBeforeRenderReturn)
+      if (typeof onBeforeRenderReturn === 'number')
+        currentTime = onBeforeRenderReturn
+
+      else if (typeof onBeforeRenderReturn === 'boolean' && !onBeforeRenderReturn)
         return false
     }
 
-    this.cssAnimation.currentTime = driverProgress * 10000
+    this.cssAnimation.currentTime = currentTime
 
     if (this.hooks.onAfterRender)
       this.hooks.onAfterRender(this)

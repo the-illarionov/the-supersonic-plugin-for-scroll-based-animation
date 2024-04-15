@@ -11,8 +11,8 @@ export type Constructor = {
 
 export type Hooks = {
   onInit?: (animation: Animation) => void
-  /** You can `return false` inside your hook, it will cancel rendering */
-  onBeforeRender?: (animation: Animation) => void | undefined | boolean
+  /** You can `return false` inside your hook, it will cancel rendering. Or you can return a number, it will be an animation currentTime */
+  onBeforeRender?: (animation: Animation) => void | undefined | boolean | number
   onAfterRender?: (animation: Animation) => void
 }
 

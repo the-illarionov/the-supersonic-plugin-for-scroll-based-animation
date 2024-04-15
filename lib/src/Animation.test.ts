@@ -53,6 +53,24 @@ it('adds onBeforeRender hook', () => {
   expect(animation.cssAnimation.currentTime).toBe(0)
 })
 
+it('manually sets animation.currentTime', () => {
+  const animation = new Animation({
+    id: 'animation-id',
+    driver: {} as Driver,
+    hooks: {
+      onBeforeRender() {
+        return 100
+      },
+    },
+    cssAnimation: { currentTime: 0 } as CSSAnimation,
+    domElement: {} as HTMLElement,
+  })
+
+  animation.render({ driverProgress: 0.1234 })
+
+  expect(animation.cssAnimation.currentTime).toBe(100)
+})
+
 it('adds onAfterRender hook', () => {
   const animation = new Animation({
     id: 'animation-id',
