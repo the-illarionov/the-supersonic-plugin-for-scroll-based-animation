@@ -254,10 +254,8 @@ class Helper {
 
   /** Recalculates position of helper */
   updateLimits({ top, bottom, screenHeight }: HelperUpdateLimits) {
-    this.domElement.style.setProperty('top', `${top + screenHeight}px`)
-    let height = bottom - (top + screenHeight)
-    if (height <= 0)
-      height = 1
+    this.domElement.style.setProperty('top', `${top}px`)
+    const height = bottom - top + screenHeight
     this.domElement.style.setProperty('height', `${height}px`)
   }
 

@@ -119,8 +119,8 @@ it('creates helper and tests "updateLimits"', () => {
 
   driver.helper.updateLimits({ top: 500, bottom: 800, screenHeight: 1000 })
 
-  expect(driver.helper.domElement.style.top).toBe('1500px')
-  expect(driver.helper.domElement.style.height).toBe('1px')
+  expect(driver.helper.domElement.style.top).toBe('500px')
+  expect(driver.helper.domElement.style.height).toBe('1300px')
 })
 
 it('renders and calculates progress', () => {
