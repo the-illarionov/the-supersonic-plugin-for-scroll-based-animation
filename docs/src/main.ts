@@ -1,5 +1,3 @@
-import './main.css'
-
 /* import { TheSuperSonicPlugin } from '../../lib/src/index'
 
 const f = new TheSuperSonicPlugin({
@@ -7,10 +5,8 @@ const f = new TheSuperSonicPlugin({
     foo: {
       start: document.querySelector('.start'),
       end: document.querySelector('.end'),
-      elements: ['.foo'],
     },
   },
 })
 
-console.log(f)
- */
+console.log(f) */
