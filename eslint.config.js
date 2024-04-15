@@ -1,5 +1,4 @@
 import antfu from '@antfu/eslint-config'
-import tailwind from '@kalimahapps/eslint-plugin-tailwind'
 
 export default antfu({
   formatters: {
@@ -11,17 +10,7 @@ export default antfu({
     '**/dist/',
   ],
 }, {
-  plugins: {
-    tailwind,
-  },
   rules: {
-    'tailwind/sort': 'error',
-    'tailwind/multiline': [
-      'error',
-      {
-        maxLen: 40,
-      },
-    ],
     'array-bracket-newline': [
       'error',
       'consistent',

@@ -36,20 +36,13 @@
     "./lib/dist"
   ],
   "scripts": {
-    "lint": "eslint . && stylelint '**/*.css'",
-    "lint:fix": "eslint . --fix && stylelint '**/*.css' --fix"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.12.2",
-    "@kalimahapps/eslint-plugin-tailwind": "^1.0.10",
-    "@stylistic/stylelint-config": "^1.0.1",
-    "@stylistic/stylelint-plugin": "^2.1.1",
     "eslint": "^8.56.0",
     "eslint-plugin-format": "^0.1.0",
-    "postcss-html": "^1.6.0",
-    "stylelint": "^16.3.1",
-    "stylelint-config-clean-order": "^5.4.2",
-    "stylelint-config-standard": "^36.0.0",
     "typescript": "~5.4.0"
   }
 }

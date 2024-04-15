@@ -12,7 +12,7 @@
     "test:e2e:report": "playwright show-report --host 0.0.0.0 --port 8000"
   },
   "devDependencies": {
-    "@playwright/test": "^1.43.0",
+    "@playwright/test": "^1.43.1",
     "@types/node": "^20.12.7",
     "typescript": "^5.2.2",
     "vite": "^5.2.0"
