@@ -174,11 +174,11 @@ export class Driver {
 
   /** Recalculates DOM elements top offset */
   updateLimits({ scroll, screenHeight }: UpdateLimits) {
-    this.start.updateLimits({ scroll })
-    this.end.updateLimits({ scroll })
+    this.start.updateLimits({ scroll, screenHeight })
+    this.end.updateLimits({ scroll, screenHeight })
     this.helper.updateLimits({
-      start: this.start.top,
-      end: this.end.top,
+      top: this.start.top,
+      bottom: this.end.top,
       screenHeight,
     })
 
@@ -218,8 +218,8 @@ class Border {
   }
 
   /** Recalculates top offset */
-  updateLimits({ scroll }: BorderUpdateLimits) {
-    this.top = ~~this.domElement.getBoundingClientRect().top + scroll
+  updateLimits({ scroll, screenHeight }: BorderUpdateLimits) {
+    this.top = ~~this.domElement.getBoundingClientRect().top + scroll - screenHeight
   }
 }
 
@@ -244,20 +244,21 @@ class Helper {
 
     document.body.appendChild(this.domElement)
 
-    /*
-    this.domElement.style.left =
-        Array.from(document.querySelectorAll("[data-supersonic-type='helper']")).indexOf(this.domElement) * 5 +
-        "px"
-    */
+    /* this.domElement.style.left
+        = `${Array.from(document.querySelectorAll('[data-supersonic-type=\'helper\']')).indexOf(this.domElement) * 5
+         }px`
+    this.domElement.style.width = '50px'
+    this.domElement.style.background = 'blue'
+    this.domElement.style.opacity = '0.5' */
   }
 
   /** Recalculates position of helper */
-  updateLimits({ start, end, screenHeight }: HelperUpdateLimits) {
-    const top = start + screenHeight
-    const bottom = end + screenHeight
-
-    this.domElement.style.setProperty('top', `${top}px`)
-    this.domElement.style.setProperty('height', `${bottom - top}px`)
+  updateLimits({ top, bottom, screenHeight }: HelperUpdateLimits) {
+    this.domElement.style.setProperty('top', `${top + screenHeight}px`)
+    let height = bottom - (top + screenHeight)
+    if (height <= 0)
+      height = 1
+    this.domElement.style.setProperty('height', `${height}px`)
   }
 
   /** Deletes helper DOM element */

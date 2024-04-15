@@ -18,7 +18,7 @@
             }
         }
 
-        .foo, .foo-2 {
+        .foo, .foo-2, .foo-3 {
             animation-duration: 10s, 10s;
             animation-play-state: paused, paused;
             animation-name: bar, qwe;
@@ -28,7 +28,7 @@
     </style>
   </head>
   <body>
-    <div class="start"></div>
+    <div class="start" style="position: absolute; top: 0"></div>
 
     <div class="start-2" style="position: absolute; top: 100vh"></div>
 
@@ -36,10 +36,14 @@
 
     <div class="foo-2" data-foo="true" style="position: fixed; left: 0; top: 100px; width: 20px; height: 20px; background: red"></div>
 
-    <div class="end" style="position: absolute; top: 1000vh"></div>
+    <div class="foo-3" data-foo="true" style="position: absolute; left: 0; top: 100vh; width: 20px; height: 20px; background: orange"></div>
+
+    <div class="end" style="position: absolute; top: 200vh; background: yellow; height: 10px; width: 10px; z-index: 100"></div>
 
 
     <div class="end-2" style="position: absolute; top: 300vh"></div>
+
+    <div class="end-3" style="position: absolute; top: 200vh"></div>
 
     <div style="height: 1000vh"></div>
     <script type="module" src="/src/main.ts"></script>

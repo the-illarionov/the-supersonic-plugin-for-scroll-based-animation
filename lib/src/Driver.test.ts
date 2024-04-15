@@ -103,10 +103,10 @@ it('creates borders and tests "updateLimits"', () => {
     end,
   })
 
-  driver.updateLimits({ scroll: 100, screenHeight: 0 })
+  driver.updateLimits({ scroll: 100, screenHeight: 1000 })
 
-  expect(driver.start.top).toBe(200)
-  expect(driver.end.top).toBe(1100)
+  expect(driver.start.top).toBe(100)
+  expect(driver.end.top).toBe(2100)
 })
 
 it('creates helper and tests "updateLimits"', () => {
@@ -117,10 +117,10 @@ it('creates helper and tests "updateLimits"', () => {
     end: {} as HTMLElement,
   })
 
-  driver.helper.updateLimits({ start: 500, end: 800, screenHeight: 1000 })
+  driver.helper.updateLimits({ top: 500, bottom: 800, screenHeight: 1000 })
 
   expect(driver.helper.domElement.style.top).toBe('1500px')
-  expect(driver.helper.domElement.style.height).toBe('300px')
+  expect(driver.helper.domElement.style.height).toBe('1px')
 })
 
 it('renders and calculates progress', () => {
@@ -133,10 +133,10 @@ it('renders and calculates progress', () => {
     end,
   })
 
-  driver.updateLimits({ scroll: 0, screenHeight: 0 })
+  driver.updateLimits({ scroll: 0, screenHeight: 1000 })
 
   driver.render({
-    scroll: 550,
+    scroll: 1000,
     renderedInitially: false,
   })
 
@@ -245,7 +245,7 @@ it('renders animation', () => {
 
   driver.updateLimits({ scroll: 0, screenHeight: 1000 })
 
-  driver.render({ scroll: 550, renderedInitially: false })
+  driver.render({ scroll: 1000, renderedInitially: false })
 
   expect(driver.animations.get(firstAnimation)?.cssAnimation.currentTime).toBe(5000)
 })
@@ -294,12 +294,12 @@ function createStartAndEnd() {
 
   // @ts-expect-error not full implementation of DOMRect
   start.getBoundingClientRect = vi.fn(() => ({
-    top: 100,
+    top: 1000,
   }))
 
   // @ts-expect-error not full implementation of DOMRect
   end.getBoundingClientRect = vi.fn(() => ({
-    top: 1000,
+    top: 3000,
   }))
 
   return { start, end }

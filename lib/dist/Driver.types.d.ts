@@ -52,9 +52,10 @@ export type UpdateLimits = {
 };
 export type BorderUpdateLimits = {
     scroll: number;
+    screenHeight: number;
 };
 export type HelperUpdateLimits = {
+    top: number;
+    bottom: number;
     screenHeight: number;
-    start: number;
-    end: number;
 };

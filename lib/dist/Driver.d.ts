@@ -39,7 +39,7 @@ declare class Border {
     top: number;
     constructor({ domElement, type, driver }: BorderConstructor);
     /** Recalculates top offset */
-    updateLimits({ scroll }: BorderUpdateLimits): void;
+    updateLimits({ scroll, screenHeight }: BorderUpdateLimits): void;
 }
 /** A helper HTML element, which connects to Border instances and starts being tracked by IntersectionObserver */
 declare class Helper {
@@ -48,7 +48,7 @@ declare class Helper {
     pluginId: string;
     constructor({ id, pluginId }: HelperConstructor);
     /** Recalculates position of helper */
-    updateLimits({ start, end, screenHeight }: HelperUpdateLimits): void;
+    updateLimits({ top, bottom, screenHeight }: HelperUpdateLimits): void;
     /** Deletes helper DOM element */
     uninit(): void;
 }
