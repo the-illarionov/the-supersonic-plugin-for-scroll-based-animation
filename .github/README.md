@@ -126,9 +126,9 @@ new TheSupersonicPluginForScrollBasedAnimation({
 <script src="https://unpkg.com/the-supersonic-plugin-for-scroll-based-animation"></script>
 
 <script>
-    new TheSupersonicPluginForScrollBasedAnimation({
-        // ...configuration
-    })
+  new TheSupersonicPluginForScrollBasedAnimation({
+    // ...configuration
+  })
 </script>
 ```
 ### IIFE Uncompressed
@@ -136,29 +136,29 @@ new TheSupersonicPluginForScrollBasedAnimation({
 <script src="https://unpkg.com/the-supersonic-plugin-for-scroll-based-animation/lib/the-supersonic-plugin-for-scroll-based-animation.iife.js"></script>
 
 <script>
-    new TheSupersonicPluginForScrollBasedAnimation({
-        // ...configuration
-    })
+  new TheSupersonicPluginForScrollBasedAnimation({
+    // ...configuration
+  })
 </script>
 ```
 ### ESM Minified
 ```html
 <script type="module">
-    import TheSupersonicPluginForScrollBasedAnimation from "https://unpkg.com/the-supersonic-plugin-for-scroll-based-animation/lib/the-supersonic-plugin-for-scroll-based-animation.min.js"
+  import TheSupersonicPluginForScrollBasedAnimation from 'https://unpkg.com/the-supersonic-plugin-for-scroll-based-animation/lib/the-supersonic-plugin-for-scroll-based-animation.min.js'
 
-    new TheSupersonicPluginForScrollBasedAnimation({
-        // ...configuration
-    })
+  new TheSupersonicPluginForScrollBasedAnimation({
+    // ...configuration
+  })
 </script>
 ```
 ### ESM Uncompressed
 ```html
 <script type="module">
-    import TheSupersonicPluginForScrollBasedAnimation from "https://unpkg.com/the-supersonic-plugin-for-scroll-based-animation/lib/the-supersonic-plugin-for-scroll-based-animation.js"
+  import TheSupersonicPluginForScrollBasedAnimation from 'https://unpkg.com/the-supersonic-plugin-for-scroll-based-animation/lib/the-supersonic-plugin-for-scroll-based-animation.js'
 
-    new TheSupersonicPluginForScrollBasedAnimation({
-        // ...configuration
-    })
+  new TheSupersonicPluginForScrollBasedAnimation({
+    // ...configuration
+  })
 </script>
 ```
 

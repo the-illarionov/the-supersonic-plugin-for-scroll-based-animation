@@ -2,6 +2,9 @@ import antfu from '@antfu/eslint-config'
 import tailwind from '@kalimahapps/eslint-plugin-tailwind'
 
 export default antfu({
+  formatters: {
+    html: true,
+  },
   ignores: [
     '**/playwright-report/',
     '**/test-results/',

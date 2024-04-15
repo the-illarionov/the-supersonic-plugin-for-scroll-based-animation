@@ -32,7 +32,9 @@
   "browser": "./lib/dist/the-supersonic-plugin-for-scroll-based-animation.js",
   "unpkg": "./lib/dist/the-supersonic-plugin-for-scroll-based-animation.iife.js",
   "types": "./lib/dist/index.d.ts",
-  "files": ["./lib/dist"],
+  "files": [
+    "./lib/dist"
+  ],
   "scripts": {
     "lint": "eslint . && stylelint '**/*.css'",
     "lint:fix": "eslint . --fix && stylelint '**/*.css' --fix"
@@ -43,6 +45,7 @@
     "@stylistic/stylelint-config": "^1.0.1",
     "@stylistic/stylelint-plugin": "^2.1.1",
     "eslint": "^8.56.0",
+    "eslint-plugin-format": "^0.1.0",
     "postcss-html": "^1.6.0",
     "stylelint": "^16.3.1",
     "stylelint-config-clean-order": "^5.4.2",
