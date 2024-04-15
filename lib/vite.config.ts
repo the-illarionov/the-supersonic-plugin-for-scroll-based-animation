@@ -10,7 +10,8 @@ export default defineConfig(({ mode }) => {
       lib: {
         entry: resolve(__dirname, 'src/index.ts'),
         fileName: 'the-supersonic-plugin-for-scroll-based-animation',
-        formats: ['es'],
+        name: 'TheSuperSonicPlugin',
+        formats: ['es', 'iife'],
       },
     },
     esbuild: {
