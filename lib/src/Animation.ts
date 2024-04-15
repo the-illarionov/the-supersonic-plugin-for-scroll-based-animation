@@ -24,14 +24,14 @@ export class Animation {
     this.domElement = domElement
 
     if (this.hooks.onInit)
-      this.hooks.onInit(this)
+      this.hooks.onInit({ animation: this })
   }
 
   render({ driverProgress }: Render) {
     let currentTime = driverProgress * 10000
 
     if (this.hooks.onBeforeRender) {
-      const onBeforeRenderReturn = this.hooks.onBeforeRender(this)
+      const onBeforeRenderReturn = this.hooks.onBeforeRender({ animation: this })
 
       if (typeof onBeforeRenderReturn === 'number')
         currentTime = onBeforeRenderReturn
@@ -43,6 +43,6 @@ export class Animation {
     this.cssAnimation.currentTime = currentTime
 
     if (this.hooks.onAfterRender)
-      this.hooks.onAfterRender(this)
+      this.hooks.onAfterRender({ animation: this })
   }
 }

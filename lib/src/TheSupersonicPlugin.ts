@@ -54,7 +54,7 @@ export class TheSuperSonicPlugin {
     this.hooks = hooks
 
     if (this.hooks?.onBeforeInit)
-      this.hooks.onBeforeInit(this)
+      this.hooks.onBeforeInit({ plugin: this })
 
     // Initializing driver instances
     for (const id in drivers) {
@@ -64,7 +64,7 @@ export class TheSuperSonicPlugin {
         start: drivers[id].start,
         end: drivers[id].end,
         elements: drivers[id].elements,
-        pluginId: this.id,
+        plugin: this,
       })
       this.driverInstances.set(id, driver)
     }
@@ -82,13 +82,13 @@ export class TheSuperSonicPlugin {
     // Adding event listener for resize
     const resize = () => {
       if (this.hooks?.onBeforeResize)
-        this.hooks.onBeforeResize(this)
+        this.hooks.onBeforeResize({ plugin: this })
 
       this.updateLimits()
       this.render({ useActiveDrivers: false })
 
       if (this.hooks.onAfterResize)
-        this.hooks.onAfterResize(this)
+        this.hooks.onAfterResize({ plugin: this })
     }
     this.onResize = debounce(resize, 250)
     window.addEventListener('resize', this.onResize)
@@ -97,7 +97,7 @@ export class TheSuperSonicPlugin {
     this.renderedInitially = true
 
     if (this.hooks?.onAfterInit)
-      this.hooks.onAfterInit(this)
+      this.hooks.onAfterInit({ plugin: this })
 
     console.log('Driver instances:', this.driverInstances)
   }
@@ -121,7 +121,7 @@ export class TheSuperSonicPlugin {
     this.updateScroll()
 
     if (this.hooks.onBeforeRender) {
-      const onBeforeRenderReturn = this.hooks.onBeforeRender(this)
+      const onBeforeRenderReturn = this.hooks.onBeforeRender({ plugin: this })
 
       if (typeof onBeforeRenderReturn === 'boolean' && !onBeforeRenderReturn)
         return false
@@ -142,7 +142,7 @@ export class TheSuperSonicPlugin {
     })
 
     if (this.hooks.onAfterRender)
-      this.hooks.onAfterRender(this)
+      this.hooks.onAfterRender({ plugin: this })
 
     if (import.meta.env.DEV) {
       const randomInt = ~~(Math.random() * 100000)

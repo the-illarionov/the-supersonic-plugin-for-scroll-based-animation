@@ -7,12 +7,12 @@ const f = new TheSuperSonicPlugin({
       end: document.querySelector('.end'),
       elements: ['.foo'],
       hooks: {
-        onUpdateLimits({ driver, screenHeight }) {
+        /* onUpdateLimits({ driver }) {
           driver.helper.updateLimits({
             top: driver.start.top,
-            height: driver.end.top - driver.start.top + screenHeight,
+            height: driver.end.top - driver.start.top + driver.plugin.screenHeight,
           })
-        },
+        }, */
       },
     },
   },

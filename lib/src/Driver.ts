@@ -3,6 +3,8 @@ import { toFixed } from './utils'
 import { Animation } from './Animation'
 import type { Hooks as AnimationHooks } from './Animation.types'
 
+import type { TheSuperSonicPlugin } from './TheSupersonicPlugin'
+
 import type { BorderConstructor, BorderUpdateLimits, CalculateProgress, Constructor, HelperConstructor, HelperUpdateLimits, Hooks, Render, UpdateLimits } from './Driver.types'
 
 /**
@@ -18,8 +20,8 @@ export class Driver {
   start: Border
   /** End is linked to [data-supersonic-type="end"] HTML element */
   end: Border
-
-  pluginId: string
+  /** Link to plugin instance to be able to access global variables */
+  plugin: TheSuperSonicPlugin
 
   animations: Map<string, Animation> = new Map()
 
@@ -29,13 +31,13 @@ export class Driver {
 
   hooks: Hooks
 
-  constructor({ id, start, end, pluginId, elements = [], hooks = {} }: Constructor) {
+  constructor({ id, start, end, plugin, elements = [], hooks = {} }: Constructor) {
     this.id = id
-    this.pluginId = pluginId
+    this.plugin = plugin
     this.hooks = hooks
 
     if (this.hooks.onBeforeInit)
-      this.hooks.onBeforeInit(this)
+      this.hooks.onBeforeInit({ driver: this })
 
     // Initializing borders
     this.start = new Border({
@@ -49,7 +51,7 @@ export class Driver {
       driver: this,
     })
 
-    this.helper = new Helper({ id: this.id, pluginId: this.pluginId })
+    this.helper = new Helper({ id, pluginId: this.plugin.id })
 
     // Initializing animations
     elements.forEach((selector) => {
@@ -121,7 +123,7 @@ export class Driver {
     })
 
     if (this.hooks.onAfterInit)
-      this.hooks.onAfterInit(this)
+      this.hooks.onAfterInit({ driver: this })
   }
 
   /** Driver calculates its progress and then renders all of it's properties with progress value */
@@ -134,7 +136,7 @@ export class Driver {
     })
 
     if (this.hooks.onBeforeRender) {
-      const onBeforeRenderReturn = this.hooks.onBeforeRender(this)
+      const onBeforeRenderReturn = this.hooks.onBeforeRender({ driver: this })
 
       if (typeof onBeforeRenderReturn === 'boolean' && !onBeforeRenderReturn)
         return false
@@ -153,7 +155,7 @@ export class Driver {
       }
 
       if (this.hooks.onAfterRender)
-        this.hooks.onAfterRender(this)
+        this.hooks.onAfterRender({ driver: this })
 
       console.log(`Driver "${this.id}" finished rendering`)
       console.groupEnd()
@@ -185,13 +187,13 @@ export class Driver {
     })
 
     if (this.hooks.onUpdateLimits)
-      this.hooks.onUpdateLimits({ driver: this, scroll, screenHeight })
+      this.hooks.onUpdateLimits({ driver: this })
   }
 
   /** Activates driver when it becomes visible on the screen */
   activate() {
     if (this.hooks.onActivation)
-      this.hooks.onActivation(this)
+      this.hooks.onActivation({ driver: this })
 
     console.log(`Driver "${this.id}" activated`)
   }
@@ -199,7 +201,7 @@ export class Driver {
   /** Deactivates driver when it's progress becomes 0 or 1' */
   deactivate() {
     if (this.hooks.onDeactivation)
-      this.hooks.onDeactivation(this)
+      this.hooks.onDeactivation({ driver: this })
 
     console.log(`Driver "${this.id}" deactivated`)
   }

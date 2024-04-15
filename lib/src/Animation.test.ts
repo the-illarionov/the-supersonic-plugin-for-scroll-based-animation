@@ -8,7 +8,7 @@ it('adds onInit hook', () => {
     id: 'animation-id',
     driver: {} as Driver,
     hooks: {
-      onInit(animation) {
+      onInit({ animation }) {
         animation.data.foo = 'bar'
       },
     },
@@ -38,7 +38,7 @@ it('adds onBeforeRender hook', () => {
     id: 'animation-id',
     driver: {} as Driver,
     hooks: {
-      onBeforeRender(animation) {
+      onBeforeRender({ animation }) {
         animation.data.foo = 'bar'
         return false
       },
@@ -76,7 +76,7 @@ it('adds onAfterRender hook', () => {
     id: 'animation-id',
     driver: {} as Driver,
     hooks: {
-      onAfterRender(animation) {
+      onAfterRender({ animation }) {
         animation.data.foo = 'bar'
       },
     },

@@ -1,5 +1,6 @@
 import type { Driver } from './Driver'
 import type { Selector as AnimationSelector } from './Animation.types'
+import type { TheSuperSonicPlugin } from './TheSupersonicPlugin'
 
 export type Constructor = {
   id: string
@@ -7,7 +8,7 @@ export type Constructor = {
   start: HTMLElement | null
   end: HTMLElement | null
   elements?: AnimationSelector[]
-  pluginId: string
+  plugin: TheSuperSonicPlugin
 }
 
 export type Render = {
@@ -23,14 +24,14 @@ export type CalculateProgress = {
 }
 
 export type Hooks = {
-  onBeforeInit?: (driver: Driver) => void
-  onAfterInit?: (driver: Driver) => void
+  onBeforeInit?: (object: { driver: Driver }) => void
+  onAfterInit?: (object: { driver: Driver }) => void
   /** You can `return false` inside your hook, it will cancel rendering */
-  onBeforeRender?: (driver: Driver) => void | undefined | boolean
-  onAfterRender?: (driver: Driver) => void
-  onActivation?: (driver: Driver) => void
-  onDeactivation?: (driver: Driver) => void
-  onUpdateLimits?: ({ driver, scroll, screenHeight }: { driver: Driver, scroll: number, screenHeight: number }) => void
+  onBeforeRender?: (object: { driver: Driver }) => void | undefined | boolean
+  onAfterRender?: (object: { driver: Driver }) => void
+  onActivation?: (object: { driver: Driver }) => void
+  onDeactivation?: (object: { driver: Driver }) => void
+  onUpdateLimits?: (object: { driver: Driver }) => void
 }
 
 export type Configuration = {

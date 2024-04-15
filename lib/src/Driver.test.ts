@@ -1,14 +1,12 @@
 import { afterEach, expect, it, vi } from 'vitest'
 import { Driver } from './Driver'
+import type { TheSuperSonicPlugin } from './TheSupersonicPlugin'
 
 it('adds onBeforeInit hook', () => {
   const driver = new Driver({
-    id: 'id',
-    pluginId: 'plugin',
-    start: {} as HTMLElement,
-    end: {} as HTMLElement,
+    ...driverSetup(),
     hooks: {
-      onBeforeInit(driver) {
+      onBeforeInit({ driver }) {
         driver.data.foo = 'bar'
       },
     },
@@ -19,12 +17,9 @@ it('adds onBeforeInit hook', () => {
 
 it('adds onAfterInit hook', () => {
   const driver = new Driver({
-    id: 'id',
-    pluginId: 'plugin',
-    start: {} as HTMLElement,
-    end: {} as HTMLElement,
+    ...driverSetup(),
     hooks: {
-      onAfterInit(driver) {
+      onAfterInit({ driver }) {
         driver.data.foo = 'bar'
       },
     },
@@ -35,16 +30,13 @@ it('adds onAfterInit hook', () => {
 
 it('adds onBeforeRender hook', () => {
   const driver = new Driver({
-    id: 'id',
-    pluginId: 'plugin',
-    start: {} as HTMLElement,
-    end: {} as HTMLElement,
+    ...driverSetup(),
     hooks: {
-      onBeforeRender(driver) {
+      onBeforeRender({ driver }) {
         driver.data.foo = 'bar'
         return false
       },
-      onAfterRender(driver) {
+      onAfterRender({ driver }) {
         driver.data.foo = 'foo'
       },
     },
@@ -57,12 +49,9 @@ it('adds onBeforeRender hook', () => {
 
 it('adds onAfterRender hook', () => {
   const driver = new Driver({
-    id: 'id',
-    pluginId: 'plugin',
-    start: {} as HTMLElement,
-    end: {} as HTMLElement,
+    ...driverSetup(),
     hooks: {
-      onAfterRender(driver) {
+      onAfterRender({ driver }) {
         driver.data.foo = 'foo'
       },
     },
@@ -74,15 +63,10 @@ it('adds onAfterRender hook', () => {
 })
 
 it('adds onUpdateLimits hook', () => {
-  const { start, end } = createStartAndEnd()
-
   const driver = new Driver({
-    id: 'id',
-    pluginId: 'plugin',
-    start,
-    end,
+    ...driverSetup(),
     hooks: {
-      onUpdateLimits(driver) {
+      onUpdateLimits({ driver }) {
         driver.data.foo = 'foo'
       },
     },
@@ -94,13 +78,8 @@ it('adds onUpdateLimits hook', () => {
 })
 
 it('creates borders and tests "updateLimits"', () => {
-  const { start, end } = createStartAndEnd()
-
   const driver = new Driver({
-    id: 'id',
-    pluginId: 'plugin',
-    start,
-    end,
+    ...driverSetup(),
   })
 
   driver.updateLimits({ scroll: 100, screenHeight: 1000 })
@@ -111,26 +90,18 @@ it('creates borders and tests "updateLimits"', () => {
 
 it('creates helper and tests "updateLimits"', () => {
   const driver = new Driver({
-    id: 'id',
-    pluginId: 'plugin',
-    start: {} as HTMLElement,
-    end: {} as HTMLElement,
+    ...driverSetup(),
   })
 
-  driver.helper.updateLimits({ top: 500, bottom: 800, screenHeight: 1000 })
+  driver.helper.updateLimits({ top: 500, height: 800 })
 
   expect(driver.helper.domElement.style.top).toBe('500px')
-  expect(driver.helper.domElement.style.height).toBe('1300px')
+  expect(driver.helper.domElement.style.height).toBe('800px')
 })
 
 it('renders and calculates progress', () => {
-  const { start, end } = createStartAndEnd()
-
   const driver = new Driver({
-    id: 'id',
-    pluginId: 'plugin',
-    start,
-    end,
+    ...driverSetup(),
   })
 
   driver.updateLimits({ scroll: 0, screenHeight: 1000 })
@@ -147,10 +118,7 @@ it('reports an error if element is not found', () => {
   expect(() => {
     // eslint-disable-next-line no-new
     new Driver({
-      id: 'id',
-      pluginId: 'plugin',
-      start: {} as HTMLElement,
-      end: {} as HTMLElement,
+      ...driverSetup(),
       elements: ['.foo'],
     })
   }).toThrowError('Can\'t find element ".foo"')
@@ -164,10 +132,7 @@ it('warns in console if element hasn\'t animations', () => {
 
   // eslint-disable-next-line no-new
   new Driver({
-    id: 'id',
-    pluginId: 'plugin',
-    start: {} as HTMLElement,
-    end: {} as HTMLElement,
+    ...driverSetup(),
     elements: ['.animatable-element'],
   })
 
@@ -178,10 +143,7 @@ it('creates animations from simple config', () => {
   const { firstAnimation, secondAnimation } = createAnimatableElement(true)
 
   const driver = new Driver({
-    id: 'driver-id',
-    pluginId: 'plugin',
-    start: {} as HTMLElement,
-    end: {} as HTMLElement,
+    ...driverSetup(),
     elements: ['.animatable-element'],
   })
 
@@ -193,10 +155,7 @@ it('creates only specified animations', () => {
   const { firstAnimation, secondAnimation } = createAnimatableElement(true)
 
   const driver = new Driver({
-    id: 'driver-id',
-    pluginId: 'plugin',
-    start: {} as HTMLElement,
-    end: {} as HTMLElement,
+    ...driverSetup(),
     elements: [{
       selector: '.animatable-element',
       animations: ['first-animation'],
@@ -211,16 +170,13 @@ it('adds onInit hook to animation', () => {
   const { firstAnimation } = createAnimatableElement(true)
 
   const driver = new Driver({
-    id: 'driver-id',
-    pluginId: 'plugin',
-    start: {} as HTMLElement,
-    end: {} as HTMLElement,
+    ...driverSetup(),
     elements: [{
       selector: '.animatable-element',
       animations: [{
         name: 'first-animation',
         hooks: {
-          onInit(animation) {
+          onInit({ animation }) {
             animation.data.foo = 'bar'
           },
         },
@@ -233,13 +189,9 @@ it('adds onInit hook to animation', () => {
 
 it('renders animation', () => {
   const { firstAnimation } = createAnimatableElement(true)
-  const { start, end } = createStartAndEnd()
 
   const driver = new Driver({
-    id: 'driver-id',
-    pluginId: 'plugin',
-    start,
-    end,
+    ...driverSetup(),
     elements: ['.animatable-element'],
   })
 
@@ -252,24 +204,20 @@ it('renders animation', () => {
 
 it('adds onBeforeRender hook to animation', () => {
   const { firstAnimation } = createAnimatableElement(true)
-  const { start, end } = createStartAndEnd()
 
   const driver = new Driver({
-    id: 'driver-id',
-    pluginId: 'plugin',
-    start,
-    end,
+    ...driverSetup(),
     elements: [{
       selector: '.animatable-element',
       animations: [{
         name: 'first-animation',
         hooks: {
-          onBeforeRender(animation) {
+          onBeforeRender({ animation }) {
             animation.data.foo = 'bar'
 
             return false
           },
-          onAfterRender(animation) {
+          onAfterRender({ animation }) {
             animation.data.foo = 'foo'
           },
         },
@@ -288,7 +236,7 @@ afterEach(() => {
   document.body.innerHTML = ''
 })
 
-function createStartAndEnd() {
+function driverSetup() {
   const start = document.createElement('div')
   const end = document.createElement('div')
 
@@ -302,7 +250,12 @@ function createStartAndEnd() {
     top: 3000,
   }))
 
-  return { start, end }
+  return {
+    id: 'driver-id',
+    plugin: {} as TheSuperSonicPlugin,
+    start,
+    end,
+  }
 }
 
 function createAnimatableElement(withAnimations = false) {
