@@ -7,6 +7,11 @@ import type { TheSupersonicPlugin } from './TheSupersonicPlugin'
 
 import type { BorderConstructor, BorderUpdateLimits, CalculateProgress, Constructor, HelperConstructor, HelperUpdateLimits, Hooks, Render, UpdateLimits } from './Driver.types'
 
+const debugColors = {
+  colors: ['red', 'blue', 'orange', 'yellow'],
+  colorIndex: 0,
+}
+
 /**
  * The main purpose of Driver is to calculate current progress from 0 to 1 depending on current scroll
  */
@@ -51,7 +56,11 @@ export class Driver {
       driver: this,
     })
 
-    this.helper = new Helper({ id, pluginId: this.plugin.id })
+    this.helper = new Helper({
+      id,
+      pluginId: this.plugin.id,
+      debug: plugin.debug,
+    })
 
     // Initializing animations
     elements.forEach((selector) => {
@@ -238,8 +247,11 @@ class Helper {
 
   pluginId: string
 
-  constructor({ id, pluginId }: HelperConstructor) {
+  debug: boolean
+
+  constructor({ id, pluginId, debug = false }: HelperConstructor) {
     this.pluginId = pluginId
+    this.debug = debug
     this.domElement = document.createElement('i')
     this.domElement.style.position = 'absolute'
     this.domElement.style.left = '0'
@@ -252,12 +264,20 @@ class Helper {
 
     document.body.appendChild(this.domElement)
 
-    this.domElement.style.left
-        = `${Array.from(document.querySelectorAll('[data-supersonic-type=\'helper\']')).indexOf(this.domElement) * 5
-         }px`
-    this.domElement.style.width = '50px'
-    this.domElement.style.background = 'blue'
-    this.domElement.style.opacity = '0.5'
+    if (debug) {
+      const elements = Array.from(document.querySelectorAll('[data-supersonic-type=\'helper\']'))
+      const index = elements.indexOf(this.domElement)
+      this.domElement.style.left
+        = `${index * 10}px`
+      this.domElement.style.width = '10px'
+      this.domElement.style.minHeight = '50px'
+      this.domElement.style.background = debugColors.colors[debugColors.colorIndex]
+      this.domElement.style.zIndex = (100000).toString()
+      if (debugColors.colorIndex === 3)
+        debugColors.colorIndex = 0
+      else debugColors.colorIndex++
+      this.domElement.style.opacity = '0.75'
+    }
   }
 
   /** Sets position of helper */

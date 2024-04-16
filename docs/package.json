@@ -13,6 +13,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.12.7",
+    "postcss": "^8.4.38",
     "typescript": "^5.2.2",
     "vite": "^5.2.0"
   }

@@ -46,14 +46,18 @@ export class TheSupersonicPlugin {
   /** You can store your custom data here to use between hooks */
   data: any = {}
 
+  /** Make helper visible */
+  debug: boolean
+
   hooks: Hooks = {}
 
   driverInstances: Map<string, Driver> = new Map()
   driverActiveInstances: Set<Driver> = new Set()
 
-  constructor({ drivers, hooks = {} }: Configuration) {
+  constructor({ drivers, hooks = {}, debug = false }: Configuration) {
     this.id = Math.random().toString(16).substring(2)
     this.hooks = hooks
+    this.debug = debug
 
     if (this.hooks?.onBeforeInit)
       this.hooks.onBeforeInit({ plugin: this })

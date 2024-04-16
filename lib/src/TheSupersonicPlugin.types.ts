@@ -2,8 +2,9 @@ import type { TheSupersonicPlugin } from './TheSupersonicPlugin'
 import type { Configuration as DriverConfiguration } from './Driver.types'
 
 export type Configuration = {
-  hooks?: Hooks
   drivers: DriverConfiguration
+  hooks?: Hooks
+  debug?: boolean
 }
 
 export type Hooks = {
