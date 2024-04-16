@@ -30,30 +30,17 @@ body {
     background-image: url("/bartholomeow.png");
     border: 15px solid rgb(32 32 32);
     border-radius: 100%;
+}
 
-    animation-name: barth;
-    animation-duration: 10s;
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
-    animation-timing-function: linear;
-    animation-play-state: paused;
-  }
-  
-  @barth 150;
-  
-  @media (width <= 1024px) {
+@barth 150;
+
+@media (width <= 1024px) {
     .barth {
-      width: 100px;
-      height: 100px;
-      background-size: 700px 700px;
-      border-width: 10px;
+        width: 100px;
+        height: 100px;
+        background-size: 700px 700px;
+        border-width: 10px;
     }
-  
+
     @barth 100;
-  }
-  
-@keyframes barth {
-    to {
-        translate: 100% 0 0;
-    }
 }

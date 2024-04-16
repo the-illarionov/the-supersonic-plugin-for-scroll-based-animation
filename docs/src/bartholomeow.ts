@@ -1,4 +1,5 @@
-import { TheSupersonicPlugin } from '../../lib/src/TheSupersonicPlugin'
+import { Animation, TheSupersonicPlugin } from '../../lib/src'
+import type { Configuration as DriverConfiguration } from '../../lib/src/Driver.types'
 
 const isMobile = matchMedia('(max-width: 1024px)').matches
 const elementSize: number = isMobile ? 150 : 190
@@ -6,8 +7,7 @@ const elementsAmount = 1000
 const maxHorizontalElements = Math.ceil(window.innerWidth / elementSize)
 const maxRows = Math.ceil(window.innerHeight / elementSize)
 const elementsOnScreen = maxRows * maxHorizontalElements
-const drivers: any = {}
-const renderedElements = {}
+const drivers: DriverConfiguration = {}
 
 let row = 0
 const last10sprites: any = []
@@ -39,9 +39,7 @@ for (let i = 0; i < elementsAmount; i++) {
   image.style.left = `${(i % maxHorizontalElements) * elementSize}px`
   // @ts-expect-error foo
   image.style.zIndex = i + 100
-  image.dataset.id = `supersonic-${i}`
-  // @ts-expect-error foo
-  renderedElements[image.dataset.id] = {}
+  image.id = `barth-${i}`
 
   document.body.appendChild(image)
 }
@@ -53,34 +51,45 @@ const driverAmount = Math.ceil((height - window.innerHeight) / driverHeight)
 const driversOnScreen = Math.ceil(window.innerHeight / driverHeight)
 
 for (let i = 0; i < driverAmount; i++) {
-  const driverId = `driver${i}`
+  const driverId = `driver-${i}`
   const start = document.createElement('i')
   start.classList.add('driver')
-  const driverStart = i * driverHeight
+  const driverStart = i * driverHeight + window.innerHeight
   start.style.top = `${driverStart}px`
-  // @ts-expect-error foo
-  start.dataset.index = i
 
   document.body.appendChild(start)
 
   const end = document.createElement('i')
   end.classList.add('driver')
-  end.style.top = `${driverStart + driverHeight}px`
+  end.style.top = `${driverStart + driverHeight + window.innerHeight}px`
   document.body.appendChild(end)
 
-  const elements = []
-  const driverRow = Math.round(driverStart / elementSize)
+  const elementsPerDriver = elementsOnScreen / driversOnScreen
+
+  const driverRow = Math.round(driverStart / elementSize) - driversOnScreen
   const driverStartFromElement = driverRow * maxHorizontalElements
-
-  for (let y = 0; y < Math.ceil(elementsOnScreen / driversOnScreen); y++) {
-    const elementIndex = y + driverStartFromElement
-
-    elements.push(`[data-id="supersonic-${elementIndex}"]`)
-  }
 
   drivers[driverId] = {
     start,
     end,
+    hooks: {
+      onAfterInit({ driver }) {
+        driver.data.elements = []
+
+        if (driverRow >= 0) {
+          for (let index = 0; index < elementsPerDriver; index++) {
+            const domElement = document.querySelector<HTMLElement>(`#barth-${index + driverStartFromElement}`)!
+
+            driver.data.elements.push(domElement)
+          }
+        }
+      },
+      onBeforeRender({ driver }) {
+        driver.data.elements.forEach((element) => {
+          element.style.setProperty('transform', `translate3d(${driver.progress * 500}%, 0, 0)`)
+        })
+      },
+    },
   }
 }
 
