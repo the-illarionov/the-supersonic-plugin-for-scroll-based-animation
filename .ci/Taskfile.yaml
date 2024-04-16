@@ -1,0 +1,59 @@
+version: '3'
+
+dotenv: [.env]
+
+tasks:
+  env:
+    desc: makes .env from .env.example
+    cmds:
+      - cp .env.example .env
+
+  lint:
+    cmds:
+      - |
+        docker run \
+          --rm \
+          -w /app \
+          -v $(pwd)/..:/app \
+          $NODE_IMAGE /bin/bash -c "yarn lint"
+
+  test:
+    desc: runs unit tests of lib
+    cmds:
+      - |
+        docker run --user {{.MY_UID}}:{{.MY_GID}} \
+          -v $(pwd)/../lib:/app \
+          -w /app \
+          $NODE_IMAGE \
+          yarn test:unit
+
+  build:
+    desc: creates production build of docs
+    cmds:
+      - |
+        docker run \
+          --rm \
+          -w /app/docs \
+          -v $(pwd)/../docs:/app/docs \
+          -v $(pwd)/../lib:/app/lib \
+          $NODE_IMAGE /bin/bash -c "yarn build"
+
+  deploy:pages:
+    desc: deploy to CloudFlare pages
+    cmds:
+      - |
+        docker run --user $(id -u):$(id -g) \
+        --rm \
+        -w /app \
+        -v $(pwd)/../docs:/app \
+        -e CLOUDFLARE_ACCOUNT_ID \
+        -e CLOUDFLARE_API_TOKEN \
+        $NODE_IMAGE yarn deploy
+
+  deploy:
+    desc: Lints, tests, builds and deploys to CloudFlare pages
+    cmds:
+      - task lint
+      - task test
+      - task build
+      - task deploy:pages
