@@ -189,7 +189,7 @@ export class Driver {
     this.end.updateLimits({ scroll, screenHeight })
 
     const top = this.start.top + screenHeight
-    const bottom = this.end.top - top
+    const bottom = this.end.top - this.start.top
     this.helper.updateLimits({
       top,
       height: bottom - top,

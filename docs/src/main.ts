@@ -16,6 +16,7 @@ const f = new TheSupersonicPlugin({
       },
     },
   },
+  debug: true,
 })
 
 console.log(f)

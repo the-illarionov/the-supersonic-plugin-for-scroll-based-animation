@@ -1,4 +1,3 @@
-import { URL, fileURLToPath } from 'node:url'
 import { resolve } from 'node:path'
 
 import { defineConfig } from 'vite'

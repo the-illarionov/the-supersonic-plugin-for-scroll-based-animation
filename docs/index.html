@@ -43,7 +43,10 @@
       }
 
       @keyframes foo {
-        to {
+        0% {
+          translate: -30px 0 0;
+        }
+        100% {
           translate: calc(100vw - 50px) 0 0;
         }
       }
@@ -278,7 +281,7 @@
     </div>
 
     <!-- <div class="start" style="top: 100vh"></div>
-    <div class="end" style="top: 200vh"></div>
+    <div class="end" style="top: 300vh"></div>
     <div class="foo"></div>
 
     <script type="module" src="/src/main.ts"></script> -->

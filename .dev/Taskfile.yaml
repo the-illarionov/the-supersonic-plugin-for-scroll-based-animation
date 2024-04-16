@@ -142,8 +142,9 @@ tasks:
       - |
         docker run --user {{.MY_UID}}:{{.MY_GID}} \
           --rm \
-          -w /app \
-          -v $(pwd)/../docs:/app \
+          -w /app/docs \
+          -v $(pwd)/../docs:/app/docs \
+          -v $(pwd)/../lib:/app/lib \
           $NODE_IMAGE /bin/bash -c "yarn build"
 
   # TESTS
