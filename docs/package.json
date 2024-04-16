@@ -9,10 +9,10 @@
     "preview": "vite preview --port=80 --host",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-    "test:e2e:report": "playwright show-report --host 0.0.0.0 --port 8000",
     "deploy": "wrangler pages deploy dist --project-name=the-supersonic-plugin-for-scroll-based-animation --branch=main"
   },
   "devDependencies": {
+    "@playwright/test": "^1.43.1",
     "@types/node": "^20.12.7",
     "postcss": "^8.4.38",
     "typescript": "^5.2.2",
