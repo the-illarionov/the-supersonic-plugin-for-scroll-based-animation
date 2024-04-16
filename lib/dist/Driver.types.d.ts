@@ -60,6 +60,7 @@ export type BorderConstructor = {
 export type HelperConstructor = {
     id: string;
     pluginId: string;
+    debug?: boolean;
 };
 export type UpdateLimits = {
     scroll: number;

@@ -1,5 +1,6 @@
-import { Animation, TheSupersonicPlugin } from '../../lib/src'
+import { TheSupersonicPlugin } from '../../lib/src'
 import type { Configuration as DriverConfiguration } from '../../lib/src/Driver.types'
+import { toFixed } from '../../lib/src/utils'
 
 const isMobile = matchMedia('(max-width: 1024px)').matches
 const elementSize: number = isMobile ? 150 : 190
@@ -8,6 +9,39 @@ const maxHorizontalElements = Math.ceil(window.innerWidth / elementSize)
 const maxRows = Math.ceil(window.innerHeight / elementSize)
 const elementsOnScreen = maxRows * maxHorizontalElements
 const drivers: DriverConfiguration = {}
+
+const props = [
+  {
+    name: 'translateX',
+    minStart: 0,
+    maxStart: 0,
+    minEnd: -(window.innerWidth / 5),
+    maxEnd: window.innerWidth / 5,
+  },
+
+  {
+    name: 'translateY',
+    minStart: 0,
+    maxStart: 0,
+    minEnd: -(window.innerHeight / 5),
+    maxEnd: window.innerHeight / 5,
+  },
+
+  {
+    name: 'rotate',
+    minStart: 0,
+    maxStart: 0,
+    minEnd: -90,
+    maxEnd: 90,
+  },
+  {
+    name: 'scale',
+    minStart: 1,
+    maxStart: 1,
+    minEnd: 3,
+    maxEnd: 3.5,
+  },
+]
 
 let row = 0
 const last10sprites: any = []
@@ -76,17 +110,47 @@ for (let i = 0; i < driverAmount; i++) {
       onAfterInit({ driver }) {
         driver.data.elements = []
 
-        if (driverRow >= 0) {
-          for (let index = 0; index < elementsPerDriver; index++) {
-            const domElement = document.querySelector<HTMLElement>(`#barth-${index + driverStartFromElement}`)!
+        for (let index = 0; index < elementsPerDriver; index++) {
+          const element: any = {}
+          element.domElement = document.querySelector<HTMLElement>(`#barth-${index + driverStartFromElement}`)!
 
-            driver.data.elements.push(domElement)
+          element.properties = {}
+
+          for (let i = 0; i < props.length; i++) {
+            const sourceProp = props[i]
+
+            element.properties[sourceProp.name] = {}
+
+            const targetProp = element.properties[sourceProp.name]
+
+            targetProp.start = Math.random() * (sourceProp.maxStart - sourceProp.minStart) + sourceProp.minStart
+            if (sourceProp.name === 'opacity' || sourceProp.name === 'scale')
+              targetProp.start = Number.parseFloat(targetProp.start.toFixed(2))
+            else targetProp.start = Math.ceil(targetProp.start)
+
+            targetProp.end = Math.random() * (sourceProp.maxEnd - sourceProp.minEnd) + sourceProp.minEnd
+            if (sourceProp.name === 'opacity' || sourceProp.name === 'scale')
+              targetProp.end = Number.parseFloat(targetProp.end.toFixed(2))
+            else targetProp.end = Math.ceil(targetProp.end)
+
+            targetProp.distance = toFixed(targetProp.end - targetProp.start, 2)
           }
+
+          driver.data.elements.push(element)
         }
       },
-      onBeforeRender({ driver }) {
-        driver.data.elements.forEach((element) => {
-          element.style.setProperty('transform', `translate3d(${driver.progress * 500}%, 0, 0)`)
+      onAfterRender({ driver }) {
+        driver.data.elements.forEach((element: any) => {
+          const translateX = element.properties.translateX.distance * driver.progress + element.properties.translateX.start
+          const translateY = element.properties.translateY.distance * driver.progress + element.properties.translateY.start
+          const scale = element.properties.scale.distance * driver.progress + element.properties.scale.start
+          const rotate = element.properties.rotate.distance * driver.progress + element.properties.rotate.start
+
+          element.domElement.style.setProperty('transform',
+          // eslint-disable-next-line prefer-template
+            'translate3d(' + translateX + 'px, ' + translateY + 'px, 0) '
+            + 'scale(' + scale + ') '
+            + 'rotate(' + rotate + 'deg')
         })
       },
     },
@@ -95,7 +159,7 @@ for (let i = 0; i < driverAmount; i++) {
 
 const plugin = new TheSupersonicPlugin({
   drivers,
-  debug: true,
 })
 
+// @ts-expect-error foo
 window.plugin = plugin

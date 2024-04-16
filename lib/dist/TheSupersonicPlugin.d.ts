@@ -37,10 +37,12 @@ export declare class TheSupersonicPlugin {
     onResize: EventListener | null;
     /** You can store your custom data here to use between hooks */
     data: any;
+    /** Make helper visible */
+    debug: boolean;
     hooks: Hooks;
     driverInstances: Map<string, Driver>;
     driverActiveInstances: Set<Driver>;
-    constructor({ drivers, hooks }: Configuration);
+    constructor({ drivers, hooks, debug }: Configuration);
     /** Removes all of the plugin stuff (useful for SPA) */
     uninit(): void;
     /** Main rendering cycle. Active drivers are visible ones */
