@@ -23,20 +23,15 @@ jobs:
       - name: Prepare env
         run: task -d .ci env
 
-      - name: Initialize everything
-        run: task -d .ci init
-
-      - name: Lint
-        run: task -d .ci root:lint
-
       - name: 'Cache node_modules: check'
         uses: actions/cache/restore@v4
         id: cache-node-modules
         with:
           path: |
-            frontend/node_modules
-            backend/node_modules
-          key: node-modules-${{ hashFiles('frontend/yarn.lock', 'backend/yarn.lock') }}
+            node_modules
+            docs/node_modules
+            lib/node_modules
+          key: node-modules-${{ hashFiles('yarn.lock', 'docs/yarn.lock', 'lib/yarn.lock') }}
 
       - if: steps.cache-node-modules.outputs.cache-hit != 'true'
         name: 'Cache node_modules doesn''t exist: install'
@@ -47,30 +42,22 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: |
-            frontend/node_modules
-            backend/node_modules
-          key: node-modules-${{ hashFiles('frontend/yarn.lock', 'backend/yarn.lock') }}
+            node_modules
+            docs/node_modules
+            lib/node_modules
+          key: node-modules-${{ hashFiles('yarn.lock', 'docs/yarn.lock', 'lib/yarn.lock') }}
 
-      - name: Set permissions for node_modules
-        run: sudo chmod -R 777 frontend/node_modules
+      - name: Lint workspace
+        run: task -d .ci lint
 
-      - name: Build 'frontend' and 'backend'
-        run: task -d .ci build
-
-      - name: Start project
-        run: task -d .ci up
-
-      - name: Starts testing
+      - name: Unit tests lib
         run: task -d .ci test
+
+      - name: Build docs
+        run: task -d .ci build:prepare
 
       - name: 'Uploads ''frontend/dist'' artifact'
         uses: actions/upload-artifact@v4
         with:
-          path: frontend/dist
-          name: frontend-dist
-
-      - name: 'Uploads ''backend/dist'' artifact'
-        uses: actions/upload-artifact@v4
-        with:
-          path: backend/dist
-          name: backend-dist
+          path: docs/dist
+          name: docs-dist

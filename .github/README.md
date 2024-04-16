@@ -1,7 +1,7 @@
 # The Supersonic Plugin For Scroll Based Animation
 
-![test-and-build](https://github.com/the-illarionov/the-superawesome-frontend-boilerplate/actions/workflows/test-and-build.yml/badge.svg)
-![deploy](https://github.com/the-illarionov/the-superawesome-frontend-boilerplate/actions/workflows/deploy.yml/badge.svg)
+![test-and-build](https://github.com/the-illarionov/the-supersonic-plugin-for-scroll-based-animation/actions/workflows/test-and-build.yml/badge.svg)
+![deploy](https://github.com/the-illarionov/the-supersonic-plugin-for-scroll-based-animation/actions/workflows/deploy.yml/badge.svg)
 
 ![gzip size](https://img.shields.io/bundlejs/size/the-supersonic-plugin-for-scroll-based-animation)
 

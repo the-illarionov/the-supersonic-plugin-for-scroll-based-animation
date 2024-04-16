@@ -37,40 +37,27 @@ jobs:
               run_id: successfulRunId,
             });
 
-            const artifactFrontendId = allArtifacts.data.artifacts.find((artifact) => artifact.name == "frontend-dist").id;
+            const artifactId = allArtifacts.data.artifacts.find((artifact) => artifact.name == "docs-dist").id;
 
-            const artifactBackendId = allArtifacts.data.artifacts.find((artifact) => artifact.name == "backend-dist").id;
-
-            const downloadFrontend = await github.rest.actions.downloadArtifact({
+            const downloadArtifact = await github.rest.actions.downloadArtifact({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              artifact_id: artifactFrontendId,
-              archive_format: 'zip',
-            });
-
-            const downloadBackend = await github.rest.actions.downloadArtifact({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              artifact_id: artifactBackendId,
+              artifact_id: artifactId,
               archive_format: 'zip',
             });
 
             let fs = require('fs');
-            fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/frontend.zip`, Buffer.from(downloadFrontend.data));
-            fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/backend.zip`, Buffer.from(downloadBackend.data));
+            fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/docs.zip`, Buffer.from(downloadFrontend.data));
 
       - name: Unzip artifacts
         run: |
-          unzip frontend.zip -d frontend/dist
-          unzip backend.zip -d backend/dist
+          unzip docs.zip -d dist
 
-      # Example of deploying to Cloudflare
-      # - name: Deploy 'frontend/dist' to Cloudflare Pages
-      #   uses: cloudflare/pages-action@v1
-      #   with:
-      #       apiToken: your-token
-      #       accountId: your-account-id
-      #       projectName: your-project-name
-      #       workingDirectory: frontend
-      #       directory: dist
-      #       branch: main
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: the-supersonic-plugin-for-scroll-based-animation
+          directory: dist
+          branch: main

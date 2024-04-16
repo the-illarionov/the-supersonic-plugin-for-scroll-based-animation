@@ -8,6 +8,42 @@ tasks:
     cmds:
       - cp .env.example .env
 
+  root:yarn:
+    desc: runs 'yarn' in root directory
+    cmds:
+      - |
+        docker run \
+          --rm \
+          -w /app \
+          -v $(pwd)/..:/app \
+          $NODE_IMAGE yarn
+
+  docs:yarn:
+    desc: runs 'yarn' in 'docs' directory
+    cmds:
+      - |
+        docker run \
+          --rm \
+          -w /app \
+          -v $(pwd)/../docs:/app \
+          $NODE_IMAGE yarn
+
+  lib:yarn:
+    desc: runs 'yarn' in 'lib' directory
+    cmds:
+      - |
+        docker run \
+          --rm \
+          -w /app \
+          -v $(pwd)/../lib:/app \
+          $NODE_IMAGE yarn
+
+  yarn:
+    cmds:
+      - task root:yarn
+      - task docs:yarn
+      - task lib:yarn
+
   lint:
     cmds:
       - |
@@ -27,7 +63,7 @@ tasks:
           $NODE_IMAGE \
           yarn test:unit
 
-  build:
+  build:prepare:
     desc: creates production build of docs
     cmds:
       - |
@@ -37,6 +73,12 @@ tasks:
           -v $(pwd)/../docs:/app/docs \
           -v $(pwd)/../lib:/app/lib \
           $NODE_IMAGE /bin/bash -c "yarn build"
+
+  build:
+    cmds:
+      - task lint
+      - task test
+      - task build:prepare
 
   deploy:pages:
     desc: deploy to CloudFlare pages
@@ -53,7 +95,5 @@ tasks:
   deploy:
     desc: Lints, tests, builds and deploys to CloudFlare pages
     cmds:
-      - task lint
-      - task test
       - task build
       - task deploy:pages
