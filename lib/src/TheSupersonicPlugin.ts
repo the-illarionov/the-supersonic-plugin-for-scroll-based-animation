@@ -9,7 +9,7 @@ import type { Configuration, Hooks, Render } from './TheSupersonicPlugin.types'
  * Main class handling all of the logic. To initialize the plugin, you create a new instance of this class
  *
  * @example
- * const plugin = new TheSuperSonicPlugin({
+ * const plugin = new TheSupersonicPlugin({
  *   drivers: {
  *     'name-of-your-driver': {
  *        start: document.querySelector('.start'),
@@ -20,7 +20,7 @@ import type { Configuration, Hooks, Render } from './TheSupersonicPlugin.types'
  * });
  *
  */
-export class TheSuperSonicPlugin {
+export class TheSupersonicPlugin {
   /** Unique id of thisrunning instance */
   id: string
   /** Current window scrollY */
@@ -43,6 +43,8 @@ export class TheSuperSonicPlugin {
 
   /** Debounced resize listener */
   onResize: EventListener | null = null
+  /** You can store your custom data here to use between hooks */
+  data: any = {}
 
   hooks: Hooks = {}
 
@@ -76,7 +78,6 @@ export class TheSuperSonicPlugin {
     this.observer = new Observer({
       observables,
       driverInstances: this.driverInstances,
-      driverActiveInstances: this.driverActiveInstances,
     })
 
     // Adding event listener for resize

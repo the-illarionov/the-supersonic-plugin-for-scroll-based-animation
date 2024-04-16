@@ -1,4 +1,5 @@
 import { BorderConstructor, BorderUpdateLimits, CalculateProgress, Constructor, HelperConstructor, HelperUpdateLimits, Hooks, Render, UpdateLimits } from './Driver.types';
+import { TheSupersonicPlugin } from './TheSupersonicPlugin';
 import { Animation } from './Animation';
 
 /**
@@ -14,12 +15,13 @@ export declare class Driver {
     start: Border;
     /** End is linked to [data-supersonic-type="end"] HTML element */
     end: Border;
-    pluginId: string;
+    /** Link to plugin instance to be able to access global variables */
+    plugin: TheSupersonicPlugin;
     animations: Map<string, Animation>;
     domElements: HTMLElement[];
     helper: Helper;
     hooks: Hooks;
-    constructor({ id, start, end, pluginId, elements, hooks }: Constructor);
+    constructor({ id, start, end, plugin, elements, hooks }: Constructor);
     /** Driver calculates its progress and then renders all of it's properties with progress value */
     render({ scroll, renderedInitially, consoleColor }: Render): false | undefined;
     /** Calculates current driver progress, depending on current scroll and top offset of DOM elements */
@@ -47,8 +49,8 @@ declare class Helper {
     domElement: HTMLElement;
     pluginId: string;
     constructor({ id, pluginId }: HelperConstructor);
-    /** Recalculates position of helper */
-    updateLimits({ top, bottom, screenHeight }: HelperUpdateLimits): void;
+    /** Sets position of helper */
+    updateLimits({ top, height }: HelperUpdateLimits): void;
     /** Deletes helper DOM element */
     uninit(): void;
 }

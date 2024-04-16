@@ -9,10 +9,16 @@ export type Constructor = {
     domElement: HTMLElement;
 };
 export type Hooks = {
-    onInit?: (animation: Animation) => void;
+    onInit?: (object: {
+        animation: Animation;
+    }) => void;
     /** You can `return false` inside your hook, it will cancel rendering. Or you can return a number, it will be an animation currentTime */
-    onBeforeRender?: (animation: Animation) => void | undefined | boolean | number;
-    onAfterRender?: (animation: Animation) => void;
+    onBeforeRender?: (object: {
+        animation: Animation;
+    }) => void | undefined | boolean | number;
+    onAfterRender?: (object: {
+        animation: Animation;
+    }) => void;
 };
 type Configuration = string | {
     name: string;

@@ -1,6 +1,6 @@
 import { afterEach, expect, it, vi } from 'vitest'
 import { Driver } from './Driver'
-import type { TheSuperSonicPlugin } from './TheSupersonicPlugin'
+import type { TheSupersonicPlugin } from './TheSupersonicPlugin'
 
 it('adds onBeforeInit hook', () => {
   const driver = new Driver({
@@ -252,7 +252,7 @@ function driverSetup() {
 
   return {
     id: 'driver-id',
-    plugin: {} as TheSuperSonicPlugin,
+    plugin: {} as TheSupersonicPlugin,
     start,
     end,
   }

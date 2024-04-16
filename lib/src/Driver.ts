@@ -3,7 +3,7 @@ import { toFixed } from './utils'
 import { Animation } from './Animation'
 import type { Hooks as AnimationHooks } from './Animation.types'
 
-import type { TheSuperSonicPlugin } from './TheSupersonicPlugin'
+import type { TheSupersonicPlugin } from './TheSupersonicPlugin'
 
 import type { BorderConstructor, BorderUpdateLimits, CalculateProgress, Constructor, HelperConstructor, HelperUpdateLimits, Hooks, Render, UpdateLimits } from './Driver.types'
 
@@ -21,7 +21,7 @@ export class Driver {
   /** End is linked to [data-supersonic-type="end"] HTML element */
   end: Border
   /** Link to plugin instance to be able to access global variables */
-  plugin: TheSuperSonicPlugin
+  plugin: TheSupersonicPlugin
 
   animations: Map<string, Animation> = new Map()
 
@@ -192,6 +192,8 @@ export class Driver {
 
   /** Activates driver when it becomes visible on the screen */
   activate() {
+    this.plugin.driverActiveInstances.add(this)
+
     if (this.hooks.onActivation)
       this.hooks.onActivation({ driver: this })
 
@@ -200,6 +202,8 @@ export class Driver {
 
   /** Deactivates driver when it's progress becomes 0 or 1' */
   deactivate() {
+    this.plugin.driverActiveInstances.delete(this)
+
     if (this.hooks.onDeactivation)
       this.hooks.onDeactivation({ driver: this })
 

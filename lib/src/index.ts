@@ -1,9 +1,9 @@
-import { TheSuperSonicPlugin } from './TheSupersonicPlugin'
+import { TheSupersonicPlugin } from './TheSupersonicPlugin'
 import { Driver } from './Driver'
 import { Animation } from './Animation'
 
 export {
-  TheSuperSonicPlugin,
+  TheSupersonicPlugin,
   Driver,
   Animation,
 }

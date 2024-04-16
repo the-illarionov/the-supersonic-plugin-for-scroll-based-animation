@@ -1,6 +1,6 @@
 import type { Driver } from './Driver'
 import type { Selector as AnimationSelector } from './Animation.types'
-import type { TheSuperSonicPlugin } from './TheSupersonicPlugin'
+import type { TheSupersonicPlugin } from './TheSupersonicPlugin'
 
 export type Constructor = {
   id: string
@@ -8,7 +8,7 @@ export type Constructor = {
   start: HTMLElement | null
   end: HTMLElement | null
   elements?: AnimationSelector[]
-  plugin: TheSuperSonicPlugin
+  plugin: TheSupersonicPlugin
 }
 
 export type Render = {

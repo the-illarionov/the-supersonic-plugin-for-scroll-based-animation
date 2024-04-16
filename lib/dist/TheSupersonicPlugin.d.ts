@@ -7,7 +7,7 @@ import { Driver } from './Driver';
  * Main class handling all of the logic. To initialize the plugin, you create a new instance of this class
  *
  * @example
- * const plugin = new TheSuperSonicPlugin({
+ * const plugin = new TheSupersonicPlugin({
  *   drivers: {
  *     'name-of-your-driver': {
  *        start: document.querySelector('.start'),
@@ -18,7 +18,7 @@ import { Driver } from './Driver';
  * });
  *
  */
-export declare class TheSuperSonicPlugin {
+export declare class TheSupersonicPlugin {
     /** Unique id of thisrunning instance */
     id: string;
     /** Current window scrollY */
@@ -35,6 +35,8 @@ export declare class TheSuperSonicPlugin {
     observer: Observer | null;
     /** Debounced resize listener */
     onResize: EventListener | null;
+    /** You can store your custom data here to use between hooks */
+    data: any;
     hooks: Hooks;
     driverInstances: Map<string, Driver>;
     driverActiveInstances: Set<Driver>;

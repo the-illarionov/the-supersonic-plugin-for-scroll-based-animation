@@ -1,5 +1,5 @@
 import { Animation } from './Animation';
 import { Driver } from './Driver';
-import { TheSuperSonicPlugin } from './TheSupersonicPlugin';
+import { TheSupersonicPlugin } from './TheSupersonicPlugin';
 
-export { TheSuperSonicPlugin, Driver, Animation, };
+export { TheSupersonicPlugin, Driver, Animation, };

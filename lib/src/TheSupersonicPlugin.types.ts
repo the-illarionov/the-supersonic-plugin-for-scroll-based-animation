@@ -1,4 +1,4 @@
-import type { TheSuperSonicPlugin } from './TheSupersonicPlugin'
+import type { TheSupersonicPlugin } from './TheSupersonicPlugin'
 import type { Configuration as DriverConfiguration } from './Driver.types'
 
 export type Configuration = {
@@ -7,15 +7,15 @@ export type Configuration = {
 }
 
 export type Hooks = {
-  onBeforeInit?: (object: { plugin: TheSuperSonicPlugin }) => void
-  onAfterInit?: (object: { plugin: TheSuperSonicPlugin }) => void
+  onBeforeInit?: (object: { plugin: TheSupersonicPlugin }) => void
+  onAfterInit?: (object: { plugin: TheSupersonicPlugin }) => void
 
   /** You can `return false` inside your hook, it will cancel rendering */
-  onBeforeRender?: (object: { plugin: TheSuperSonicPlugin }) => void | undefined | boolean
-  onAfterRender?: (object: { plugin: TheSuperSonicPlugin }) => void
+  onBeforeRender?: (object: { plugin: TheSupersonicPlugin }) => void | undefined | boolean
+  onAfterRender?: (object: { plugin: TheSupersonicPlugin }) => void
 
-  onBeforeResize?: (object: { plugin: TheSuperSonicPlugin }) => void
-  onAfterResize?: (object: { plugin: TheSuperSonicPlugin }) => void
+  onBeforeResize?: (object: { plugin: TheSupersonicPlugin }) => void
+  onAfterResize?: (object: { plugin: TheSupersonicPlugin }) => void
 }
 
 export type Render = {

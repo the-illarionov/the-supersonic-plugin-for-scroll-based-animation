@@ -3,7 +3,7 @@ import type { Constructor } from './Observer.types'
 export class Observer {
   instance: IntersectionObserver
 
-  constructor({ observables, driverInstances, driverActiveInstances }: Constructor) {
+  constructor({ observables, driverInstances }: Constructor) {
     this.instance = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -14,15 +14,11 @@ export class Observer {
           if (!driver)
             throw new Error(`Observer can't find driver "${driverId}"`)
 
-          if (entry.isIntersecting) {
-            driverActiveInstances.add(driver)
+          if (entry.isIntersecting)
             driver.activate()
-          }
 
-          else {
-            driverActiveInstances.delete(driver)
+          else
             driver.deactivate()
-          }
         })
       },
     )

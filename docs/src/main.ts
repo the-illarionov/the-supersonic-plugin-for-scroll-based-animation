@@ -1,6 +1,6 @@
-import { TheSuperSonicPlugin } from '../../lib/src/index'
+import { TheSupersonicPlugin } from '../../lib/src/index'
 
-const f = new TheSuperSonicPlugin({
+const f = new TheSupersonicPlugin({
   drivers: {
     foo: {
       start: document.querySelector('.start'),
