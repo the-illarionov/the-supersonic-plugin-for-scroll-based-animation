@@ -4,6 +4,6 @@ Once upon a time, I suddenly realized that I need to animate 1000 pictures of my
 
 Other solutions did not go well, so I decided to write my own (of course, I did).
 
-[Go check the final result and see how 1000 Bartholomews are animated!](https://the-illarionov.github.io/the-supersonic-plugin-for-scroll-based-animation/bartholomew.html)
+[Go check the final result and see how 1000 Bartholomews are animated!](https://the-illarionov.com/the-supersonic-plugin-for-scroll-based-animation/bartholomeow)
 
 [Read the full documentation on GitHub](https://github.com/the-illarionov/the-supersonic-plugin-for-scroll-based-animation#readme).

@@ -1,0 +1,32 @@
+services:
+  docs:
+    image: ${NODE_IMAGE}
+    working_dir: /app/docs
+    command: yarn dev
+    user: ${MY_UID}:${MY_GID}
+    ports:
+      - 80:80
+    volumes:
+      - ../docs:/app/docs
+      - ../lib:/app/lib
+
+  docs-preview:
+    image: ${NODE_IMAGE}
+    working_dir: /app/docs
+    command: yarn preview
+    user: ${MY_UID}:${MY_GID}
+    ports:
+      - 9000:80
+    volumes:
+      - ../docs:/app/docs
+      - ../lib:/app/lib
+
+  lib-tests-unit:
+    image: unit-tests-ui
+    user: ${MY_UID}:${MY_GID}
+    working_dir: /app
+    command: yarn test:unit:ui
+    ports:
+      - 9010:8000
+    volumes:
+      - ../lib:/app

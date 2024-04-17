@@ -1,0 +1,63 @@
+name: deploy
+
+run-name: Deploying
+
+concurrency:
+  group: '${{ github.workflow }}'
+  cancel-in-progress: true
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data } = await github.rest.actions.listWorkflowRuns({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'test-and-build.yml',
+              status: 'completed',
+            });
+
+            const successfulRunId = data.workflow_runs.find(run => run.conclusion === 'success').id;
+
+            const allArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: successfulRunId,
+            });
+
+            const artifactId = allArtifacts.data.artifacts.find((artifact) => artifact.name == "docs-dist").id;
+
+            const downloadArtifact = await github.rest.actions.downloadArtifact({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              artifact_id: artifactId,
+              archive_format: 'zip',
+            });
+
+            let fs = require('fs');
+            fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/docs.zip`, Buffer.from(downloadFrontend.data));
+
+      - name: Unzip artifacts
+        run: |
+          unzip docs.zip -d dist
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: the-supersonic-plugin-for-scroll-based-animation
+          directory: dist
+          branch: main

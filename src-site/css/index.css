@@ -1,7 +1,0 @@
-@import "./globals.css";
-@import "./code.css";
-@import "./section.css";
-@import "./examples.css";
-@import "./nav.css";
-@import "./utils.css";
-@tailwind utilities;

@@ -1,0 +1,190 @@
+version: '3'
+
+dotenv: [.env]
+
+vars:
+  MY_UID: $(id -u) # TODO: Change this line if you are not on Linux
+  MY_GID: $(id -g) # TODO: Change this line if you are not on Linux
+
+tasks:
+  env:
+    desc: makes .env from .env.example
+    cmds:
+      - cp .env.example .env
+
+  init:
+    desc: prepare everything for development
+    cmds:
+      - task root:yarn
+      - task lib:yarn
+      - task docs:yarn
+      - docker pull $PLAYWRIGHT_IMAGE
+      - docker build -t unit-tests-ui - < ./UnitTestUi.Dockerfile --build-arg NODE_IMAGE
+
+  up:
+    desc: start services
+    cmds:
+      - MY_UID="{{.MY_UID}}" MY_GID="{{.MY_GID}}" docker compose up -d
+
+  down:
+    desc: stops services
+    cmds:
+      - MY_UID="{{.MY_UID}}" MY_GID="{{.MY_GID}}" docker compose down
+
+  restart:
+    desc: restart services
+    cmds:
+      - task down
+      - task up
+
+  logs:
+    desc: logs the development compose
+    cmds:
+      - docker compose logs -f
+
+  # ROOT
+  root:
+    desc: launch node with mounted root directory
+    cmds:
+      - |
+        docker run --user {{.MY_UID}}:{{.MY_GID}} \
+          -it --rm \
+          -w /app \
+          -v $(pwd)/..:/app \
+          $NODE_IMAGE /bin/bash
+
+  root:yarn:
+    desc: runs 'yarn' in root directory
+    cmds:
+      - |
+        docker run --user {{.MY_UID}}:{{.MY_GID}} \
+          --rm \
+          -w /app \
+          -v $(pwd)/..:/app \
+          $NODE_IMAGE /bin/bash -c "yarn {{.CLI_ARGS }}"
+
+  root:lint:
+    desc: runs 'lint' in root directory
+    cmds:
+      - |
+        docker run --user {{.MY_UID}}:{{.MY_GID}} \
+          --rm \
+          -w /app \
+          -v $(pwd)/..:/app \
+          $NODE_IMAGE /bin/bash -c "yarn lint"
+
+  root:lint:fix:
+    desc: runs 'lint:fix' in root directory
+    cmds:
+      - |
+        docker run --user {{.MY_UID}}:{{.MY_GID}} \
+          --rm \
+          -w /app \
+          -v $(pwd)/..:/app \
+          $NODE_IMAGE /bin/bash -c "yarn lint:fix"
+
+  # LIB
+  lib:
+    desc: launch node with mounted 'lib' directory
+    cmds:
+      - |
+        docker run --user {{.MY_UID}}:{{.MY_GID}} \
+          -it --rm \
+          -w /app \
+          -v $(pwd)/../lib:/app \
+          $NODE_IMAGE /bin/bash
+
+  lib:yarn:
+    desc: runs 'yarn' in 'lib' directory
+    cmds:
+      - |
+        docker run --user {{.MY_UID}}:{{.MY_GID}} \
+          --rm \
+          -w /app \
+          -v $(pwd)/../lib:/app \
+          $NODE_IMAGE /bin/bash -c "yarn {{.CLI_ARGS }}"
+
+  lib:build:
+    desc: runs 'yarn build' in 'lib' directory
+    cmds:
+      - |
+        docker run --user {{.MY_UID}}:{{.MY_GID}} \
+          --rm \
+          -w /app \
+          -v $(pwd)/../lib:/app \
+          $NODE_IMAGE /bin/bash -c "yarn build && yarn minify"
+      - rm ../lib/dist/the-supersonic-plugin-for-scroll-based-animation.js
+      - mv ../lib/dist/the-supersonic-plugin-for-scroll-based-animation.min.js ../lib/dist/the-supersonic-plugin-for-scroll-based-animation.js
+
+  # DOCS
+  docs:
+    desc: launch node with mounted 'docs' directory
+    cmds:
+      - |
+        docker run --user {{.MY_UID}}:{{.MY_GID}} \
+          -it --rm \
+          -w /app \
+          -v $(pwd)/../docs:/app \
+          $NODE_IMAGE /bin/bash
+
+  docs:yarn:
+    desc: runs 'yarn' in 'docs' directory
+    cmds:
+      - |
+        docker run --user {{.MY_UID}}:{{.MY_GID}} \
+          --rm \
+          -w /app \
+          -v $(pwd)/../docs:/app \
+          $NODE_IMAGE /bin/bash -c "yarn {{.CLI_ARGS }}"
+
+  docs:build:
+    desc: runs 'yarn build' in 'docs' directory
+    cmds:
+      - |
+        docker run --user {{.MY_UID}}:{{.MY_GID}} \
+          --rm \
+          -w /app/docs \
+          -v $(pwd)/../docs:/app/docs \
+          -v $(pwd)/../lib:/app/lib \
+          $NODE_IMAGE /bin/bash -c "yarn build"
+
+  # TESTS
+  test:unit:
+    desc: runs unit tests in 'lib' directory
+    cmds:
+      - |
+        docker run --user {{.MY_UID}}:{{.MY_GID}} \
+          -v $(pwd)/../lib:/app \
+          -w /app \
+          $NODE_IMAGE \
+          yarn test:unit
+
+  test:e2e:
+    desc: runs Playwright
+    cmds:
+      - |
+        docker run --user {{.MY_UID}}:{{.MY_GID}} \
+          --rm --network="host" --ipc=host \
+          -v $(pwd)/../docs:/app \
+          -w /app \
+          $PLAYWRIGHT_IMAGE \
+          yarn test:e2e
+
+  test:e2e:ui:
+    desc: runs Playwright in UI mode (works only in Linux)
+    # TODO: Please refer to https://www.oddbird.net/2022/11/30/headed-playwright-in-docker/ if you want to make it work on Windows or macOS
+    cmds:
+      - |
+        docker run --user {{.MY_UID}}:{{.MY_GID}} \
+          --rm --network="host" --ipc=host \
+          -e DISPLAY=${DISPLAY} \
+          -v /tmp/.X11-unix:/tmp/.X11-unix \
+          -v $(pwd)/../docs:/app \
+          -w /app \
+          $PLAYWRIGHT_IMAGE \
+          yarn test:e2e:ui
+
+  test:
+    cmds:
+      - task test:unit
+      - task test:e2e
