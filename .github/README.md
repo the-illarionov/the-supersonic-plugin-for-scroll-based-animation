@@ -26,15 +26,15 @@ Other solutions did not go well, so I decided to write my own (of course, I did)
 
 2. ## Use native CSS animations
     ```javascript
-        const plugin = new TheSupersonicPlugin({
-            drivers: {
-                hooray: {
-                    start: document.querySelector('.start') // When this element will appear on the screen animation will start,
-                    end: document.querySelector('.end') // When this element will appear on the screen animation will end,
-                    elements: ['.animatable'] // List of elements with CSS animations
-                },
+    const plugin = new TheSupersonicPlugin({
+        drivers: {
+            hooray: {
+                start: document.querySelector('.start') // When this element will appear on the screen animation will start,
+                end: document.querySelector('.end') // When this element will appear on the screen animation will end,
+                elements: ['.animatable'] // List of elements with CSS animations
             },
-        });
+        },
+    });
     ```
     ```css
     .animatable {
