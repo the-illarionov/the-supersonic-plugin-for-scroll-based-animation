@@ -1,7 +1,7 @@
 {
   "name": "the-supersonic-plugin-for-scroll-based-animation",
   "type": "module",
-  "version": "2.0.0",
+  "version": "2.0.2",
   "description": "The Supersonic Plugin For Scroll Based Animation",
   "author": {
     "name": "Alex Illarionov",
@@ -9,7 +9,7 @@
     "url": "https://github.com/the-illarionov"
   },
   "license": "MIT",
-  "homepage": "https://the-illarionov.github.io/the-supersonic-plugin-for-scroll-based-animation/",
+  "homepage": "https://the-illarionov.com/the-supersonic-plugin-for-scroll-based-animation/examples",
   "repository": {
     "type": "git",
     "url": "https://github.com/the-illarionov/the-supersonic-plugin-for-scroll-based-animation.git"

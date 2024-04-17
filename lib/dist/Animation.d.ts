@@ -8,6 +8,7 @@ export declare class Animation {
     data: any;
     /** Reference to linked `Driver` instance */
     driver: Driver;
+    /** You can access domElement this animation is belongs to */
     domElement: HTMLElement;
     hooks: Hooks;
     constructor({ id, cssAnimation, hooks, driver, domElement }: Constructor);

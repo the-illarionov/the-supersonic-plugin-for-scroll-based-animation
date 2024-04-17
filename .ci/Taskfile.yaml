@@ -12,8 +12,7 @@ tasks:
     desc: runs 'yarn' in root directory
     cmds:
       - |
-        docker run \
-          --rm \
+        docker run --rm \
           -w /app \
           -v $(pwd)/..:/app \
           $NODE_IMAGE yarn
@@ -22,8 +21,7 @@ tasks:
     desc: runs 'yarn' in 'docs' directory
     cmds:
       - |
-        docker run \
-          --rm \
+        docker run --rm \
           -w /app \
           -v $(pwd)/../docs:/app \
           $NODE_IMAGE yarn
@@ -32,8 +30,7 @@ tasks:
     desc: runs 'yarn' in 'lib' directory
     cmds:
       - |
-        docker run \
-          --rm \
+        docker run --rm \
           -w /app \
           -v $(pwd)/../lib:/app \
           $NODE_IMAGE yarn
@@ -47,8 +44,7 @@ tasks:
   lint:
     cmds:
       - |
-        docker run \
-          --rm \
+        docker run --rm \
           -w /app \
           -v $(pwd)/..:/app \
           $NODE_IMAGE /bin/bash -c "yarn lint"
@@ -58,8 +54,7 @@ tasks:
     cmds:
       - task lint
       - |
-        docker run \
-          --rm \
+        docker run --rm \
           -w /app/docs \
           -v $(pwd)/../docs:/app/docs \
           -v $(pwd)/../lib:/app/lib \
@@ -69,7 +64,7 @@ tasks:
     cmds:
       - |
         docker run \
-          --network="host" \
+          --rm --network="host" \
           -v $(pwd)/../docs:/app/docs \
           -v $(pwd)/../lib:/app/lib \
           -w /app/docs \
@@ -80,7 +75,7 @@ tasks:
     desc: runs unit tests in 'lib' directory
     cmds:
       - |
-        docker run \
+        docker run --rm \
           -v $(pwd)/../lib:/app \
           -w /app \
           $NODE_IMAGE \
@@ -90,7 +85,7 @@ tasks:
     desc: runs Playwright
     cmds:
       - |
-        docker run \
+        docker run --rm \
           --network="host" \
           -v $(pwd)/../docs:/app \
           -w /app \

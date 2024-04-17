@@ -13,7 +13,7 @@ const debugColors = {
 }
 
 /**
- * The main purpose of Driver is to calculate current progress from 0 to 1 depending on current scroll
+ * The main purpose of Driver is to calculate current progress from 0 to 1 depending on current scroll and position of 'start' and 'end' elements
  */
 export class Driver {
   id: string
@@ -21,17 +21,18 @@ export class Driver {
   progress = 0
   /** You can store your custom data here to use between hooks */
   data: any = {}
-  /** Start is linked to [data-supersonic-type="start"] HTML element */
+  /** Start is HTML element. When it appears on the screen, driver will start an animation */
   start: Border
-  /** End is linked to [data-supersonic-type="end"] HTML element */
+  /** End is HTML element. When it appears on the screen, driver will stop an animation */
   end: Border
-  /** Link to plugin instance to be able to access global variables */
+  /** Link to plugin instance to be able to access global variables like 'scroll', 'screenHeight' */
   plugin: TheSupersonicPlugin
 
   animations: Map<string, Animation> = new Map()
 
   domElements: HTMLElement[] = []
 
+  /** Helper is an element which need for IntersectionObserver to activate or deactive driver */
   helper: Helper
 
   hooks: Hooks

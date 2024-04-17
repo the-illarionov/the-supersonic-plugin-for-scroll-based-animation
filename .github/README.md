@@ -1,15 +1,13 @@
 # The Supersonic Plugin For Scroll Based Animation
 
-![test-and-build](https://github.com/the-illarionov/the-supersonic-plugin-for-scroll-based-animation/actions/workflows/test-and-build.yml/badge.svg)
-![deploy](https://github.com/the-illarionov/the-supersonic-plugin-for-scroll-based-animation/actions/workflows/deploy.yml/badge.svg)
-
 ![gzip size](https://img.shields.io/bundlejs/size/the-supersonic-plugin-for-scroll-based-animation)
+![test-and-build](https://github.com/the-illarionov/the-supersonic-plugin-for-scroll-based-animation/actions/workflows/test-and-build.yml/badge.svg)
 
 - [Main features](#main-features)
 - [Installation](#installation)
 - [Examples](#examples)
 - [Configuration](#configuration)
-- [Tips and advices](#tips-and-advices)
+- [Possible issues](#possible-issues)
 
 ---
 
@@ -17,51 +15,38 @@ Once upon a time, I suddenly realized that I need to animate 1000 pictures of my
 
 Other solutions did not go well, so I decided to write my own (of course, I did).
 
-[Go check the final result and see how 1000 Bartholomews are animated!](https://the-illarionov.github.io/the-supersonic-plugin-for-scroll-based-animation/bartholomew.html)
+[Go check the final result and see how 1000 Bartholomews are animated!](https://the-illarionov.com/the-supersonic-plugin-for-scroll-based-animation/bartholomeow)
 
 # Main features
 
-1. ## 3.2kb gzipped (10kb minified)
+1. ## 2.5kb gzipped
     - 0 dependencies
     - 100% TypeScript
-    - ESM and IIFE formats, both minified and uncompressed
+    - ESM and IIFE formats
 
-2. ## Adaptiveness out-of-the-box
+2. ## Use native CSS animations
+    No more struggling with calculating animations, dealing with orchestrating them etc.
 
-    Instead of manually setting the start and end values of the scroll, you use HTML elements (**_drivers_**).
+    Write your CSS animations as usual and let the plugin to control them. You can even have CSS animations that are being played as usual together with plugin controlled! [Check examples](https://the-illarionov.com/the-supersonic-plugin-for-scroll-based-animation/examples).
 
-    Their appearance will control the animation. The Plugin uses the driver's top offset as a value ([check live example](https://the-illarionov.github.io/the-supersonic-plugin-for-scroll-based-animation/#basic)).
+    As a bonus, you can have different animations for different screens with 0 lines of javascript code!
 
-    That's why you can forget about adaptiveness, because you have already done your work to proper layout for mobiles!
+    Sure, we have `scrollt-imeline` upcoming, but it has some disavantages:
+    - Still experimental at the time of April 2024.
+    - You can't bind start of an animation to one element and end of it to completely another.
 
-3. ## Customization and crazy flexibility
-    ### Each driver can animate multiple properties, each of which can be applied to multiple elements
-    Orchestrating supercomplex animations is so dead simple now! It's up to you to decide, be it one driver to rule them all or an army of drivers for each particular element ([check live example](https://the-illarionov.github.io/the-supersonic-plugin-for-scroll-based-animation/#multiple-drivers)).
+3. ## Use DOM elements as drivers of your animation
 
-    ### Different animations for different screens
-    You can easily define different sets and you are not limited by mobile queries only - you can use **any** valid media query ([check live example](https://the-illarionov.github.io/the-supersonic-plugin-for-scroll-based-animation/#media-queries))!
+    Instead of manually setting the start and end values of the scroll, you use HTML elements (**_drivers_**). Their appearance on the screen will control the animation. The Plugin uses the driver's top offset as a value, [check examples](https://the-illarionov.com/the-supersonic-plugin-for-scroll-based-animation/examples).
 
-    ### Hooks for each step. Hooks for the win!
-    Almost every internal stuff has a hook, so it gives you a clean and simple way to add some custom logic ([check live example](https://the-illarionov.github.io/the-supersonic-plugin-for-scroll-based-animation/#custom-transition)).
+    And again, as a bonus of using DOM elements as drivers you don't have to think about responsivity, it comes out of the box (you can use `media queries` to reposition your drivers).
 
-    A list of all hooks is described in [configuration](#configuration) section.
-    ### Easy to understand and customize sources
-    All of the sources were written to be clear and simple to understand so you could fork it and tweak it "low-level" pretty easily. Use TypeScript and get all of the type support!
-    ```javascript
-    // src/engine/Driver.ts
-    /**
-     * The main purpose of Driver is to calculate current progress from 0 to 1 depending on current scroll and 'start' and 'end' elements top offset in document
-    */
-    export class Driver {
-        id: string
-        /** Progress is generated by script and means how much of the scroll covered right now. Minimum value: 0, maximum value: 1, float number with 4 numbers after decimal point precision */
-        progress = 0
-        /** Only active drivers are rendered. Driver becomes active when it's HTML elements become visible */
-        active = false
-        ...
-    ```
+4. ## Customization and crazy flexibility
+    Every internal stuff has a hook. Actually, everything that plugin does it does through it's API so you create as complex stuff as you want.
 
-4. ## Speed
+    Look at the [type declarations](https://the-illarionov.com/the-supersonic-plugin-for-scroll-based-animation/types) to discover all of the customization possibilities.
+
+5. ## Speed
 
     The Plugin uses IntersectionObserver, so only visible elements will be processed. It means you can have lots of elements!
 
@@ -76,31 +61,33 @@ Other solutions did not go well, so I decided to write my own (of course, I did)
     ```
     It is 90% more performant.
 
-    As a result, [1000 Bartholomews](https://the-illarionov.github.io/the-supersonic-plugin-for-scroll-based-animation/bartholomew.html) performs like this on 10 years old PC (i7-4770, 8Gb RAM):
+    As a result, [1000 Bartholomews](https://the-illarionov.com/the-supersonic-plugin-for-scroll-based-animation/bartholomeow) perform like this on 10 years old PC (i7-4770, 8Gb RAM):
 
     ![image](./images/performance.png)
 
     Yeah, it lags a little, but check the Heap size and total Scripting time!
 
-  The Plugin itself still works extremely fast, it takes about ***0.5ms*** per frame to make all of the calculations, the rest is rendering.
+    The Plugin itself still works extremely fast, it takes about ***0.5ms*** per frame to make all of the calculations, the rest is rendering.
 
-     It is one goddamn thousand HTML elements animating over here!
+    It is one goddamn thousand HTML elements animating over here!
 
-5. ## Bonuses
+6. ## SPA-ready
 
-- Suits well for SPA frameworks thanks to ```uninit()```, which cleans all the stuff (instances, events listeners, etc.);
+    Plugin has `uninit()` method, which clears all of the stuff. Don't forget to call it when you unmount your component.
 
-- Keeps all transformations after you scroll and reload a page (even if you have multiple drivers animating the same property);
+    ```javascript
+    onMounted() {
+        const plugin = new TheSupersonicPlugin({
+            // config...
+        })
+    }
 
-- Keeps your CSS "translate" properties. For example, if you have ```transform: translateX(10px)``` defined in your CSS and want to animate ```translateY```, it will keep translateX as is.
+    onBeforeUnmount() {
+        plugin.uninit()
+    }
+    ```
 
-- In the development mode, you can see the internal logic:
-
-    ![image](./images/dev-console.png)
-
-    Different colors mean different frames. You can disable logs by setting ```src/singletons/Globals/devGlobals.showConsole: false```.
-
-And all of this at a price of 3.2Kb!
+And all of this at a price of 2.5Kb!
 
 So what are you waiting for?
 
@@ -113,252 +100,75 @@ npm install the-supersonic-plugin-for-scroll-based-animation --save-dev
 ```
 
 ```javascript
-import TheSupersonicPluginForScrollBasedAnimation from "the-supersonic-plugin-for-scroll-based-animation"
+import { TheSupersonicPlugin } from "the-supersonic-plugin-for-scroll-based-animation"
 
-new TheSupersonicPluginForScrollBasedAnimation({
+new TheSupersonicPlugin({
     // ...configuration
 })
 ```
 
 ## CDN
-### IIFE Minified
+### IIFE
 ```html
 <script src="https://unpkg.com/the-supersonic-plugin-for-scroll-based-animation"></script>
 
 <script>
-  new TheSupersonicPluginForScrollBasedAnimation({
+  new TheSupersonicPluginWrapper.TheSupersonicPlugin({
     // ...configuration
   })
 </script>
 ```
-### IIFE Uncompressed
-```html
-<script src="https://unpkg.com/the-supersonic-plugin-for-scroll-based-animation/lib/the-supersonic-plugin-for-scroll-based-animation.iife.js"></script>
+### ESM
+```javascript
+import { TheSupersonicPlugin } from "https://esm.sh/the-supersonic-plugin-for-scroll-based-animation"
 
-<script>
-  new TheSupersonicPluginForScrollBasedAnimation({
+new TheSupersonicPlugin({
     // ...configuration
-  })
-</script>
-```
-### ESM Minified
-```html
-<script type="module">
-  import TheSupersonicPluginForScrollBasedAnimation from 'https://unpkg.com/the-supersonic-plugin-for-scroll-based-animation/lib/the-supersonic-plugin-for-scroll-based-animation.min.js'
-
-  new TheSupersonicPluginForScrollBasedAnimation({
-    // ...configuration
-  })
-</script>
-```
-### ESM Uncompressed
-```html
-<script type="module">
-  import TheSupersonicPluginForScrollBasedAnimation from 'https://unpkg.com/the-supersonic-plugin-for-scroll-based-animation/lib/the-supersonic-plugin-for-scroll-based-animation.js'
-
-  new TheSupersonicPluginForScrollBasedAnimation({
-    // ...configuration
-  })
-</script>
+})
 ```
 
 # Examples
 
-Go check [live examples](https://the-illarionov.github.io/the-supersonic-plugin-for-scroll-based-animation/) with source codes.
+You can [find them here](https://the-illarionov.com/the-supersonic-plugin-for-scroll-based-animation/examples).
 
 # Configuration
-Here is the full list of all possible options:
+Check [types declarations](https://the-illarionov.com/the-supersonic-plugin-for-scroll-based-animation/types) to see all of the configuration options.
+
+The Plugin consists of 3 classes:
+1. `TheSupersonicPlugin`, which is act like main entry point.
+2. `Driver`, which calculates it's progress from 0 to 1 according to current scroll and position of `start` and `end` elements.
+3. `Animation`, which is responsible for storing and setting CSS Animation `currentTime` property.
+
+All of them are provided too, so you can manually create your own instances:
 ```javascript
-new TheSupersonicPluginForScrollBasedAnimation({
-    drivers: {
-        "your-driver-id": { // value of [data-supersonic-driver]
-            properties: {
-                translateX: { // any valid numeric CSS property
-                    start: 0, // number
-                    end: 100,
-                    unit: "%" // optional, any string, default is ""
-                    elements: [ ".animated-element" ] // array of any valid CSS selectors,
-                    hooks: { // property hooks, each hook is optional
-                        onInit(property) {
-                            // called during instance initialization
-                        },
-                        onBeforeRender(property) {
-                            // called after property value calculation, before applying property to elements
-                        },
-                        onAfterRender(property) {
-                            // called after property was applied to all elements
-                        },
-                        onUpdateLimits(property) {
-                            // called when parent driver calls updateLimits()
-                        }
-                    }
-                },
-                // ...more properties
-            },
-            hooks: { // driver hooks, each hook is optional
-                onInit(driver) {
-                    // called during instance initialization
-                },
-                onBeforeRender(driver) {
-                    // called after driver progress calculation, before rendering properties
-                },
-                onAfterRender(driver) {
-                    // called only if progress has changed since previous frame
-                },
-                onActivation(driver) {
-                    // called when driver is intersected by IntersectionObserver
-                },
-                onDeactivation(driver) {
-                    // called when driver stops intersecting by IntersectionObserver
-                },
-                onUpdateLimits(driver) {
-                    // called when window resizes or  TheSupersonicPluginForScrollBasedAnimation calls updateLimits()
-                }
-            }
-        },
-        // ...more drivers
-    },
-    elements: { // optional, needed if you want to hook elements
-        ".some-css-selector": { // the same value as driver.properties.elements
-            hooks: { // element hooks, each hook is optional
-                onInit(element) {
-                // called during instance initialization
-                },
-                onBeforeRender(element) {
-                    // called before render
-                },
-                onAfterRender(element) {
-                    // called after render
-                },
-                onUpdateLimits(element, driver) {
-                    // called when driver calls its updateLimits()
-                },
-                onAddProperty(element, property) {
-                    // called after property was added, can be used to make some tunings before property will be actually applied to the element */
-                },
-            }
-        },
-        // ...more elements
-    },
-    options: { // optional
-        observerRootMargin: "100px" // "rootMargin" property of IntersectionObserver, default is "100px"
-    },
-    hooks: { // global hooks, each hook is optional
-        onInit(plugin) {
-            // called during plugin initialization
-        },
-        onBeforeRender() {
-            // called after current scroll (Globals.scroll) has been updated
-        },
-        onAfterRender() {
-            // called at the end of animation frame
-        },
-        onUpdateLimits() {
-            // called when window resizes */
-        }
-    }
+import {
+    TheSupersonicPlugin,
+    Driver,
+    Animation
+} from "https://esm.sh/the-supersonic-plugin-for-scroll-based-animation"
+
+const plugin = new TheSupersonicPlugin({
+    // ...configuration
+})
+
+const animation = new Animation({
+    driver: plugin.driverInstances.get('some-driver'),
+    // ...another configuration
 })
 ```
-Also, you can use programmatic start and end values ([check live example](https://the-illarionov.github.io/the-supersonic-plugin-for-scroll-based-animation/#custom-start-and-end)):
-```javascript
-new TheSupersonicPluginForScrollBasedAnimation({
-    drivers: {
-        "your-driver": {
-            properties: {
-                translateY: {
-                    start: 0,
-                    end(property) {
-                        return window.innerHeight
-                    },
-                    unit: "px",
-                    elements: [".animatable-element"],
-                },
-            ...
-```
 
-And moreover, you can use different sets of animations for different screens ([check live example](https://the-illarionov.github.io/the-supersonic-plugin-for-scroll-based-animation/#media-queries)):
+## Possible issues
+1. When you have **lots** of animations (more hundred), plugin can start to lag a little on start.
 
-```javascript
-new TheSupersonicPluginForScrollBasedAnimation({
-    drivers: {
-        "your-driver": {
-            properties: {
-                "default": {
-                    translateY: {
-                        start: 0,
-                        end: 100,
-                        unit: "px",
-                        elements: [".animatable-element"],
-                    },
-                },
-                "(max-width: 768px)": {
-                    opacity: {
-                        start: 1,
-                        end: 0,
-                        elements: [".animatable-element"],
-                    },
-                }
-            ...
-```
+    It's because `domElement.getAnimations()` doesn't scale too well.
 
-The Plugin provides everything you need as static members:
-```javascript
-TheSupersonicPluginForScrollBasedAnimation.Driver
-TheSupersonicPluginForScrollBasedAnimation.Property
-TheSupersonicPluginForScrollBasedAnimation.Element
-TheSupersonicPluginForScrollBasedAnimation.Globals
-```
+    If you really need to have lots of animations, implement lazy initialization of animation at `onActivation` driver hook. Or you can manually updating properties like [i did with 1000 Bartholomeows](https://the-illarionov.com/the-supersonic-plugin-for-scroll-based-animation/bartholomeow).
 
-For example, if you need to manually render some driver, you use:
-```javascript
-TheSupersonicPluginForScrollBasedAnimation.Driver.instances.get(".my-driver").render()
-```
+2. If you have **lots** of drivers (more thousand), plugin can start to lag a little on start.
 
-You can check the sources, they are designed to be well-read, everything is commented.
+    It's because plugin fires `updateLimits()` on start to set proper top distances to all elements, which causes `reflow`.
 
-## Tips and advices
-
-- Yes, it's possible to animate any numeric CSS property, but be careful with properties that causes [reflow](https://developers.google.com/speed/docs/insights/browser-reflow). See [this](https://gist.github.com/paulirish/5d52fb081b3570c81e3a) list to check if your propery does it.
-
-- If you want to make adjustments on window resize, write a driver ```onUpdateLimits()``` hook like this:
-```javascript
-new TheSupersonicPluginForScrollBasedAnimation({
-    drivers: {
-        ...
-    },
-    hooks: {
-        onUpdateLimits() {
-            // ...some cool code
-        }
-    }
-```
-Or hook specific driver only:
-```javascript
-new TheSupersonicPluginForScrollBasedAnimation({
-    drivers: {
-        "your-driver-id": {
-            hooks: {
-                onUpdateLimits(driver) {
-                    // make some adjustments with access to Driver instance
-                }
-            },
-        ...
-```
-
-- If you animate multiple elements identically, you can use one big selector:
-```javascript
-new TheSupersonicPluginForScrollBasedAnimation({
-    drivers: {
-        "your-driver-id": {
-            properties: {
-                opacity: {
-                    start: 0,
-                    end: 1,
-                    elements: [".one-selector, .another, .and-more, .and-more"]
-                },
-            ...
-```
-This way only one instance of Element will be created, which can give you a little performance boost.
+    If it's really a problem, consider cancelling default rendering via `onBeforeRender: () => false` and batching all of `updateLimits` call at one call.
 
 ---
 

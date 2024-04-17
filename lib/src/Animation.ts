@@ -12,6 +12,7 @@ export class Animation {
   /** Reference to linked `Driver` instance */
   driver: Driver
 
+  /** You can access domElement this animation is belongs to */
   domElement: HTMLElement
 
   hooks: Hooks
