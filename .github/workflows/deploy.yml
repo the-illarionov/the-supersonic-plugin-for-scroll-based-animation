@@ -47,7 +47,7 @@ jobs:
             });
 
             let fs = require('fs');
-            fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/docs.zip`, Buffer.from(downloadFrontend.data));
+            fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/docs.zip`, Buffer.from(downloadArtifact.data));
 
       - name: Unzip artifacts
         run: |
