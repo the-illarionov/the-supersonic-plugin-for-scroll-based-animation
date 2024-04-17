@@ -25,6 +25,24 @@ Other solutions did not go well, so I decided to write my own (of course, I did)
     - ESM and IIFE formats
 
 2. ## Use native CSS animations
+    ```javascript
+        const plugin = new TheSupersonicPlugin({
+            drivers: {
+                hooray: {
+                    start: document.querySelector('.start') // When this element will appear on the screen animation will start,
+                    end: document.querySelector('.end') // When this element will appear on the screen animation will end,
+                    elements: ['.animatable'] // List of elements with CSS animations
+                },
+            },
+        });
+    ```
+    ```css
+    .animatable {
+        animation-name: hooray;
+        animation-duration: 10s; /* It has to be 10s, more details in examples */
+        animation-play-state: paused; /* It will be controlled by script */
+    }
+    ```
     No more struggling with calculating animations, dealing with orchestrating them etc.
 
     Write your CSS animations as usual and let the plugin to control them. You can even have CSS animations that are being played as usual together with plugin controlled! [Check examples](https://the-illarionov.com/the-supersonic-plugin-for-scroll-based-animation/examples).
@@ -37,7 +55,7 @@ Other solutions did not go well, so I decided to write my own (of course, I did)
 
 3. ## Use DOM elements as drivers of your animation
 
-    Instead of manually setting the start and end values of the scroll, you use HTML elements (**_drivers_**). Their appearance on the screen will control the animation. The Plugin uses the driver's top offset as a value, [check examples](https://the-illarionov.com/the-supersonic-plugin-for-scroll-based-animation/examples).
+    Instead of manually setting the start and end values, you use HTML elements (**_drivers_**). Their appearance and position on the screen will control the animation. The Plugin uses the driver's top offset as a value, [check examples](https://the-illarionov.com/the-supersonic-plugin-for-scroll-based-animation/examples).
 
     And again, as a bonus of using DOM elements as drivers you don't have to think about responsivity, it comes out of the box (you can use `media queries` to reposition your drivers).
 
@@ -45,6 +63,8 @@ Other solutions did not go well, so I decided to write my own (of course, I did)
     Every internal stuff has a hook. Actually, everything that plugin does it does through it's API so you create as complex stuff as you want.
 
     Look at the [type declarations](https://the-illarionov.com/the-supersonic-plugin-for-scroll-based-animation/types) to discover all of the customization possibilities.
+
+    You can even use plugin to animate whatever you like, not only CSS animations. Check [last example here](https://the-illarionov.com/the-supersonic-plugin-for-scroll-based-animation/examples), you will be surprised ;)
 
 5. ## Speed
 
