@@ -12,7 +12,7 @@
     "deploy": "wrangler pages deploy dist --project-name=the-supersonic-plugin-for-scroll-based-animation --branch=main"
   },
   "devDependencies": {
-    "@playwright/test": "^1.43.1",
+    "@playwright/test": "^1.43.0",
     "@types/node": "^20.12.7",
     "postcss": "^8.4.38",
     "typescript": "^5.2.2",

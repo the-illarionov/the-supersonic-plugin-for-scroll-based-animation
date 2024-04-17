@@ -53,19 +53,10 @@ tasks:
           -v $(pwd)/..:/app \
           $NODE_IMAGE /bin/bash -c "yarn lint"
 
-  test:
-    desc: runs unit tests of lib
-    cmds:
-      - |
-        docker run --user {{.MY_UID}}:{{.MY_GID}} \
-          -v $(pwd)/../lib:/app \
-          -w /app \
-          $NODE_IMAGE \
-          yarn test:unit
-
-  build:prepare:
+  build:
     desc: creates production build of docs
     cmds:
+      - task lint
       - |
         docker run \
           --rm \
@@ -74,17 +65,48 @@ tasks:
           -v $(pwd)/../lib:/app/lib \
           $NODE_IMAGE /bin/bash -c "yarn build"
 
-  build:
+  up:
     cmds:
-      - task lint
-      - task test
-      - task build:prepare
+      - |
+        docker run \
+          --network="host" \
+          -v $(pwd)/../docs:/app/docs \
+          -v $(pwd)/../lib:/app/lib \
+          -w /app/docs \
+          -d $NODE_IMAGE \
+          yarn preview
+
+  test:unit:
+    desc: runs unit tests in 'lib' directory
+    cmds:
+      - |
+        docker run \
+          -v $(pwd)/../lib:/app \
+          -w /app \
+          $NODE_IMAGE \
+          yarn test:unit
+
+  test:e2e:
+    desc: runs Playwright
+    cmds:
+      - |
+        docker run \
+          --network="host" \
+          -v $(pwd)/../docs:/app \
+          -w /app \
+          $PLAYWRIGHT_IMAGE \
+          yarn test:e2e
+
+  test:
+    cmds:
+      - task test:unit
+      - task test:e2e
 
   deploy:pages:
     desc: deploy to CloudFlare pages
     cmds:
       - |
-        docker run --user $(id -u):$(id -g) \
+        docker run \
         --rm \
         -w /app \
         -v $(pwd)/../docs:/app \
@@ -96,4 +118,6 @@ tasks:
     desc: Lints, tests, builds and deploys to CloudFlare pages
     cmds:
       - task build
+      - task up
+      - task test
       - task deploy:pages

@@ -50,18 +50,21 @@ export default defineConfig({
       name: 'chromium',
       use: {
         ...devices['Desktop Chrome'],
+        viewport: { width: 1000, height: 1000 },
       },
     },
     {
       name: 'firefox',
       use: {
         ...devices['Desktop Firefox'],
+        viewport: { width: 1000, height: 1000 },
       },
     },
     {
       name: 'webkit',
       use: {
         ...devices['Desktop Safari'],
+        viewport: { width: 1000, height: 1000 },
       },
     },
 
@@ -72,12 +75,12 @@ export default defineConfig({
         ...devices['Pixel 5'],
       },
     },
-    {
+    /* {
       name: 'Mobile Safari',
       use: {
         ...devices['iPhone 12'],
       },
-    },
+    }, */
 
     /* Test against branded browsers. */
     // {

@@ -1,22 +1,69 @@
 import { TheSupersonicPlugin } from '../../lib/src/index'
 
-const f = new TheSupersonicPlugin({
+const scrollLog = document.querySelector('#scroll-log')
+
+const plugin = new TheSupersonicPlugin({
   drivers: {
-    foo: {
-      start: document.querySelector('.start'),
-      end: document.querySelector('.end'),
-      elements: ['.foo'],
+    'basic': {
+      start: document.querySelector('.top-100'),
+      end: document.querySelector('.top-200'),
+      elements: [
+        '.basic',
+        {
+          selector: '.cancel-render-animation',
+          animations: [
+            {
+              name: 'basic',
+              hooks: {
+                onBeforeRender() {
+                  return false
+                },
+              },
+            },
+          ],
+        },
+        {
+          selector: '.changes-bg-on-render',
+          animations: [
+            {
+              name: 'basic',
+              hooks: {
+                onBeforeRender({ animation }) {
+                  animation.domElement.style.background = `#${animation.driver.plugin.scroll.toString(16)}`
+                },
+              },
+            },
+          ],
+        },
+      ],
+    },
+    'cancel-render-driver': {
+      start: document.querySelector('.top-100'),
+      end: document.querySelector('.top-200'),
+      elements: ['.cancel-render-driver'],
       hooks: {
-        /* onUpdateLimits({ driver }) {
-          driver.helper.updateLimits({
-            top: driver.start.top,
-            height: driver.end.top - driver.start.top + driver.plugin.screenHeight,
-          })
-        }, */
+        onBeforeRender() {
+          return false
+        },
       },
+    },
+  },
+  hooks: {
+    onBeforeRender({ plugin }) {
+      scrollLog!.innerHTML = plugin.scroll.toString()
     },
   },
   debug: true,
 })
 
-console.log(f)
+console.log(plugin)
+
+// @ts-expect-error window
+window.plugin = plugin
+
+/* onUpdateLimits({ driver }) {
+          driver.helper.updateLimits({
+            top: driver.start.top,
+            height: driver.end.top - driver.start.top + driver.plugin.screenHeight,
+          })
+        }, */

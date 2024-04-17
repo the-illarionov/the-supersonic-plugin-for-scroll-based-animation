@@ -6,44 +6,108 @@
     <title>Document</title>
 
     <style>
-      .start,
-      .end {
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+      }
+      .top-100,
+      .top-150,
+      .top-200,
+      .top-250,
+      .top-300,
+      .top-350,
+      .top-400 {
         position: absolute;
-        width: 10px;
+        width: 100px;
         height: 5px;
-        background: red;
+        background: orange;
+        z-index: 100;
       }
 
-      .foo {
-        position: fixed;
-        z-index: 100;
-        left: 0;
-        top: 0;
-        width: 50px;
-        height: 50px;
-        background: yellow;
+      .top-100 {
+        top: 100vh;
+      }
+      .top-150 {
+        top: 150vh;
+      }
+      .top-200 {
+        top: 200vh;
+      }
+      .top-250 {
+        top: 250vh;
+      }
+      .top-300 {
+        top: 300vh;
+      }
+      .top-350 {
+        top: 350vh;
+      }
+      .top-400 {
+        top: 400vh;
+      }
 
-        animation-name: foo;
+      .element {
+        position: fixed;
+        width: 80px;
+        height: 80px;
+        background: yellow;
         animation-duration: 10s;
         animation-play-state: paused;
         animation-fill-mode: forwards;
+        animation-timing-function: linear;
       }
 
-      @keyframes foo {
-        0% {
-          translate: -30px 0 0;
-        }
+      .basic,
+      .cancel-render-driver,
+      .cancel-render-animation,
+      .changes-bg-on-render {
+        animation-name: basic;
+      }
+
+      @keyframes basic {
         100% {
-          translate: calc(100vw - 50px) 0 0;
+          translate: calc(50vw - 50%) 0 0;
         }
       }
     </style>
   </head>
   <body>
-    <div class="start" style="top: 100vh"></div>
-    <div class="end" style="top: 300vh"></div>
-    <div class="foo"></div>
+    <div class="top-100"></div>
+    <div class="top-150"></div>
+    <div class="top-200"></div>
+    <div class="top-250"></div>
+    <div class="top-250"></div>
+    <div class="top-300"></div>
+    <div class="top-350"></div>
+    <div class="top-400"></div>
 
+    <div class="element basic" style="left: 0; top: 0"></div>
+
+    <div
+      class="element basic"
+      style="left: 0; top: 100px; animation-timing-function: ease"
+    ></div>
+
+    <div
+      class="element basic"
+      style="left: 0; top: 200px; animation-delay: 1s"
+    ></div>
+
+    <div class="element cancel-render-driver" style="left: 0; top: 0"></div>
+
+    <div
+      class="element cancel-render-animation"
+      style="left: 0; top: 100px"
+    ></div>
+
+    <div class="element changes-bg-on-render" style="left: 0; top: 300px"></div>
+
+    <div
+      style="position: fixed; right: 0; bottom: 0; z-index: 200"
+      id="scroll-log"
+    ></div>
     <script type="module" src="/src/e2e.ts"></script>
   </body>
 </html>
