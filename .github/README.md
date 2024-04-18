@@ -29,8 +29,8 @@ Other solutions did not go well, so I decided to write my own (of course, I did)
     const plugin = new TheSupersonicPlugin({
         drivers: {
             hooray: {
-                start: document.querySelector('.start') // When this element will appear on the screen animation will start,
-                end: document.querySelector('.end') // When this element will appear on the screen animation will end,
+                start: document.querySelector('.start'), // Animation starts when this element appears on the screen
+                end: document.querySelector('.end'), // Animation ends when this element appears on the screen
                 elements: ['.animatable'] // List of elements with CSS animations
             },
         },
@@ -45,11 +45,11 @@ Other solutions did not go well, so I decided to write my own (of course, I did)
     ```
     No more struggling with calculating animations, dealing with orchestrating them etc.
 
-    Write your CSS animations as usual and let the plugin to control them. You can even have CSS animations that are being played as usual together with plugin controlled! [Check examples](https://the-illarionov.com/the-supersonic-plugin-for-scroll-based-animation/examples).
+    Write your CSS animations as usual and let the plugin to control them. You can even have CSS animations that are being played as usual together with plugin controlled ones! [Check examples](https://the-illarionov.com/the-supersonic-plugin-for-scroll-based-animation/examples).
 
     As a bonus, you can have different animations for different screens with 0 lines of javascript code!
 
-    Sure, we have `scrollt-imeline` upcoming, but it has some disavantages:
+    Sure, we have `scroll-timeline` upcoming, but it has some disavantages:
     - Still experimental at the time of April 2024.
     - You can't bind start of an animation to one element and end of it to completely another.
 
@@ -155,7 +155,7 @@ You can [find them here](https://the-illarionov.com/the-supersonic-plugin-for-sc
 Check [types declarations](https://the-illarionov.com/the-supersonic-plugin-for-scroll-based-animation/types) to see all of the configuration options.
 
 The Plugin consists of 3 classes:
-1. `TheSupersonicPlugin`, which is act like main entry point.
+1. `TheSupersonicPlugin`, which acts like main entry point.
 2. `Driver`, which calculates it's progress from 0 to 1 according to current scroll and position of `start` and `end` elements.
 3. `Animation`, which is responsible for storing and setting CSS Animation `currentTime` property.
 
@@ -178,13 +178,13 @@ const animation = new Animation({
 ```
 
 ## Possible issues
-1. When you have **lots** of animations (more hundred), plugin can start to lag a little on start.
+1. When you have **lots** of animations (more 500), plugin can start to lag a little on start.
 
     It's because `domElement.getAnimations()` doesn't scale too well.
 
     If you really need to have lots of animations, implement lazy initialization of animation at `onActivation` driver hook. Or you can manually updating properties like [i did with 1000 Bartholomeows](https://the-illarionov.com/the-supersonic-plugin-for-scroll-based-animation/bartholomeow).
 
-2. If you have **lots** of drivers (more thousand), plugin can start to lag a little on start.
+2. If you have **lots** of drivers (more 1000), plugin can start to lag a little on start.
 
     It's because plugin fires `updateLimits()` on start to set proper top distances to all elements, which causes `reflow`.
 
