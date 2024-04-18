@@ -1,4 +1,4 @@
-import type { Constructor, Hooks, Render } from './Animation.types'
+import type { AnimationConstructor, AnimationHooks, AnimationRender } from './Animation.types'
 import type { Driver } from './Driver'
 
 export class Animation {
@@ -15,9 +15,9 @@ export class Animation {
   /** You can access domElement this animation is belongs to */
   domElement: HTMLElement
 
-  hooks: Hooks
+  hooks: AnimationHooks
 
-  constructor({ id, cssAnimation, hooks, driver, domElement }: Constructor) {
+  constructor({ id, cssAnimation, hooks, driver, domElement }: AnimationConstructor) {
     this.id = id
     this.driver = driver
     this.cssAnimation = cssAnimation
@@ -25,14 +25,14 @@ export class Animation {
     this.domElement = domElement
 
     if (this.hooks.onInit)
-      this.hooks.onInit({ animation: this })
+      this.hooks.onInit(this)
   }
 
-  render({ driverProgress }: Render) {
+  render({ driverProgress }: AnimationRender) {
     let currentTime = driverProgress * 10000
 
     if (this.hooks.onBeforeRender) {
-      const onBeforeRenderReturn = this.hooks.onBeforeRender({ animation: this })
+      const onBeforeRenderReturn = this.hooks.onBeforeRender(this)
 
       if (typeof onBeforeRenderReturn === 'number')
         currentTime = onBeforeRenderReturn
@@ -44,6 +44,6 @@ export class Animation {
     this.cssAnimation.currentTime = currentTime
 
     if (this.hooks.onAfterRender)
-      this.hooks.onAfterRender({ animation: this })
+      this.hooks.onAfterRender(this)
   }
 }

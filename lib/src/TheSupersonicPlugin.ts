@@ -1,27 +1,26 @@
 import { Driver } from './Driver'
 import { Observer } from './Observer'
-import { debounce } from './utils'
+import { debounce, generateId } from './utils'
 
-import type { Configuration, Hooks, Render } from './TheSupersonicPlugin.types'
+import type { PluginConfiguration, PluginHooks, PluginRender } from './TheSupersonicPlugin.types'
+import type { DriverConfiguration } from './Driver.types'
 
 /**
  *
  * Main class handling all of the logic. To initialize the plugin, you create a new instance of this class
  *
  * @example
- * const plugin = new TheSupersonicPlugin({
- *   drivers: {
- *     'name-of-your-driver': {
- *        start: document.querySelector('.start'),
- *        end: document.querySelector('.end'),
- *        elements: ['.animatable-element']
- *      }
+ * const plugin = new TheSupersonicPlugin([
+ *   {
+ *      start: '.start',
+ *      end: '.end',
+ *      elements: ['.animatable-element']
  *   }
- * });
+ * ]);
  *
  */
 export class TheSupersonicPlugin {
-  /** Unique id of thisrunning instance */
+  /** Unique id of this running instance. You explicitly define it or let plugin auto generate it */
   id: string
   /** Current window scrollY */
   scroll = 0
@@ -49,31 +48,33 @@ export class TheSupersonicPlugin {
   /** Make helper visible */
   debug: boolean
 
-  hooks: Hooks = {}
+  hooks: PluginHooks = {}
 
   driverInstances: Map<string, Driver> = new Map()
   driverActiveInstances: Set<Driver> = new Set()
 
-  constructor({ drivers, hooks = {}, debug = false }: Configuration) {
-    this.id = Math.random().toString(16).substring(2)
-    this.hooks = hooks
-    this.debug = debug
+  constructor(drivers: DriverConfiguration[], configuration?: PluginConfiguration) {
+    this.id = configuration?.id ?? generateId()
+    this.hooks = configuration?.hooks ?? {}
+    this.debug = configuration?.debug ?? false
 
     if (this.hooks?.onBeforeInit)
-      this.hooks.onBeforeInit({ plugin: this })
+      this.hooks.onBeforeInit(this)
 
     // Initializing driver instances
-    for (const id in drivers) {
+    drivers.forEach((driverConfiguration) => {
+      const id = driverConfiguration.id ?? generateId()
+
       const driver = new Driver({
         id,
-        hooks: drivers[id].hooks,
-        start: drivers[id].start,
-        end: drivers[id].end,
-        elements: drivers[id].elements,
+        hooks: driverConfiguration.hooks,
+        start: driverConfiguration.start,
+        end: driverConfiguration.end,
+        elements: driverConfiguration.elements,
         plugin: this,
       })
       this.driverInstances.set(id, driver)
-    }
+    })
 
     this.updateLimits()
 
@@ -87,13 +88,13 @@ export class TheSupersonicPlugin {
     // Adding event listener for resize
     const resize = () => {
       if (this.hooks?.onBeforeResize)
-        this.hooks.onBeforeResize({ plugin: this })
+        this.hooks.onBeforeResize(this)
 
       this.updateLimits()
       this.render({ useActiveDrivers: false })
 
       if (this.hooks.onAfterResize)
-        this.hooks.onAfterResize({ plugin: this })
+        this.hooks.onAfterResize(this)
     }
     this.onResize = debounce(resize, 250)
     window.addEventListener('resize', this.onResize)
@@ -102,7 +103,7 @@ export class TheSupersonicPlugin {
     this.renderedInitially = true
 
     if (this.hooks?.onAfterInit)
-      this.hooks.onAfterInit({ plugin: this })
+      this.hooks.onAfterInit(this)
 
     console.log('Driver instances:', this.driverInstances)
   }
@@ -122,11 +123,11 @@ export class TheSupersonicPlugin {
   }
 
   /** Main rendering cycle. Active drivers are visible ones */
-  render({ useActiveDrivers }: Render) {
+  render({ useActiveDrivers }: PluginRender) {
     this.updateScroll()
 
     if (this.hooks.onBeforeRender) {
-      const onBeforeRenderReturn = this.hooks.onBeforeRender({ plugin: this })
+      const onBeforeRenderReturn = this.hooks.onBeforeRender(this)
 
       if (typeof onBeforeRenderReturn === 'boolean' && !onBeforeRenderReturn)
         return false
@@ -147,7 +148,7 @@ export class TheSupersonicPlugin {
     })
 
     if (this.hooks.onAfterRender)
-      this.hooks.onAfterRender({ plugin: this })
+      this.hooks.onAfterRender(this)
 
     if (import.meta.env.DEV) {
       const randomInt = ~~(Math.random() * 100000)

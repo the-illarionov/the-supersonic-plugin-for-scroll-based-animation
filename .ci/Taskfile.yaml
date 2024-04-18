@@ -68,8 +68,13 @@ tasks:
           -v $(pwd)/../docs:/app/docs \
           -v $(pwd)/../lib:/app/lib \
           -w /app/docs \
+          --name ci-preview \
           -d $NODE_IMAGE \
           yarn preview
+
+  down:
+    cmds:
+      - docker container stop ci-preview
 
   test:unit:
     desc: runs unit tests in 'lib' directory

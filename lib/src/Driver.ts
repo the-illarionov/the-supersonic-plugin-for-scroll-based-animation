@@ -1,11 +1,11 @@
 import { toFixed } from './utils'
 
 import { Animation } from './Animation'
-import type { Hooks as AnimationHooks } from './Animation.types'
+import type { AnimationHooks } from './Animation.types'
 
 import type { TheSupersonicPlugin } from './TheSupersonicPlugin'
 
-import type { BorderConstructor, BorderUpdateLimits, CalculateProgress, Constructor, HelperConstructor, HelperUpdateLimits, Hooks, Render, UpdateLimits } from './Driver.types'
+import type { DriverBorderConstructor, DriverBorderUpdateLimits, DriverCalculateProgress, DriverConstructor, DriverHelperConstructor, DriverHelperUpdateLimits, DriverHooks, DriverRender, DriverUpdateLimits } from './Driver.types'
 
 const debugColors = {
   colors: ['red', 'blue', 'orange', 'yellow'],
@@ -22,42 +22,40 @@ export class Driver {
   /** You can store your custom data here to use between hooks */
   data: any = {}
   /** Start is HTML element. When it appears on the screen, driver will start an animation */
-  start: Border
+  start: DriverBorder
   /** End is HTML element. When it appears on the screen, driver will stop an animation */
-  end: Border
+  end: DriverBorder
   /** Link to plugin instance to be able to access global variables like 'scroll', 'screenHeight' */
   plugin: TheSupersonicPlugin
 
   animations: Map<string, Animation> = new Map()
 
-  domElements: HTMLElement[] = []
-
   /** Helper is an element which need for IntersectionObserver to activate or deactive driver */
-  helper: Helper
+  helper: DriverHelper
 
-  hooks: Hooks
+  hooks: DriverHooks
 
-  constructor({ id, start, end, plugin, elements = [], hooks = {} }: Constructor) {
+  constructor({ id, start, end, plugin, elements = [], hooks = {} }: DriverConstructor) {
     this.id = id
     this.plugin = plugin
     this.hooks = hooks
 
     if (this.hooks.onBeforeInit)
-      this.hooks.onBeforeInit({ driver: this })
+      this.hooks.onBeforeInit(this)
 
     // Initializing borders
-    this.start = new Border({
+    this.start = new DriverBorder({
       domElement: start,
       type: 'start',
       driver: this,
     })
-    this.end = new Border({
+    this.end = new DriverBorder({
       domElement: end,
       type: 'end',
       driver: this,
     })
 
-    this.helper = new Helper({
+    this.helper = new DriverHelper({
       id,
       pluginId: this.plugin.id,
       debug: plugin.debug,
@@ -66,12 +64,12 @@ export class Driver {
     // Initializing animations
     elements.forEach((selector) => {
       const actualSelector = typeof selector === 'string' ? selector : selector.selector
-      this.domElements = Array.from(document.querySelectorAll<HTMLElement>(actualSelector))
+      const domElements = Array.from(document.querySelectorAll<HTMLElement>(actualSelector))
 
-      if (this.domElements.length === 0)
+      if (domElements.length === 0)
         throw new Error(`Can't find element "${actualSelector}"`)
 
-      this.domElements.forEach((domElement, domElementIndex) => {
+      domElements.forEach((domElement, domElementIndex) => {
         const elementCssAnimations = domElement.getAnimations() as unknown as CSSAnimation[]
 
         const animationConfigurations: {
@@ -133,11 +131,11 @@ export class Driver {
     })
 
     if (this.hooks.onAfterInit)
-      this.hooks.onAfterInit({ driver: this })
+      this.hooks.onAfterInit(this)
   }
 
   /** Driver calculates its progress and then renders all of it's properties with progress value */
-  render({ scroll, renderedInitially, consoleColor = '#000000' }: Render) {
+  render({ scroll, renderedInitially, consoleColor = '#000000' }: DriverRender) {
     const oldProgress = this.progress
     this.progress = this.calculateProgress({
       scroll,
@@ -146,7 +144,7 @@ export class Driver {
     })
 
     if (this.hooks.onBeforeRender) {
-      const onBeforeRenderReturn = this.hooks.onBeforeRender({ driver: this })
+      const onBeforeRenderReturn = this.hooks.onBeforeRender(this)
 
       if (typeof onBeforeRenderReturn === 'boolean' && !onBeforeRenderReturn)
         return false
@@ -165,7 +163,7 @@ export class Driver {
       }
 
       if (this.hooks.onAfterRender)
-        this.hooks.onAfterRender({ driver: this })
+        this.hooks.onAfterRender(this)
 
       console.log(`Driver "${this.id}" finished rendering`)
       console.groupEnd()
@@ -173,7 +171,7 @@ export class Driver {
   }
 
   /** Calculates current driver progress, depending on current scroll and top offset of DOM elements */
-  calculateProgress({ scroll, start, end }: CalculateProgress): number {
+  calculateProgress({ scroll, start, end }: DriverCalculateProgress): number {
     let progress = (scroll - start) / (end - start)
     if (progress < 0)
       progress = 0
@@ -185,7 +183,7 @@ export class Driver {
   }
 
   /** Recalculates DOM elements top offset */
-  updateLimits({ scroll, screenHeight }: UpdateLimits) {
+  updateLimits({ scroll, screenHeight }: DriverUpdateLimits) {
     this.start.updateLimits({ scroll, screenHeight })
     this.end.updateLimits({ scroll, screenHeight })
 
@@ -197,7 +195,7 @@ export class Driver {
     })
 
     if (this.hooks.onUpdateLimits)
-      this.hooks.onUpdateLimits({ driver: this })
+      this.hooks.onUpdateLimits(this)
   }
 
   /** Activates driver when it becomes visible on the screen */
@@ -205,7 +203,7 @@ export class Driver {
     this.plugin.driverActiveInstances.add(this)
 
     if (this.hooks.onActivation)
-      this.hooks.onActivation({ driver: this })
+      this.hooks.onActivation(this)
 
     console.log(`Driver "${this.id}" activated`)
   }
@@ -215,20 +213,23 @@ export class Driver {
     this.plugin.driverActiveInstances.delete(this)
 
     if (this.hooks.onDeactivation)
-      this.hooks.onDeactivation({ driver: this })
+      this.hooks.onDeactivation(this)
 
     console.log(`Driver "${this.id}" deactivated`)
   }
 }
 
 /** An HTML Element. It's top offset serves as indicator of where driver starts and where it ends */
-class Border {
+class DriverBorder {
   /** Associated DOM element */
   domElement: HTMLElement
   /** Top means amount of scroll needed to border activate or deactivate driver */
   top: number = 0
 
-  constructor({ domElement, type, driver }: BorderConstructor) {
+  constructor({ domElement, type, driver }: DriverBorderConstructor) {
+    if (typeof domElement === 'string')
+      domElement = document.querySelector<HTMLElement>(domElement)
+
     if (!domElement)
       throw new Error(`Can't find "${type}" HTMLElement for driver "${driver.id}"`)
 
@@ -236,13 +237,13 @@ class Border {
   }
 
   /** Recalculates top offset */
-  updateLimits({ scroll, screenHeight }: BorderUpdateLimits) {
+  updateLimits({ scroll, screenHeight }: DriverBorderUpdateLimits) {
     this.top = ~~this.domElement.getBoundingClientRect().top + scroll - screenHeight
   }
 }
 
 /** A helper HTML element, which connects to Border instances and starts being tracked by IntersectionObserver */
-class Helper {
+class DriverHelper {
   /** DOM element which is dynamically generated by plugin */
   domElement: HTMLElement
 
@@ -250,7 +251,7 @@ class Helper {
 
   debug: boolean
 
-  constructor({ id, pluginId, debug = false }: HelperConstructor) {
+  constructor({ id, pluginId, debug = false }: DriverHelperConstructor) {
     this.pluginId = pluginId
     this.debug = debug
     this.domElement = document.createElement('i')
@@ -282,7 +283,7 @@ class Helper {
   }
 
   /** Sets position of helper */
-  updateLimits({ top, height }: HelperUpdateLimits) {
+  updateLimits({ top, height }: DriverHelperUpdateLimits) {
     if (height <= 0)
       height = 1
     this.domElement.style.setProperty('top', `${top}px`)
