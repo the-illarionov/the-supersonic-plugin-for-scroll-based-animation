@@ -1,0 +1,91 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    background: #0e100f;
+}
+
+.worm-wrapper {
+    width: 584px;
+    padding: 80px 0;
+    position: relative;
+}
+
+.worm-container {
+    
+    height: 500px;
+}
+
+.worm-container__path {
+    width: 100%;
+}
+
+.worm-container__ball {
+    position: absolute;
+    left: 322px;
+    width: 93px;
+    top: -93px;
+}
+
+.worm-container__ball-y {
+    /* animation-name: ball-y; */
+    animation-duration: 1s;
+    animation-timing-function: linear;
+
+    animation-iteration-count: infinite;
+}
+
+@keyframes ball-y {
+    0% {
+        translate: 0 0 0;
+    }
+    10% {
+        translate: 0 247px 0;
+    }
+    20% {
+        translate: 0 247px 0;
+    }
+    30% {
+        translate: 0 350px 0;
+    }
+    40% {
+        translate: 0 350px 0;
+    }
+    50% {
+        translate: 0 464px 0;
+    }
+    60% {
+        translate: 0 464px 0;
+    }
+    100% {
+        translate: 0 740px 0;
+    }
+}
+
+.worm-container__ball-x {
+    /* animation-name: ball-x; */
+    animation-duration: 1s;
+    animation-timing-function: linear;
+
+    animation-iteration-count: infinite;
+}
+
+@keyframes ball-x {
+    0% {
+        translate: 0 0 0;
+    }
+    10% {
+        translate: -322px 0 0;
+    }
+    20% {
+        translate: -322px 0 0;
+    }
+    30% {
+        translate: 166px 0 0;
+    }
+    40% {
+        translate: 166px 0 0;
+    }
+    100% {
+        translate: -174px 0 0;
+    }
+}
