@@ -1,5 +1,5 @@
 import { TheSupersonicPlugin } from '../../lib/src'
-import type { Configuration as DriverConfiguration } from '../../lib/src/Driver.types'
+import type { DriverConfiguration } from '../../lib/src/Driver.types'
 import { toFixed } from '../../lib/src/utils'
 
 const isMobile = matchMedia('(max-width: 1024px)').matches
@@ -8,7 +8,7 @@ const elementsAmount = 1000
 const maxHorizontalElements = Math.ceil(window.innerWidth / elementSize)
 const maxRows = Math.ceil(window.innerHeight / elementSize)
 const elementsOnScreen = maxRows * maxHorizontalElements
-const drivers: DriverConfiguration = {}
+const drivers: DriverConfiguration[] = []
 
 const props = [
   {
@@ -103,11 +103,12 @@ for (let i = 0; i < driverAmount; i++) {
   const driverRow = Math.round(driverStart / elementSize) - driversOnScreen
   const driverStartFromElement = driverRow * maxHorizontalElements
 
-  drivers[driverId] = {
+  drivers.push({
+    id: driverId,
     start,
     end,
     hooks: {
-      onAfterInit({ driver }) {
+      onAfterInit(driver) {
         driver.data.elements = []
 
         for (let index = 0; index < elementsPerDriver; index++) {
@@ -139,7 +140,7 @@ for (let i = 0; i < driverAmount; i++) {
           driver.data.elements.push(element)
         }
       },
-      onAfterRender({ driver }) {
+      onAfterRender(driver) {
         driver.data.elements.forEach((element: any) => {
           const translateX = element.properties.translateX.distance * driver.progress + element.properties.translateX.start
           const translateY = element.properties.translateY.distance * driver.progress + element.properties.translateY.start
@@ -154,12 +155,12 @@ for (let i = 0; i < driverAmount; i++) {
         })
       },
     },
-  }
+  })
 }
 
-const plugin = new TheSupersonicPlugin({
+const plugin = new TheSupersonicPlugin(
   drivers,
-})
+)
 
 // @ts-expect-error foo
 window.plugin = plugin

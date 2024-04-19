@@ -1,4 +1,5 @@
-import { Configuration, Hooks, Render } from './TheSupersonicPlugin.types';
+import { DriverConfiguration } from './Driver.types';
+import { PluginConfiguration, PluginHooks, PluginRender } from './TheSupersonicPlugin.types';
 import { Observer } from './Observer';
 import { Driver } from './Driver';
 
@@ -7,19 +8,17 @@ import { Driver } from './Driver';
  * Main class handling all of the logic. To initialize the plugin, you create a new instance of this class
  *
  * @example
- * const plugin = new TheSupersonicPlugin({
- *   drivers: {
- *     'name-of-your-driver': {
- *        start: document.querySelector('.start'),
- *        end: document.querySelector('.end'),
- *        elements: ['.animatable-element']
- *      }
+ * const plugin = new TheSupersonicPlugin([
+ *   {
+ *      start: '.start',
+ *      end: '.end',
+ *      elements: ['.animatable-element']
  *   }
- * });
+ * ]);
  *
  */
 export declare class TheSupersonicPlugin {
-    /** Unique id of thisrunning instance */
+    /** Unique id of this running instance. You explicitly define it or let plugin auto generate it */
     id: string;
     /** Current window scrollY */
     scroll: number;
@@ -39,14 +38,14 @@ export declare class TheSupersonicPlugin {
     data: any;
     /** Make helper visible */
     debug: boolean;
-    hooks: Hooks;
+    hooks: PluginHooks;
     driverInstances: Map<string, Driver>;
     driverActiveInstances: Set<Driver>;
-    constructor({ drivers, hooks, debug }: Configuration);
+    constructor(drivers: DriverConfiguration[], configuration?: PluginConfiguration);
     /** Removes all of the plugin stuff (useful for SPA) */
     uninit(): void;
     /** Main rendering cycle. Active drivers are visible ones */
-    render({ useActiveDrivers }: Render): false | undefined;
+    render({ useActiveDrivers }: PluginRender): false | undefined;
     /** Updates global scroll and driver DOM elements top offset. Called once on page load and each time after window.resize */
     updateLimits(): void;
     updateScroll(): void;

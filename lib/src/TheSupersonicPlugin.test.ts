@@ -5,42 +5,28 @@ const IOObserver = vi.fn()
 const IODisconnect = vi.fn()
 
 it('adds onBeforeInit hook', () => {
-  const plugin = new TheSupersonicPlugin({
-    drivers: {
-      foo: {
-        ...driverSetup(),
+  const plugin = new TheSupersonicPlugin(
+    [{ ...driverSetup() }],
+    {
+      hooks: {
+        onBeforeInit(plugin) {
+          plugin.data.foo = 'bar'
+        },
       },
     },
-    hooks: {
-      onBeforeInit({ plugin }) {
-        plugin.data.foo = 'bar'
-      },
-    },
-  })
+  )
 
   expect(plugin.data.foo).toBe('bar')
 })
 
 it('creates driver instance onInit', () => {
-  const plugin = new TheSupersonicPlugin({
-    drivers: {
-      foo: {
-        ...driverSetup(),
-      },
-    },
-  })
+  const plugin = new TheSupersonicPlugin([{ ...driverSetup(), id: 'foo' }])
 
   expect(plugin.driverInstances.has('foo')).toBeTruthy()
 })
 
 it('uninits', () => {
-  const plugin = new TheSupersonicPlugin({
-    drivers: {
-      foo: {
-        ...driverSetup(),
-      },
-    },
-  })
+  const plugin = new TheSupersonicPlugin([{ ...driverSetup() }])
 
   plugin.uninit()
 
@@ -51,18 +37,13 @@ it('uninits', () => {
 })
 
 it('adds onBeforeRender hook', () => {
-  const plugin = new TheSupersonicPlugin({
-    drivers: {
-      foo: {
-        ...driverSetup(),
-      },
-    },
+  const plugin = new TheSupersonicPlugin([{ ...driverSetup() }], {
     hooks: {
-      onBeforeRender({ plugin }) {
+      onBeforeRender(plugin) {
         plugin.data.foo = 'bar'
         return false
       },
-      onAfterRender({ plugin }) {
+      onAfterRender(plugin) {
         plugin.data.foo = 'foo'
       },
     },
@@ -72,16 +53,16 @@ it('adds onBeforeRender hook', () => {
 })
 
 it('renders all drivers', () => {
-  const plugin = new TheSupersonicPlugin({
-    drivers: {
-      foo: {
-        ...driverSetup(),
-      },
-      bar: {
-        ...driverSetup(),
-      },
+  const plugin = new TheSupersonicPlugin([
+    {
+      ...driverSetup(),
+      id: 'foo',
     },
-  })
+    {
+      ...driverSetup(),
+      id: 'bar',
+    },
+  ])
 
   plugin.screenHeight = 1000
 
@@ -96,16 +77,16 @@ it('renders all drivers', () => {
 })
 
 it('renders only active drivers', () => {
-  const plugin = new TheSupersonicPlugin({
-    drivers: {
-      foo: {
-        ...driverSetup(),
-      },
-      bar: {
-        ...driverSetup(),
-      },
+  const plugin = new TheSupersonicPlugin([
+    {
+      ...driverSetup(),
+      id: 'foo',
     },
-  })
+    {
+      ...driverSetup(),
+      id: 'bar',
+    },
+  ])
 
   plugin.screenHeight = 1000
 
