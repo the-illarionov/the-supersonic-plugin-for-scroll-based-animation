@@ -1,76 +1,59 @@
 import { TheSupersonicPlugin } from './TheSupersonicPlugin';
-import { Selector as AnimationSelector } from './Animation.types';
+import { ElementSelector } from './Animation.types';
 import { Driver } from './Driver';
 
-export type Constructor = {
+export type DriverConfiguration = {
+    id?: string;
+    start: DriverBorderConfiguration;
+    end: DriverBorderConfiguration;
+    elements?: ElementSelector[];
+    hooks?: DriverHooks;
+};
+export type DriverConstructor = Omit<DriverConfiguration, 'id'> & {
     id: string;
-    hooks?: Hooks;
-    start: HTMLElement | null;
-    end: HTMLElement | null;
-    elements?: AnimationSelector[];
     plugin: TheSupersonicPlugin;
 };
-export type Render = {
+export type DriverRender = {
     scroll: number;
     renderedInitially: boolean;
     consoleColor?: string;
 };
-export type CalculateProgress = {
+export type DriverCalculateProgress = {
     scroll: number;
     start: number;
     end: number;
 };
-export type Hooks = {
-    onBeforeInit?: (object: {
-        driver: Driver;
-    }) => void;
-    onAfterInit?: (object: {
-        driver: Driver;
-    }) => void;
+export type DriverHooks = {
+    onBeforeInit?: (driver: Driver) => void;
+    onAfterInit?: (driver: Driver) => void;
     /** You can `return false` inside your hook, it will cancel rendering */
-    onBeforeRender?: (object: {
-        driver: Driver;
-    }) => void | undefined | boolean;
-    onAfterRender?: (object: {
-        driver: Driver;
-    }) => void;
-    onActivation?: (object: {
-        driver: Driver;
-    }) => void;
-    onDeactivation?: (object: {
-        driver: Driver;
-    }) => void;
-    onUpdateLimits?: (object: {
-        driver: Driver;
-    }) => void;
+    onBeforeRender?: (driver: Driver) => void | undefined | boolean;
+    onAfterRender?: (driver: Driver) => void;
+    onActivation?: (driver: Driver) => void;
+    onDeactivation?: (driver: Driver) => void;
+    onUpdateLimits?: (driver: Driver) => void;
 };
-export type Configuration = {
-    [id: string]: {
-        start: HTMLElement | null;
-        end: HTMLElement | null;
-        elements?: AnimationSelector[];
-        hooks?: Hooks;
-    };
-};
-export type BorderConstructor = {
-    domElement: HTMLElement | null;
+type DriverBorderConfiguration = HTMLElement | string | null;
+export type DriverBorderConstructor = {
+    domElement: DriverBorderConfiguration;
     driver: Driver;
     type: 'start' | 'end';
 };
-export type HelperConstructor = {
+export type DriverHelperConstructor = {
     id: string;
     pluginId: string;
     debug?: boolean;
 };
-export type UpdateLimits = {
+export type DriverUpdateLimits = {
     scroll: number;
     screenHeight: number;
 };
-export type BorderUpdateLimits = {
+export type DriverBorderUpdateLimits = {
     scroll: number;
     screenHeight: number;
 };
-export type HelperUpdateLimits = {
+export type DriverHelperUpdateLimits = {
     top: number;
     height: number;
 };
+export {};

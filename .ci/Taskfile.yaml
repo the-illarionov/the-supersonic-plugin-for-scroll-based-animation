@@ -49,7 +49,7 @@ tasks:
           -v $(pwd)/..:/app \
           $NODE_IMAGE /bin/bash -c "yarn lint"
 
-  build:
+  build:docs:
     desc: creates production build of docs
     cmds:
       - task lint
@@ -59,6 +59,21 @@ tasks:
           -v $(pwd)/../docs:/app/docs \
           -v $(pwd)/../lib:/app/lib \
           $NODE_IMAGE /bin/bash -c "yarn build"
+
+  build:lib:
+    desc: creates production build of lib
+    cmds:
+      - task lint
+      - |
+        docker run --rm \
+          -w /app \
+          -v $(pwd)/../lib:/app \
+          $NODE_IMAGE /bin/bash -c "yarn build"
+
+  build:
+    cmds:
+      - task build:docs
+      - task build:lib
 
   up:
     cmds:
