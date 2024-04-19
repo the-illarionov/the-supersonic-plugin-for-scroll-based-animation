@@ -28,6 +28,16 @@ test('1000', async ({ page }) => {
   })
 })
 
+test('3000', async ({ page }) => {
+  await page.goto('/e2e.html')
+  await sleep()
+  await page.evaluate(() => window.scrollTo(0, 3000))
+  await sleep()
+  await expect(page).toHaveScreenshot({
+    animations: 'allow',
+  })
+})
+
 function sleep(time = 500) {
   return new Promise((res) => {
     setTimeout(res, time)

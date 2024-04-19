@@ -46,6 +46,12 @@ const plugin = new TheSupersonicPlugin([
       },
     },
   },
+  {
+    start: '.top-250',
+    end: '.top-400',
+    id: 'bottom',
+    elements: ['.bottom-driver'],
+  },
 ], {
   debug: true,
   hooks: {

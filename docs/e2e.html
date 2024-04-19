@@ -66,9 +66,19 @@
         animation-name: basic;
       }
 
+      .bottom-driver {
+        animation-name: bottom;
+      }
+
       @keyframes basic {
         100% {
           translate: calc(50vw - 50%) 0 0;
+        }
+      }
+
+      @keyframes bottom {
+        100% {
+          translate: 0 calc(100vh - 100%) 0;
         }
       }
     </style>
@@ -104,10 +114,14 @@
 
     <div class="element changes-bg-on-render" style="left: 0; top: 300px"></div>
 
+    <div class="element bottom-driver" style="right: 0; top: 0"></div>
+
     <div
       style="position: fixed; right: 0; bottom: 0; z-index: 200"
       id="scroll-log"
     ></div>
+
+    <div style="height: 9999px"></div>
     <script type="module" src="/src/e2e.ts"></script>
   </body>
 </html>
