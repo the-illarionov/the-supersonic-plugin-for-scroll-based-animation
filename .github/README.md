@@ -26,15 +26,13 @@ Other solutions did not go well, so I decided to write my own (of course, I did)
 
 2. ## Use native CSS animations
     ```javascript
-    const plugin = new TheSupersonicPlugin({
-        drivers: {
-            hooray: {
-                start: document.querySelector('.start'), // Animation starts when this element appears on the screen
-                end: document.querySelector('.end'), // Animation ends when this element appears on the screen
-                elements: ['.animatable'] // List of elements with CSS animations
-            },
+    const plugin = new TheSupersonicPlugin([
+        {
+            start: '.start', // Animation starts when this element appears on the screen
+            end: '.end', // Animation ends when this element appears on the screen
+            elements: ['.animatable'] // List of elements with CSS animations
         },
-    });
+    ]);
     ```
     ```css
     .animatable {
@@ -97,9 +95,9 @@ Other solutions did not go well, so I decided to write my own (of course, I did)
 
     ```javascript
     onMounted() {
-        const plugin = new TheSupersonicPlugin({
+        const plugin = new TheSupersonicPlugin([
             // config...
-        })
+        ])
     }
 
     onBeforeUnmount() {
@@ -122,9 +120,9 @@ npm install the-supersonic-plugin-for-scroll-based-animation --save-dev
 ```javascript
 import { TheSupersonicPlugin } from "the-supersonic-plugin-for-scroll-based-animation"
 
-new TheSupersonicPlugin({
+new TheSupersonicPlugin([
     // ...configuration
-})
+])
 ```
 
 ## CDN
@@ -133,18 +131,18 @@ new TheSupersonicPlugin({
 <script src="https://unpkg.com/the-supersonic-plugin-for-scroll-based-animation"></script>
 
 <script>
-  new TheSupersonicPluginWrapper.TheSupersonicPlugin({
+  new TheSupersonicPluginWrapper.TheSupersonicPlugin([
     // ...configuration
-  })
+  ])
 </script>
 ```
 ### ESM
 ```javascript
 import { TheSupersonicPlugin } from "https://esm.sh/the-supersonic-plugin-for-scroll-based-animation"
 
-new TheSupersonicPlugin({
+new TheSupersonicPlugin([
     // ...configuration
-})
+])
 ```
 
 # Examples
@@ -167,9 +165,9 @@ import {
     Animation
 } from "https://esm.sh/the-supersonic-plugin-for-scroll-based-animation"
 
-const plugin = new TheSupersonicPlugin({
+const plugin = new TheSupersonicPlugin([
     // ...configuration
-})
+])
 
 const animation = new Animation({
     driver: plugin.driverInstances.get('some-driver'),
