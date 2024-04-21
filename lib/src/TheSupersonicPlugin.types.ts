@@ -1,24 +1,23 @@
 import type { TheSupersonicPlugin } from './TheSupersonicPlugin'
-import type { Configuration as DriverConfiguration } from './Driver.types'
 
-export type Configuration = {
-  drivers: DriverConfiguration
-  hooks?: Hooks
+export type PluginConfiguration = {
+  id?: string
+  hooks?: PluginHooks
   debug?: boolean
 }
 
-export type Hooks = {
-  onBeforeInit?: (object: { plugin: TheSupersonicPlugin }) => void
-  onAfterInit?: (object: { plugin: TheSupersonicPlugin }) => void
+export type PluginHooks = {
+  onBeforeInit?: (plugin: TheSupersonicPlugin) => void
+  onAfterInit?: (plugin: TheSupersonicPlugin) => void
 
   /** You can `return false` inside your hook, it will cancel rendering */
-  onBeforeRender?: (object: { plugin: TheSupersonicPlugin }) => void | undefined | boolean
-  onAfterRender?: (object: { plugin: TheSupersonicPlugin }) => void
+  onBeforeRender?: (plugin: TheSupersonicPlugin) => void | undefined | boolean
+  onAfterRender?: (plugin: TheSupersonicPlugin) => void
 
-  onBeforeResize?: (object: { plugin: TheSupersonicPlugin }) => void
-  onAfterResize?: (object: { plugin: TheSupersonicPlugin }) => void
+  onBeforeResize?: (plugin: TheSupersonicPlugin) => void
+  onAfterResize?: (plugin: TheSupersonicPlugin) => void
 }
 
-export type Render = {
+export type PluginRender = {
   useActiveDrivers: boolean
 }

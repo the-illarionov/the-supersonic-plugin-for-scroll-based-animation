@@ -6,7 +6,7 @@ it('adds onBeforeInit hook', () => {
   const driver = new Driver({
     ...driverSetup(),
     hooks: {
-      onBeforeInit({ driver }) {
+      onBeforeInit(driver) {
         driver.data.foo = 'bar'
       },
     },
@@ -19,7 +19,7 @@ it('adds onAfterInit hook', () => {
   const driver = new Driver({
     ...driverSetup(),
     hooks: {
-      onAfterInit({ driver }) {
+      onAfterInit(driver) {
         driver.data.foo = 'bar'
       },
     },
@@ -32,11 +32,11 @@ it('adds onBeforeRender hook', () => {
   const driver = new Driver({
     ...driverSetup(),
     hooks: {
-      onBeforeRender({ driver }) {
+      onBeforeRender(driver) {
         driver.data.foo = 'bar'
         return false
       },
-      onAfterRender({ driver }) {
+      onAfterRender(driver) {
         driver.data.foo = 'foo'
       },
     },
@@ -51,7 +51,7 @@ it('adds onAfterRender hook', () => {
   const driver = new Driver({
     ...driverSetup(),
     hooks: {
-      onAfterRender({ driver }) {
+      onAfterRender(driver) {
         driver.data.foo = 'foo'
       },
     },
@@ -66,7 +66,7 @@ it('adds onUpdateLimits hook', () => {
   const driver = new Driver({
     ...driverSetup(),
     hooks: {
-      onUpdateLimits({ driver }) {
+      onUpdateLimits(driver) {
         driver.data.foo = 'foo'
       },
     },
@@ -176,7 +176,7 @@ it('adds onInit hook to animation', () => {
       animations: [{
         name: 'first-animation',
         hooks: {
-          onInit({ animation }) {
+          onInit(animation) {
             animation.data.foo = 'bar'
           },
         },
@@ -212,12 +212,12 @@ it('adds onBeforeRender hook to animation', () => {
       animations: [{
         name: 'first-animation',
         hooks: {
-          onBeforeRender({ animation }) {
+          onBeforeRender(animation) {
             animation.data.foo = 'bar'
 
             return false
           },
-          onAfterRender({ animation }) {
+          onAfterRender(animation) {
             animation.data.foo = 'foo'
           },
         },

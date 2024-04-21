@@ -1,7 +1,7 @@
 {
   "name": "the-supersonic-plugin-for-scroll-based-animation",
   "type": "module",
-  "version": "2.0.2",
+  "version": "2.1.0",
   "description": "The Supersonic Plugin For Scroll Based Animation",
   "author": {
     "name": "Alex Illarionov",

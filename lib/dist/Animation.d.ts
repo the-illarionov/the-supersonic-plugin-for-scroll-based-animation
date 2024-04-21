@@ -1,5 +1,5 @@
 import { Driver } from './Driver';
-import { Constructor, Hooks, Render } from './Animation.types';
+import { AnimationConstructor, AnimationHooks, AnimationRender } from './Animation.types';
 
 export declare class Animation {
     id: string;
@@ -10,7 +10,7 @@ export declare class Animation {
     driver: Driver;
     /** You can access domElement this animation is belongs to */
     domElement: HTMLElement;
-    hooks: Hooks;
-    constructor({ id, cssAnimation, hooks, driver, domElement }: Constructor);
-    render({ driverProgress }: Render): false | undefined;
+    hooks: AnimationHooks;
+    constructor({ id, cssAnimation, hooks, driver, domElement }: AnimationConstructor);
+    render({ driverProgress }: AnimationRender): false | undefined;
 }
